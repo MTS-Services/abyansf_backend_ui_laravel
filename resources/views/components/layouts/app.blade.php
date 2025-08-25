@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth light">
 
 <head>
     <meta charset="UTF-8">
@@ -13,7 +13,7 @@
 
     <x-layouts.auth.header :title="$title ?? null" />
 
-        <x-layouts.auth.navbar />
+    <x-layouts.auth.navbar />
 
 
     {{ $slot }}
