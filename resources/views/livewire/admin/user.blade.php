@@ -2,36 +2,12 @@
 <html lang="en">
 
 
-
-
-<main class="bg-white px-34 py-16">
-    <br>
-
+<main class="bg-white px-34">
     <div class="p-6 md:p-10 lg:p-16">
-
-
-        <h1 class="text-4xl font-semibold mb-8 float-left">Admin Dashboard</h1>
-
-        <br>
-        <br>
-        <br>
-        <br>
-
-
-
-        <div
-            class="bg-[#E7E7E7] min-w-full flex justify-between border items-center p-1 text-sm font-semibold text-gray-900 uppercase
-        tracking-wider">
-            <a href="#" class="ml-8 btn">Users</a>
-            <a href="booking.html" class="#">Bookings</a>
-            <a href="#" class="">Listings</a>
-            <a href="#" class="">Event</a>
-            <a href="#" class="mr-8">Attendance</a>
-        </div>
 
         <h2 class="text-2xl font-medium mt-12 mb-6">User Management</h2>
 
-        <div class="bg-[#E7E7E7] rounded-lg overflow-x-auto">
+        <div class="bg-[--color-zinc-500] rounded-lg overflow-x-auto">
             <table class="min-w-full leading-normal">
                 <thead>
                     <tr>

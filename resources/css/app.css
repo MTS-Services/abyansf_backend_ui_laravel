@@ -10,9 +10,6 @@
 
 /* @custom-variant dark (&:where(.dark, .dark *)); */
 
-
-
-
 @theme {
     --font-sans: 'Instrument Sans',
     ui-sans-serif,
@@ -83,53 +80,3 @@ select:focus[data-flux-control] {
 } */
 
 
-.btn {
-      padding: 12px 34px;
-      border: none;
-      border-radius: 6px;
-      /* background-color: #007bff; */
-      color: rgb(0, 0, 0);
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.3s ease;
-      margin: 2px;
-    }
-
-    .btn {
-      background-color: #ffffff;
-      transform: translateY(-2px);
-      box-shadow: 0px 4px 12px rgba(0,0,0,0.2);
-    }
-
- h1 {
-            --color-gray-50: #1A1A1A;
-            font-family: Playfair Display;
-            font-weight: 700;
-            font-style: Bold;
-            font-size: 40px;
-            line-height: 100%;
-            letter-spacing: 0%;
-            text-align: center;
-            padding: 8px;
-
-        }
-
-        p {
-            font-family: Inter;
-            font-weight: 400;
-            font-style: Regular;
-            font-size: 18px;
-            line-height: 100%;
-            letter-spacing: 0%;
-            text-align: center;
-        }
-
-
-        h2{
-            font-family: Poppins;
-            font-weight: 500;
-            font-style: Medium;
-            font-size: 28px;
-            line-height: 100%;
-            letter-spacing: 0%;
-        }
