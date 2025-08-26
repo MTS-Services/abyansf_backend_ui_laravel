@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @import 'tailwindcss';
 @import '../../vendor/livewire/flux/dist/flux.css';
 
@@ -9,6 +9,11 @@
 @source '../../vendor/livewire/flux/stubs/**/*.blade.php';
 
 /* @custom-variant dark (&:where(.dark, .dark *)); */
+
+:root{
+    --font-family: poppins;
+
+}
 
 @theme {
     --font-sans: 'Instrument Sans',
@@ -40,6 +45,9 @@
 
     --font-playfair: 'Playfair Display', serif;
     --font-inter: 'Inter', sans-serif;
+    --font-poppins: 'Poppins', sans-serif;
+
+
 }
 
 @layer theme {
@@ -80,3 +88,86 @@ select:focus[data-flux-control] {
 } */
 
 
+ .navbar_h1{
+
+    font-family: Poppins;
+    font-weight: 600;
+    font-style: SemiBold;
+    font-size: 36px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    text-align: center;
+    float: left;
+ }
+
+.navbar_a{
+    font-family: Poppins;
+    font-weight: 600;
+    font-style: Medium;
+    font-size: 16px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    text-align: center;
+    background-color: rgb(255, 255, 255);
+    padding: 12px 80px;
+    border-radius: 3px;
+
+ }
+
+ .user_h2{
+    font-family: Poppins;
+    font-weight: 500;
+    font-style: Medium;
+    font-size: 28px;
+    line-height: 100%;
+    letter-spacing: 0%;
+ }
+
+        /* Hide the table header on mobile */
+        @media (max-width: 639px) {
+            thead {
+                display: none;
+            }
+        }
+
+        /* Style each table row as a card on mobile */
+        .mobile-card-row {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.5rem;
+            padding: 1rem;
+            background-color: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        /* Style each data cell on mobile */
+        .mobile-card-cell {
+            padding: 0;
+            margin: 0;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Add labels before each data cell on mobile using pseudo-elements */
+        .mobile-card-cell:before {
+            content: attr(data-label);
+            font-weight: bold;
+            color: #4b5563;
+        }
+
+
+    .booking_h2, h2{
+    font-family: Poppins;
+    font-weight: 500;
+    font-style: Medium;
+    font-size: 28px;
+    line-height: 100%;
+    letter-spacing: 0%;
+
+
+    }
