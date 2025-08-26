@@ -1,4 +1,4 @@
- <div class="max-w-5xl mx-auto bg-white rounded-lg  p-6 space-y-6 mt-10">
+ <div class="max-w-[1200px] mx-auto bg-white rounded-lg  p-6 space-y-6 mt-10">
      <!-- Title -->
      <h2 class="text-2xl font-semibold text-gray-800">Add Listing</h2>
 

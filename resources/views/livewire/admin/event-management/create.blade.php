@@ -1,6 +1,6 @@
-<div class="container max-w-[1200px] mx-auto bg-white rounded-lg shadow-sm border border-gray-200 mt-4">
+<div class="container max-w-[1200px] mx-auto bg-white rounded-lg    mt-4">
     <!-- Header -->
-    <div class="flex items-center justify-between p-6 border-b border-gray-200">
+    <div class="flex items-center justify-between p-6  border-gray-200">
         <h1 class="text-xl font-semibold text-gray-900">Add Event</h1>
 
     </div>
@@ -9,7 +9,7 @@
     <div class="p-6 space-y-6">
         <!-- Photo Upload Area -->
         <div
-            class="max-w-[1100px] mx-auto  h-[457px] bg-gray-200 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors cursor-pointer">
+            class="  h-[457px] bg-gray-200 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors cursor-pointer">
             <div class="text-center">
 
                 <p class="text-gray-500 font-bold">Add Photos</p>
@@ -17,7 +17,7 @@
         </div>
 
         <!-- Title and Max Person Row -->
-        <div class=" max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="  grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
                 <input type="text" placeholder="Title text"
@@ -31,7 +31,7 @@
         </div>
 
         <!-- Description -->
-        <div class="max-w-[1100px] mx-auto">
+        <div class="">
             <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
             <textarea rows="6" placeholder="Enter description"
                 class="w-full px-3 py-2 border border-gray-300  bg-[#F8F6EE] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-custom-beige resize-none"></textarea>
@@ -39,7 +39,7 @@
 
 
         <!-- Location, Time, and Date Row -->
-       <div class="max-w-[1100px] mx-auto grid grid-cols-1 md:grid-cols-2 gap-4">
+       <div class=" grid grid-cols-1 md:grid-cols-2 gap-4">
     <!-- Left Side (Location) -->
     <div class="col-span-1">
         <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
@@ -73,7 +73,7 @@
 
 
         <!-- Checkboxes -->
-        <div class="max-w-[1100px] mx-auto top-[1177px] left-[50px] opacity-100 gap-[30px] flex ">
+        <div class=" mx-auto top-[1177px] left-[50px] opacity-100 gap-[30px] flex ">
             <label class="flex items-center">
                 <input type="checkbox" class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
                 <span class="ml-2 text-sm text-gray-700">Active</span>
@@ -85,7 +85,7 @@
         </div>
 
         <!-- Save Button -->
-       <div class="flex justify-center md:justify-start max-w-[1100px] mx-auto mt-6">
+       <div class="flex justify-center md:justify-start  mx-auto mt-6">
     <button
         class="px-6 py-2 bg-[#C7AE6A] text-white rounded-md hover:bg-opacity-90 transition-colors font-medium">
         Save
