@@ -188,7 +188,7 @@
 
      <!-- Save Button -->
      <div class="flex justify-center md:justify-start">
-         <button class="px-8 py-2 bg-[#C7AE6A] text-white rounded-md hover:bg-opacity-90 transition-colors font-medium">
+         <button class="px-8 py-2 bg-[#C7AE6A] text-black rounded-md hover:bg-opacity-90 transition-colors font-medium">
              Save
          </button>
      </div>
