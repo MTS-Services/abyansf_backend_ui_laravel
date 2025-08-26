@@ -2,6 +2,7 @@
 
 use App\Livewire\Admin\Attendance;
 use App\Livewire\Admin\Booking;
+use App\Livewire\Admin\Event;
 use App\Livewire\Admin\EventManagement\Index as EventIndex;
 use App\Livewire\Admin\EventManagement\Create as EventCreate;
 use App\Livewire\Admin\EventManagement\Update as EventUpdate;
@@ -25,4 +26,5 @@ Route::name('admin.')->group(function () {
     Route::get('event/{id}/update', EventUpdate::class)->name('event.update');
 
     Route::get('attendance', Attendance::class)->name('attendance');
+    Route::get('event', Event::class)->name('event-list');
 });

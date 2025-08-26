@@ -71,7 +71,7 @@
                     class="text-gray-900 font-medium text-lg hover:text-blue-600 transition-colors duration-200 text-center">Bookings</a>
                 <a href="#"
                     class="text-gray-900 font-medium text-lg hover:text-blue-600 transition-colors duration-200 text-center">Listings</a>
-                <a href="#"
+                <a href="{{ route('admin.event-list') }}"
                     class="text-gray-900 font-medium text-lg hover:text-blue-600 transition-colors duration-200 text-center">Event</a>
                 <a href="#"
                     class="text-gray-900 font-medium text-lg hover:text-blue-600 transition-colors duration-200 text-center">Attendance</a>
