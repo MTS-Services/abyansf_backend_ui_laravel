@@ -43,10 +43,10 @@
         </a>
 
         <!-- Attendance -->
-        <a href="#" @click.prevent="activeTab = 'attendance'"
+         <a href="#" @click.prevent="activeTab = 'attendance'"
             :class="activeTab === 'attendance' ? 'mr-8 text-blue-600 font-bold border-b-2 border-blue-600' : 'mr-8'">
             Attendance
-        </a>
+        </a> 
     </div>
 </nav> --}}
 
@@ -73,7 +73,7 @@
                     class="text-gray-900 font-medium text-lg hover:text-blue-600 transition-colors duration-200 text-center">Listings</a>
                 <a href="#"
                     class="text-gray-900 font-medium text-lg hover:text-blue-600 transition-colors duration-200 text-center">Event</a>
-                <a href="#"
+                <a href="{{ route('admin.attendance') }}"
                     class="text-gray-900 font-medium text-lg hover:text-blue-600 transition-colors duration-200 text-center">Attendance</a>
             </div>
         </div>
