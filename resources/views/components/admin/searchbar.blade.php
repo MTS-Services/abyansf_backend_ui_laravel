@@ -1,6 +1,6 @@
 @props(['page' => '']) {{-- default "listing" --}}
 
-<div class="flex items-center space-x-4 p-4">
+<div class="flex items-center space-x-4 ">
     <!-- Service Dropdown -->
     <div class="relative w-[282px]">
         <select
@@ -30,7 +30,7 @@
 
     <!-- Dynamic Button -->
     <button
-        class="flex items-center text-base font-medium text-black px-4 py-2 rounded-sm hover:bg-[#e7ae12] bg-[#C7AE6A] focus:outline-none focus:ring-2 focus:ring-amber-500 custom-shadow">
+        class="flex items-center text-base font-medium text-black px-4 py-2 rounded-sm hover:bg-[#b99b52] bg-[#C7AE6A] focus:outline-none focus:ring-2 focus:ring-amber-500 custom-shadow">
         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
         </svg>
