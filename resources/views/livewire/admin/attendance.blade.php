@@ -5,7 +5,7 @@
     </div>
 
     <!-- Filters Section -->
-    <div class="bg-white rounded-lg p-4 md:p-6 max-w-[1200px]">
+    <div class="bg-white rounded-lg p-4 md:p-6 max-w-[1200px] min-h-[60px] relative z-10">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <!-- User Filter -->
             <div>
@@ -47,30 +47,27 @@
     </div>
 
     <!-- Table Section -->
-
-
-    <div class="bg-white rounded-lg w-full overflow-hidden">
+    <div class="bg-white rounded-lg w-full overflow-hidden mt-4 lg:mt-8">
         <!-- Desktop Table -->
         <div class="hidden lg:block overflow-x-auto">
             <table class="w-full">
                 <thead class="border-gray-200">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Name
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Service
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Service</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Location</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Location
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Date
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Client Status</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Action</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Time
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Client
+                            Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Action
+                        </th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -78,12 +75,23 @@
                         <td class="px-6 py-4 text-sm text-gray-900">01</td>
                         <td class="px-6 py-4 text-sm text-gray-900">Khalid Omar Al-Mansouri</td>
                         <td class="px-6 py-4 text-sm text-gray-900">Breakfast</td>
-                        <td class="px-6 py-4 text-sm text-gray-900">Jumeirah Beach Residence</td>
+                        <td class="flex px-6 py-4 text-sm text-gray-900 items-center gap-2">
+                            <div class="flex justify-between items-center">
+                                <span class="flex items-center gap-2 text-gray-900">
+                                    <!-- Solid Location Icon -->
+                                    <svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0
+                     9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" />
+                                    </svg>
+                                    Jumeirah Beach Residence
+                                </span>
+                            </div>
+                        </td>
                         <td class="px-6 py-4 text-sm text-gray-900">01/06/2025</td>
                         <td class="px-6 py-4 text-sm text-gray-900">3:00 PM - 4:00 PM</td>
                         <td class="px-6 py-4">
                             <span
-                                class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Confirmed</span>
+                                class="inline-flex px-2 py-1 text-xs font-regular rounded-full bg-[#22C55E] text-black">Confirmed</span>
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-500">
                             <button class="text-[#C7AE6A]">
@@ -99,10 +107,8 @@
         </div>
 
         <!-- Mobile Cards (Accordion) -->
-        <div class="lg:hidden divide-y divide-gray-200">
-            <!-- Card -->
+        <div class="lg:hidden divide-y divide-gray-200 mt-4">
             <div x-data="{ open: false }" class="p-4">
-                <!-- Header -->
                 <div class="flex justify-between items-center">
                     <div>
                         <h3 class="text-sm font-medium text-gray-900">Khalid Omar Al-Mansouri</h3>
@@ -110,10 +116,7 @@
                     </div>
                     <div class="flex items-center space-x-2">
                         <span
-                            class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                            Confirmed
-                        </span>
-                        <!-- Toggle -->
+                            class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-[#22C55E] text-black">Confirmed</span>
                         <button @click="open = !open" class="text-gray-600">
                             <svg x-show="!open" class="w-5 h-5" fill="none" stroke="currentColor"
                                 viewBox="0 0 24 24">
@@ -127,7 +130,6 @@
                         </button>
                     </div>
                 </div>
-                <!-- Details -->
                 <div x-show="open" x-cloak class="mt-3 space-y-2 text-sm">
                     <div class="flex justify-between">
                         <span class="text-gray-500">Service:</span>
@@ -135,18 +137,17 @@
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-gray-500">Location:</span>
-                        <span class="flex items-center gap-2 text-gray-900">
-                            <!-- Location Icon -->
-                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 11c1.656 0 3-1.344 3-3s-1.344-3-3-3-3 1.344-3 3 1.344 3 3 3z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 22s8-4.5 8-12c0-4.418-3.582-8-8-8s-8 3.582-8 8c0 7.5 8 12 8 12z" />
-                            </svg>
-                            Jumeirah Beach Residence
-                        </span>
+                        <div class="flex justify-between items-center">
+    <span class="flex items-center gap-2 text-gray-900">
+        <!-- Solid Location Icon -->
+        <svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 
+                     9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/>
+        </svg>
+        Jumeirah Beach Residence
+    </span>
+</div>
                     </div>
-
                     <div class="flex justify-between">
                         <span class="text-gray-500">Date:</span>
                         <span class="text-gray-900">01/06/2025</span>
@@ -165,7 +166,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
-
 </div>
