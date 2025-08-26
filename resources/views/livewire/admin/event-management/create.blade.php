@@ -9,24 +9,24 @@
     <div class="p-6 space-y-6">
         <!-- Photo Upload Area -->
         <div
-            class="  h-[457px] bg-gray-200 rounded-lg flex items-center justify-center border-2 border-dashed border-gray-300 hover:border-gray-400 transition-colors cursor-pointer">
-            <div class="text-center">
-
-                <p class="text-gray-500 font-bold">Add Photos</p>
+            class="h-56 sm:h-72 md:h-[457px] bg-gray-200 rounded-lg flex items-center justify-center border-2 border-dashed transition-colors cursor-pointer">
+            <div class="text-center px-2">
+                <p class="text-gray-500 font-bold text-sm sm:text-base md:text-lg">Add Photos</p>
             </div>
         </div>
+
 
         <!-- Title and Max Person Row -->
         <div class="  grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
                 <input type="text" placeholder="Title text"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-custom-beige">
+                    class="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-custom-beige">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Max person</label>
+                <label class="block text-sm font-medium text-gray-700 mb-2 ">Max person</label>
                 <input type="number" placeholder="Max person"
-                    class="w-full px-3 py-2 border border-gray-300 bg-[#F8F6EE] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    class="w-full px-3 py-2 h-[50px] border border-gray-300 bg-[#F8F6EE] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             </div>
         </div>
 
@@ -34,42 +34,42 @@
         <div class="">
             <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
             <textarea rows="6" placeholder="Enter description"
-                class="w-full px-3 py-2 border border-gray-300  bg-[#F8F6EE] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-custom-beige resize-none"></textarea>
+                class="w-full px-3 py-2 h-[264] border border-gray-300  bg-[#F8F6EE] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-custom-beige resize-none"></textarea>
         </div>
 
 
         <!-- Location, Time, and Date Row -->
-       <div class=" grid grid-cols-1 md:grid-cols-2 gap-4">
-    <!-- Left Side (Location) -->
-    <div class="col-span-1">
-        <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
-        <input type="text" placeholder="Location"
-            class="w-full px-3 py-2 border border-gray-300 bg-[#F8F6EE] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-custom-beige">
-    </div>
+        <div class=" grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Left Side (Location) -->
+            <div class="col-span-1">
+                <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                <input type="text" placeholder="Location"
+                    class="w-full px-3 py-2 h-[50px] border border-gray-300 bg-[#F8F6EE] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-custom-beige">
+            </div>
 
-    <!-- Right Side (Time + Date) -->
-    <div class="col-span-1 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- Time -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Time</label>
-            <div class="relative">
-                <input type="time" placeholder="00:00 am"
-                    class="w-full px-3 py-2 border border-gray-300 bg-[#F8F6EE] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none">
+            <!-- Right Side (Time + Date) -->
+            <div class="col-span-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Time -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Time</label>
+                    <div class="relative">
+                        <input type="time" placeholder="00:00 am"
+                            class="w-full px-3 py-2 h-[50px] border border-gray-300 bg-[#F8F6EE] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none">
+                    </div>
+                </div>
+
+                <!-- Date -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                    <div class="relative">
+                        <input type="date" placeholder="MM/DD/YYYY"
+                            class="w-full px-3 py-2 h-[50px] border border-gray-300 bg-[#F8F6EE] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none">
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Date -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">Date</label>
-            <div class="relative">
-                <input type="date" placeholder="MM/DD/YYYY"
-                    class="w-full px-3 py-2 border border-gray-300 bg-[#F8F6EE] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none">
-            </div>
-        </div>
-    </div>
-</div>
 
-          
 
 
         <!-- Checkboxes -->
@@ -85,12 +85,12 @@
         </div>
 
         <!-- Save Button -->
-       <div class="flex justify-center md:justify-start  mx-auto mt-6">
-    <button
-        class="px-6 py-2 bg-[#C7AE6A] text-white rounded-md hover:bg-opacity-90 transition-colors font-medium">
-        Save
-    </button>
-</div>
+        <div class="flex justify-center md:justify-start  mx-auto mt-6">
+            <button
+                class="px-6 py-2 bg-[#C7AE6A] text-white rounded-md hover:bg-opacity-90 transition-colors font-medium">
+                Save
+            </button>
+        </div>
 
 
     </div>
