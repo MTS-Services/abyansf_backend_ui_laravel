@@ -31,12 +31,15 @@
             <!-- Date Filter -->
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">Date</label>
-                <input type="date" class="w-full border-b border-gray-400 bg-transparent focus:outline-none focus:border-blue-500" placeholder="dd/mm/yyyy">
+                <input type="date"
+                    class="w-full border-b border-gray-400 bg-transparent focus:outline-none focus:border-blue-500"
+                    placeholder="dd/mm/yyyy">
             </div>
 
             <!-- Apply Filters Button -->
             <div>
-                <button class="w-full bg-[#C7AE6A] hover:bg-[#b49a5e] text-gray-800 font-medium py-2 px-4 rounded-md transition-colors duration-200">
+                <button
+                    class="w-full bg-[#C7AE6A] hover:bg-[#b49a5e] text-gray-800 font-medium py-2 px-4 rounded-md transition-colors duration-200">
                     Apply Filters
                 </button>
             </div>
@@ -51,13 +54,20 @@
                 <thead class="border-gray-200">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">ID</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Name</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Service</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Location</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Date</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Time</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Client Status</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Action</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Name
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Service
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Location
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Date
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Time
+                        </th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Client
+                            Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Action
+                        </th>
                     </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
@@ -66,21 +76,28 @@
                         <td class="px-6 py-4 text-sm text-gray-900">Khalid Omar Al-Mansouri</td>
                         <td class="px-6 py-4 text-sm text-gray-900">Breakfast</td>
                         <td class="flex px-6 py-4 text-sm text-gray-900 items-center gap-2">
-                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c1.656 0 3-1.344 3-3s-1.344-3-3-3-3 1.344-3 3 1.344 3 3 3z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22s8-4.5 8-12c0-4.418-3.582-8-8-8s-8 3.582-8 8c0 7.5 8 12 8 12z"/>
-                            </svg>
-                            Jumeirah Beach Residence
+                            <div class="flex justify-between items-center">
+                                <span class="flex items-center gap-2 text-gray-900">
+                                    <!-- Solid Location Icon -->
+                                    <svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0
+                     9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" />
+                                    </svg>
+                                    Jumeirah Beach Residence
+                                </span>
+                            </div>
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-900">01/06/2025</td>
                         <td class="px-6 py-4 text-sm text-gray-900">3:00 PM - 4:00 PM</td>
                         <td class="px-6 py-4">
-                            <span class="inline-flex px-2 py-1 text-xs font-regular rounded-full bg-[#22C55E] text-black">Confirmed</span>
+                            <span
+                                class="inline-flex px-2 py-1 text-xs font-regular rounded-full bg-[#22C55E] text-black">Confirmed</span>
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-500">
                             <button class="text-[#C7AE6A]">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22m-5-4H6a1 1 0 00-1 1v1h16V4a1 1 0 00-1-1z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22m-5-4H6a1 1 0 00-1 1v1h16V4a1 1 0 00-1-1z" />
                                 </svg>
                             </button>
                         </td>
@@ -98,13 +115,17 @@
                         <p class="text-xs text-gray-500">ID: 01</p>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-[#22C55E] text-black">Confirmed</span>
+                        <span
+                            class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-[#22C55E] text-black">Confirmed</span>
                         <button @click="open = !open" class="text-gray-600">
-                            <svg x-show="!open" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            <svg x-show="!open" class="w-5 h-5" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4v16m8-8H4" />
                             </svg>
-                            <svg x-show="open" x-cloak class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+                            <svg x-show="open" x-cloak class="w-5 h-5" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
                             </svg>
                         </button>
                     </div>
@@ -116,13 +137,16 @@
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-gray-500">Location:</span>
-                        <span class="flex items-center gap-2 text-gray-900">
-                            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c1.656 0 3-1.344 3-3s-1.344-3-3-3-3 1.344-3 3 1.344 3 3 3z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22s8-4.5 8-12c0-4.418-3.582-8-8-8s-8 3.582-8 8c0 7.5 8 12 8 12z"/>
-                            </svg>
-                            Jumeirah Beach Residence
-                        </span>
+                        <div class="flex justify-between items-center">
+    <span class="flex items-center gap-2 text-gray-900">
+        <!-- Solid Location Icon -->
+        <svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 
+                     9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/>
+        </svg>
+        Jumeirah Beach Residence
+    </span>
+</div>
                     </div>
                     <div class="flex justify-between">
                         <span class="text-gray-500">Date:</span>
@@ -135,13 +159,14 @@
                     <div class="flex justify-end pt-2">
                         <button class="text-[#C7AE6A]">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22m-5-4H6a1 1 0 00-1 1v1h16V4a1 1 0 00-1-1z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M1 7h22m-5-4H6a1 1 0 00-1 1v1h16V4a1 1 0 00-1-1z" />
                             </svg>
                         </button>
                     </div>
                 </div>
             </div>
-            
+
         </div>
     </div>
 </div>
