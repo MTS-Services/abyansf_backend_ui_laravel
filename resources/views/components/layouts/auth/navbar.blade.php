@@ -3,14 +3,14 @@
     <main class=" w-[1200px] mx-auto px-4 ">
 
         <!-- Main navigation container -->
-        <nav class="mt-8 sm:mt-12">
+        <nav class="mt-8 sm:mt-12 ">
             <!-- Main heading for the dashboard -->
             <h1 class="navbar_h1 text-3xl md:text-4xl font-bold pb-4 sm:pb-8 text-left text-gray-800">
                 Admin Dashboard
             </h1>
 
             <!-- Navigation links container -->
-            <div class="flex items-center justify-center">
+            <div class="items-center justify-center hidden sm:flex">
                 <!-- Tabs Container -->
                 <div class="w-full">
 

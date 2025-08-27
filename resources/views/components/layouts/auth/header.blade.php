@@ -1,38 +1,35 @@
-<script src="https://cdn.tailwindcss.com"></script>
-<header class="w-full">
-    <!-- Outer container using flexbox for centering -->
-    <div class="flex flex-col items-center justify-center relative mx-auto md:w-[1200px] h-32 ">
-
-        <!-- Top Left Logo - Positioned absolutely -->
-        <div class="absolute top-6 left-4 md:left-0">
-            <!-- Note: Using a placeholder image for demonstration -->
-            <button>
-                <img src="{{ asset('image/Maskgroup.png') }}" alt="Logo" class="w-20 h-20 rounded-full">
-
-            </button>
+<header class="w-full relative">
+    <!-- Desktop Header -->
+    <div class="hidden sm:flex items-center justify-between mx-auto max-w-[1200px] h-28 sm:h-32 px-4">
+        <!-- Logo -->
+        <div>
+            <img src="{{ asset('image/Maskgroup.png') }}" alt="Logo" class="w-16 sm:w-20 h-16 sm:h-20 rounded-full">
         </div>
 
-        <!-- Top Right Icons - Positioned absolutely -->
-        <div class="absolute top-12 right-4 md:right-6 flex items-center space-x-4">
-            <div class="relative inline-block">
-                <!-- Notification Button -->
+        <!-- Notification + User Icon -->
+        <div class="flex items-center space-x-4">
+            <!-- Notification -->
+            <div class="relative">
                 <button id="notifyBtn"
                     class="relative p-2 rounded-full text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-400">
-                    <!-- Bell Icon -->
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M15 17h5l-1.405-1.405C18.79 15.21 18 14.11 18 13V9c0-3.314-2.686-6-6-6S6 5.686 6 9v4c0 1.11-.79 2.21-1.595 2.595L3 17h5m7 0a3 3 0 11-6 0h6z">
                         </path>
                     </svg>
-
-                    <!-- Notification Badge -->
                     <span
-                        class="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full">
-                        3
-                    </span>
+                        class="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center text-xs font-bold text-white bg-red-500 rounded-full">3</span>
                 </button>
 
+                <!-- Notification Dropdown -->
+                {{-- <div id="notifyPanel" class="hidden absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-md z-50">
+                    <div class="p-4 text-gray-700 font-semibold border-b">Notifications</div>
+                    <ul>
+                        <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">New booking received</li>
+                        <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">User registered</li>
+                        <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">Event updated</li>
+                    </ul>
+                </div> --}}
                 <!-- Dropdown Panel -->
                 <div id="notifyPanel"
                     class="hidden absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg">
@@ -46,71 +43,131 @@
                 </div>
             </div>
 
-            <div class="relative inline-block text-left">
-                <!-- User Icon Button -->
-                <button id="user-menu-btn"
-                    class="flex items-center gap-2 p-2 rounded-full text-purple-500 hover:bg-purple-100 focus:outline-none focus:ring-2 focus:ring-purple-400">
-                    <!-- Icon -->
-                    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                        stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9
-                0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12
-                21a8.966 8.966 0 0 1-5.982-2.275M15
-                9.75a3 3 0 1 1-6 0 3 3 0 0 1 6
-                0Z" />
+            <!-- User Icon -->
+            <button id="user-menu-btn"
+                class="flex items-center gap-2 p-2 rounded-full text-purple-500 hover:bg-purple-100 focus:outline-none focus:ring-2 focus:ring-purple-400">
+                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Header -->
+    <div class="flex sm:hidden items-center justify-between mx-auto w-full h-20 px-4">
+        <!-- Logo -->
+        <img src="{{ asset('image/Maskgroup.png') }}" alt="Logo" class="w-14 h-14 rounded-full">
+
+        <!-- Notification + Menu -->
+        <div class="flex items-center space-x-2">
+            <!-- Notification -->
+            <div class="relative">
+                <button id="notifyBtnMobile"
+                    class="relative p-2 rounded-full text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M15 17h5l-1.405-1.405C18.79 15.21 18 14.11 18 13V9c0-3.314-2.686-6-6-6S6 5.686 6 9v4c0 1.11-.79 2.21-1.595 2.595L3 17h5m7 0a3 3 0 11-6 0h6z">
+                        </path>
                     </svg>
+                    <span
+                        class="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center text-xs font-bold text-white bg-red-500 rounded-full">3</span>
                 </button>
 
-                <!-- Dropdown Menu -->
-                <div id="user-menu"
-                    class="hidden absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-100 py-2 z-20">
-
-                    <!-- Login Menu -->
-                    <a href="#login" class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-600">
-                        Login
-                    </a>
-
-                    <!-- Logout Menu -->
-                    <a href="#logout" class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-600">
-                        Logout
-                    </a>
+                <!-- Dropdown Panel -->
+                <div id="notifyPanelMobile"
+                    class="hidden absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-md z-50">
+                    <div class="p-4 border-b font-semibold text-gray-700">Notifications</div>
+                    <ul class="max-h-60 overflow-y-auto">
+                        <li class="p-3 hover:bg-gray-100 cursor-pointer">🔔 New user registered</li>
+                        <li class="p-3 hover:bg-gray-100 cursor-pointer">📦 Order #1234 shipped</li>
+                        <li class="p-3 hover:bg-gray-100 cursor-pointer">💬 New message received</li>
+                    </ul>
+                    <div class="p-2 text-center text-sm text-blue-600 hover:underline cursor-pointer">View All</div>
                 </div>
             </div>
 
+            <!-- User Icon -->
+            <button id="user-menu-btnMobile"
+                class="flex items-center gap-2 p-2 rounded-full text-purple-500 hover:bg-purple-100 focus:outline-none focus:ring-2 focus:ring-purple-400">
+                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                </svg>
+            </button>
+
+            <!-- Mobile menu button -->
+            <button id="mobile-menu-btn"
+                class="p-2 rounded-md text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400">
+                <svg id="hamburgerMobile" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+                <svg id="closeMobile" class="h-6 w-6 hidden" fill="none" stroke="currentColor" stroke-width="2"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile nav links -->
+    <div id="mobile-nav-links" class="hidden sm:hidden px-4 pb-4">
+        <div class="flex flex-col bg-[#E7E7E7] rounded-md overflow-hidden shadow-sm p-1 space-y-1">
+            <a href="{{ route('admin.users') }}"
+                class="py-2 text-center font-semibold rounded-sm {{ request()->routeIs('admin.users') ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-700 hover:bg-gray-200' }}">Users</a>
+            <a href="{{ route('admin.bookings') }}"
+                class="py-2 text-center font-semibold rounded-sm {{ request()->routeIs('admin.bookings') ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-700 hover:bg-gray-200' }}">Bookings</a>
+            <a href="{{ route('admin.listing-list') }}"
+                class="py-2 text-center font-semibold rounded-sm {{ request()->routeIs('admin.listing-list') ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-700 hover:bg-gray-200' }}">Listings</a>
+            <a href="{{ route('admin.event-list') }}"
+                class="py-2 text-center font-semibold rounded-sm {{ request()->routeIs('admin.event-list') ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-700 hover:bg-gray-200' }}">Event</a>
+            <a href="{{ route('admin.attendance') }}"
+                class="py-2 text-center font-semibold rounded-sm {{ request()->routeIs('admin.attendance') ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-700 hover:bg-gray-200' }}">Attendance</a>
         </div>
     </div>
 </header>
 
-
 <script>
-    const btn = document.getElementById("notifyBtn");
-    const panel = document.getElementById("notifyPanel");
+    // Desktop notification toggle
+    const notifyBtn = document.getElementById("notifyBtn");
+    const notifyPanel = document.getElementById("notifyPanel");
 
-    btn.addEventListener("click", () => {
-        panel.classList.toggle("hidden");
+    notifyBtn.addEventListener("click", (e) => {
+        e.stopPropagation(); // prevent closing immediately
+        notifyPanel.classList.toggle("hidden");
     });
 
-    // Optional: Close if clicking outside
-    document.addEventListener("click", (e) => {
-        if (!btn.contains(e.target) && !panel.contains(e.target)) {
-            panel.classList.add("hidden");
-        }
-    });
-</script>
+    // Mobile notification toggle
+    const notifyBtnMobile = document.getElementById("notifyBtnMobile");
+    const notifyPanelMobile = document.getElementById("notifyPanelMobile");
 
-
-<script>
-    // Toggle dropdown
-    document.getElementById("user-menu-btn").addEventListener("click", function() {
-        document.getElementById("user-menu").classList.toggle("hidden");
+    notifyBtnMobile.addEventListener("click", (e) => {
+        e.stopPropagation();
+        notifyPanelMobile.classList.toggle("hidden");
     });
 
-    // Close dropdown when clicking outside
-    window.addEventListener("click", function(e) {
-        const menu = document.getElementById("user-menu");
-        const button = document.getElementById("user-menu-btn");
-        if (!button.contains(e.target) && !menu.contains(e.target)) {
-            menu.classList.add("hidden");
-        }
+    // Click outside to close dropdowns
+    document.addEventListener("click", () => {
+        notifyPanel.classList.add("hidden");
+        notifyPanelMobile.classList.add("hidden");
     });
+
+    // Mobile menu toggle
+    const mobileBtn = document.getElementById("mobile-menu-btn");
+    const mobileNav = document.getElementById("mobile-nav-links");
+    const hamburgerMobile = document.getElementById("hamburgerMobile");
+    const closeMobile = document.getElementById("closeMobile");
+
+    mobileBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        mobileNav.classList.toggle('hidden');
+        hamburgerMobile.classList.toggle('hidden');
+        closeMobile.classList.toggle('hidden');
+    });
+
+    // Prevent mobile menu from closing when clicking inside
+    mobileNav.addEventListener('click', (e) => e.stopPropagation());
 </script>
