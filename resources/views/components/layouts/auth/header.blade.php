@@ -24,17 +24,8 @@
                 </button>
 
                 <!-- Notification Dropdown -->
-                {{-- <div id="notifyPanel" class="hidden absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-md z-50">
-                    <div class="p-4 text-gray-700 font-semibold border-b">Notifications</div>
-                    <ul>
-                        <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">New booking received</li>
-                        <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">User registered</li>
-                        <li class="px-4 py-2 hover:bg-gray-100 cursor-pointer">Event updated</li>
-                    </ul>
-                </div> --}}
-                <!-- Dropdown Panel -->
                 <div id="notifyPanel"
-                    class="hidden absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg">
+                    class="hidden absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                     <div class="p-4 border-b font-semibold text-gray-700">Notifications</div>
                     <ul class="max-h-60 overflow-y-auto">
                         <li class="p-3 hover:bg-gray-100 cursor-pointer">🔔 New user registered</li>
@@ -46,14 +37,25 @@
             </div>
 
             <!-- User Icon -->
-            <button id="user-menu-btn"
-                class="flex items-center gap-2 p-2 rounded-full text-purple-500 hover:bg-purple-100 focus:outline-none focus:ring-2 focus:ring-purple-400">
-                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                    stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                </svg>
-            </button>
+            <div class="relative">
+                <button id="userMenuBtn"
+                    class="flex items-center gap-2 p-2 rounded-full text-purple-500 hover:bg-purple-100 focus:outline-none focus:ring-2 focus:ring-purple-400">
+                    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    </svg>
+                </button>
+
+                <!-- User Dropdown -->
+                <div id="userPanel" class="hidden absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                    <a href="#" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
+                    <form action="#" method="POST" class="m-0">
+                        @csrf
+                        <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-100">Logout</button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -64,8 +66,9 @@
             <a href="{{ route('dashboard') }}">
                 <img src="{{ asset('image/Maskgroup.png') }}" alt="Logo" class="w-12 h-12 rounded-full">
             </a>
+        </div>
 
-        <!-- Notification + Menu -->
+        <!-- Notification + User + Mobile Menu -->
         <div class="flex items-center space-x-2">
             <!-- Notification -->
             <div class="relative">
@@ -80,7 +83,7 @@
                         class="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center text-xs font-bold text-white bg-red-500 rounded-full">3</span>
                 </button>
 
-                <!-- Dropdown Panel -->
+                <!-- Notification Dropdown -->
                 <div id="notifyPanelMobile"
                     class="hidden absolute right-0 mt-2 w-64 bg-white shadow-lg rounded-md z-50">
                     <div class="p-4 border-b font-semibold text-gray-700">Notifications</div>
@@ -94,14 +97,25 @@
             </div>
 
             <!-- User Icon -->
-            <button id="user-menu-btnMobile"
-                class="flex items-center gap-2 p-2 rounded-full text-purple-500 hover:bg-purple-100 focus:outline-none focus:ring-2 focus:ring-purple-400">
-                <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                    stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round"
-                        d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                </svg>
-            </button>
+            <div class="relative">
+                <button id="userMenuBtnMobile"
+                    class="flex items-center gap-2 p-2 rounded-full text-purple-500 hover:bg-purple-100 focus:outline-none focus:ring-2 focus:ring-purple-400">
+                    <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    </svg>
+                </button>
+
+                <!-- User Dropdown Mobile -->
+                <div id="userPanelMobile" class="hidden absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                    <a href="#" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
+                    <form action="#" method="POST" class="m-0">
+                        @csrf
+                        <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-100">Logout</button>
+                    </form>
+                </div>
+            </div>
 
             <!-- Mobile menu button -->
             <button id="mobile-menu-btn"
@@ -139,33 +153,28 @@
     // Desktop notification toggle
     const notifyBtn = document.getElementById("notifyBtn");
     const notifyPanel = document.getElementById("notifyPanel");
+    notifyBtn.addEventListener("click", (e) => { e.stopPropagation(); notifyPanel.classList.toggle("hidden"); });
 
-    notifyBtn.addEventListener("click", (e) => {
-        e.stopPropagation(); // prevent closing immediately
-        notifyPanel.classList.toggle("hidden");
-    });
+    // Desktop user toggle
+    const userMenuBtn = document.getElementById('userMenuBtn');
+    const userPanel = document.getElementById('userPanel');
+    userMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); userPanel.classList.toggle('hidden'); });
 
     // Mobile notification toggle
     const notifyBtnMobile = document.getElementById("notifyBtnMobile");
     const notifyPanelMobile = document.getElementById("notifyPanelMobile");
+    notifyBtnMobile.addEventListener("click", (e) => { e.stopPropagation(); notifyPanelMobile.classList.toggle("hidden"); });
 
-    notifyBtnMobile.addEventListener("click", (e) => {
-        e.stopPropagation();
-        notifyPanelMobile.classList.toggle("hidden");
-    });
-
-    // Click outside to close dropdowns
-    document.addEventListener("click", () => {
-        notifyPanel.classList.add("hidden");
-        notifyPanelMobile.classList.add("hidden");
-    });
+    // Mobile user toggle
+    const userMenuBtnMobile = document.getElementById('userMenuBtnMobile');
+    const userPanelMobile = document.getElementById('userPanelMobile');
+    userMenuBtnMobile.addEventListener('click', (e) => { e.stopPropagation(); userPanelMobile.classList.toggle('hidden'); });
 
     // Mobile menu toggle
     const mobileBtn = document.getElementById("mobile-menu-btn");
     const mobileNav = document.getElementById("mobile-nav-links");
     const hamburgerMobile = document.getElementById("hamburgerMobile");
     const closeMobile = document.getElementById("closeMobile");
-
     mobileBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         mobileNav.classList.toggle('hidden');
@@ -173,6 +182,18 @@
         closeMobile.classList.toggle('hidden');
     });
 
-    // Prevent mobile menu from closing when clicking inside
-    mobileNav.addEventListener('click', (e) => e.stopPropagation());
+    // Close dropdowns when clicking outside
+    document.addEventListener("click", () => {
+        notifyPanel.classList.add("hidden");
+        notifyPanelMobile.classList.add("hidden");
+        userPanel.classList.add("hidden");
+        userPanelMobile.classList.add("hidden");
+    });
+
+    // Prevent dropdowns from closing when clicking inside
+    notifyPanel.addEventListener('click', e => e.stopPropagation());
+    notifyPanelMobile.addEventListener('click', e => e.stopPropagation());
+    userPanel.addEventListener('click', e => e.stopPropagation());
+    userPanelMobile.addEventListener('click', e => e.stopPropagation());
+    mobileNav.addEventListener('click', e => e.stopPropagation());
 </script>
