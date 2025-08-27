@@ -40,11 +40,31 @@
                     <button id="closeSidebar"
                         class="text-gray-900 w-8 h-8 rounded-full hover:bg-gray-600 hover:text-red-500">&times;</button>
                 </div>
-                <ul class="max-h-[80vh] overflow-y-auto">
-                    <li class="p-3 hover:bg-gray-100 cursor-pointer">🔔 New user registered</li>
-                    <li class="p-3 hover:bg-gray-100 cursor-pointer">📦 Order #1234 shipped</li>
-                    <li class="p-3 hover:bg-gray-100 cursor-pointer">💬 New message received</li>
-                </ul>
+                <div class="p-12 card bg-white/90 dark:bg-gray-800/90 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer opacity-75"
+                    wire:click="openDetail">
+                    <div class="card-body p-4">
+                        <div class="flex items-start gap-3">
+                            <div class="flex-shrink-0 pt-1">
+                                <div class="w-2 h-2 rounded-full bg-gray-400">
+                                </div>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h3 class="font-semibold text-sm truncate text-gray-800 dark:text-gray-200">
+                                    Email Verification Required</h3>
+                                <p class="text-xs mt-1 line-clamp-2 text-gray-600 dark:text-gray-400">
+                                    Please verify your email address to verify your account.</p>
+                                <div class="flex items-center justify-between mt-2">
+                                    <span class="text-xs text-gray-500">5 hours ago</span>
+                                    <span
+                                        class="badge badge-outline badge-xs text-orange-600 border-orange-300">Private</span>
+                                </div>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <i data-lucide="mail-warning" class="w-8 h-8 text-orange-400"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="p-3 text-center text-sm text-blue-600 hover:underline cursor-pointer">View All</div>
             </div>
 
