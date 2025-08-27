@@ -4,7 +4,7 @@
     <!-- Dropdown -->
     <div class="relative w-full md:w-1/4 mb-4 md:mb-0">
         <select
-            class="block w-full font-semibold font-playfair text-sm md:text-base px-4 py-3 text-gray-700 bg-[#F4F4F4] border border-gray-50 rounded-sm appearance-none focus:outline-none focus:ring-2 focus:ring-gray-300 custom-shadow">
+            class="block w-full font-semibold font-playfair text-sm md:text-base px-4 py-3 text-gray-700 bg-[#F4F4F4] border border-gray-50 rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-gray-300 custom-shadow">
             <option value="Services" disabled selected>Services</option>
             <option value="Service 1">Service 1</option>
             <option value="Service 2">Service 2</option>
@@ -25,7 +25,7 @@
             </svg>
         </div>
         <input type="text" placeholder="Search by services"
-            class="block font-semibold  font-playfair text-sm w-full lg:max-w-[600px] md:text-base px-4 py-3 pl-14 text-gray-700 bg-[#F4F4F4] border border-gray-50 rounded-sm focus:outline-none focus:ring-2 focus:ring-gray-300 custom-shadow" />
+            class="block font-semibold  font-playfair text-sm w-full lg:max-w-[600px] md:text-base px-4 py-3 pl-14 text-gray-700 bg-[#F4F4F4] border border-gray-50 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-300 custom-shadow" />
     </div>
 
 
