@@ -1,12 +1,13 @@
-<section class="mx-auto max-w-[1200px] p-4">
+<section class="mx-auto max-w-[1200px] p-4 font-playfair">
     <x-admin.searchbar page="Add Listing" />
 
     <div class="bg-white rounded-lg overflow-hidden mt-14 mb-5">
         <!-- Table Header (Hidden on mobile) -->
         <div class="hidden md:grid grid-cols-6 py-3 px-2">
-            <div class="col-span-3 text-lg md:text-xl font-semibold  text-black">Service Name</div>
-            <div class="col-span-1 text-lg md:text-xl font-semibold text-black pl-1">Status</div>
-            <div class="col-span-2 text-right pr-4 md:pr-16 text-lg md:text-xl font-semibold text-black">Action</div>
+            <div class="col-span-3 text-lg md:text-xl font-semibold  text-black font-playfair">Service Name</div>
+            <div class="col-span-1 text-lg md:text-xl font-semibold text-black font-playfair pl-1">Status</div>
+            <div class="col-span-2 text-right pr-4 md:pr-16 text-lg md:text-xl font-semibold text-black font-playfair">
+                Action</div>
         </div>
 
         <!-- Services Loop -->
@@ -86,9 +87,9 @@
 
                     <!-- Status Dropdown -->
                     <div class="col-span-1 relative w-full md:w-32 text-center mt-3 md:mt-0">
-                        <div class="w-full md:w-20 h-[40px] bg-[#F4F4F4] rounded-sm items-center pt-1 relative">
+                        <div class="w-full md:w-24 h-[40px] bg-[#F4F4F4] rounded-sm items-center pt-1 relative">
                             <select
-                                class="block w-full text-center px-2 py-2 text-xs md:text-[10px] text-black font-medium rounded-sm appearance-none focus:outline-none focus:ring-2 focus:ring-amber-500">
+                                class="block w-full text-center px-2 py-2 text-xs font-playfair md:text-[10px] text-black font-medium rounded-sm appearance-none focus:outline-none focus:ring-2 focus:ring-amber-500">
                                 <option value="active" {{ $service['status'] === 'active' ? 'selected' : '' }}>
                                     Active
                                 </option>
@@ -103,7 +104,7 @@
                             </span>
 
                             <!-- Dropdown arrow -->
-                            <div class="absolute right-3 top-3 text-black pointer-events-none">
+                            <div class="absolute right-3 top-4 text-black pointer-events-none">
                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M19 9l-7 7-7-7"></path>
@@ -111,7 +112,6 @@
                             </div>
                         </div>
                     </div>
-
                     <!-- Actions -->
                     <div class="flex items-center justify-start md:justify-end col-span-2 space-x-2 mt-3 md:mt-0">
                         <button
@@ -149,7 +149,8 @@
             </svg>
         </button>
 
-         <button class="flex items-center justify-center w-8 h-8 rounded border-2 border-[#AD8945]  text-[#AD8945] font-medium text-sm">1</button>
+        <button
+            class="flex items-center justify-center w-8 h-8 rounded border-2 border-[#AD8945]  text-[#AD8945] font-medium text-sm">1</button>
         <button
             class="flex items-center justify-center w-8 h-8 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 font-medium text-sm">2</button>
         <span class="flex items-center justify-center w-8 h-8 text-gray-500 text-sm">...</span>
