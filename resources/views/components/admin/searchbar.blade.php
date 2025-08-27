@@ -30,7 +30,6 @@
             class="block font-semibold  font-playfair text-sm w-full lg:max-w-[600px] md:text-base px-4 py-3 pl-14 text-gray-700 bg-[#F4F4F4]  rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] custom-shadow" />
     </div>
 
-
     <!-- Button -->
     <a href="{{ $route !== null ? route($route) : '#' }}"
         class="flex items-center justify-center text-sm lg:text-base font-playfair font-medium text-black px-4 py-2.5 rounded-sm hover:bg-[#b99b52] bg-[#C7AE6A] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] custom-shadow w-full sm:w-[120px] md:w-[132px] xl:w-[150px]">

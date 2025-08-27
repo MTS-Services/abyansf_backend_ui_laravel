@@ -48,8 +48,6 @@
                         <label class="block text-sm lg:text-base font-semibold text-gray-700 mb-2">User</label>
                         <select class="w-full border-b border-gray-400 text-base font-poppins bg-transparent focus:outline-none focus:border-blue-500">
                             <option>All Users</option>
-                            <option>Khalid Omar Al-Mansouri</option>
-                            <option>Other User</option>
                         </select>
                     </div>
 
@@ -57,9 +55,6 @@
                         <label class="block text-sm lg:text-base font-medium text-gray-700 mb-2">Services</label>
                         <select class="w-full border-b border-gray-400 text-base font-poppins bg-transparent focus:outline-none focus:border-blue-500">
                             <option>All Services</option>
-                            <option>Breakfast</option>
-                            <option>Lunch</option>
-                            <option>Dinner</option>
                         </select>
                     </div>
 
