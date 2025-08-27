@@ -9,11 +9,11 @@
     @include('partials.head')
 </head>
 
-<body>
+<body class="overflow-x-hidden relative">
 
     <x-layouts.auth.header :title="$title ?? null" />
 
-    <x-layouts.auth.navbar />
+    {{-- <x-layouts.auth.navbar /> --}}
 
 
     {{ $slot }}
