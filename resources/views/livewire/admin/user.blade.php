@@ -1,7 +1,7 @@
 <main>
 
-    <div class="p-4 md:p-8">
-        <div class="sm:max-w-7xl lg:w-[1200px] mx-auto  lg:pr-8">
+    <div class="p-4 lg:p-0">
+        <div class="lg:w-[1200px] mx-auto">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">User Management</h2>
             <div class="  overflow-hidden">
                 <!-- Table Container: Adds horizontal scroll for small devices if needed -->
@@ -100,8 +100,11 @@
                                         </button>
                                         <button class="text-[#AD8945] hover:text-red-700" title="Delete">
 
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"></path>
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                                viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z">
+                                                </path>
                                             </svg>
 
                                         </button>
