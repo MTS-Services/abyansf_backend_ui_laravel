@@ -38,9 +38,9 @@
 
     <section class="sm:max-w-7xl lg:w-[1200px] mx-auto p-4 font-poppins">
         <div class="booking_h2">
-            <h2 class="font-semibold mb-6 text-balck text-2xl sm:text-3xl">Booking Management</h2>
+            <h2 class="font-semibold mb-6 mt-15 text-black text-2xl sm:text-3xl">Booking Management</h2>
 
-            <div class="bg-white rounded-lg p-4  max-w-[1200px] min-h-[60px] relative z-10">
+            <div class="bg-white rounded-lg  max-w-[1200px] min-h-[60px] relative z-10">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
                     <div>
                         <label class="block text-sm lg:text-base font-semibold text-gray-700 mb-2">User</label>
