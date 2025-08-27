@@ -6,7 +6,8 @@
         <div class="hidden md:grid grid-cols-6 py-3 px-2">
             <div class="col-span-3 text-lg md:text-xl font-semibold text-black font-playfair">Event Name</div>
             <div class="col-span-1 text-lg md:text-xl font-semibold text-black font-playfair pl-1">Status</div>
-            <div class="col-span-2 text-right pr-4 md:pr-16 text-lg md:text-xl font-semibold text-black font-playfair">Action</div>
+            <div class="col-span-2 text-right pr-4 md:pr-16 text-lg md:text-xl font-semibold text-black font-playfair">
+                Action</div>
         </div>
 
         <!-- Services Loop -->
@@ -64,14 +65,15 @@
                     <div class="flex items-start md:items-center col-span-3 space-x-3 md:space-x-4">
                         <input type="checkbox"
                             class="w-4 h-4 text-[#C7AE6A] border-gray-300 rounded focus:ring-[#C7AE6A] mt-1 md:mt-0">
-                        
+
                         <div class="w-20 h-20 md:w-26 md:h-26 overflow-hidden rounded shadow-sm flex-shrink-0 ">
                             <img src="{{ $service['image'] }}" alt="{{ $service['name'] }}"
                                 class="object-cover w-full h-full">
                         </div>
-                        
+
                         <div>
-                            <div class="font-semibold text-gray-800 text-base md:text-xl font-playfair">{{ $service['name'] }}</div>
+                            <div class="font-semibold text-gray-800 text-base md:text-xl font-playfair">
+                                {{ $service['name'] }}</div>
                             <div class="my-2 md:my-5"></div>
                             <div class="flex items-center text-xs md:text-sm text-black font-playfair">
                                 <svg class="w-4 h-4 mr-1 text-black" fill="currentColor" viewBox="0 0 20 20">
@@ -88,7 +90,7 @@
                     <div class="col-span-1 relative w-full md:w-32 text-center mt-3 md:mt-0">
                         <div class="w-full md:w-24 h-[40px] bg-[#F4F4F4] rounded-sm items-center pt-1 relative">
                             <select
-                                class="block w-full text-center px-2 py-2 text-xs font-playfair md:text-[10px] text-black font-medium rounded-sm appearance-none focus:outline-none focus:ring-2 focus:ring-amber-500">
+                                class="block w-full text-center px-2 py-2 text-xs font-playfair md:text-[10px] text-black font-medium rounded-sm appearance-none focus:outline-none focus:ring-2 focus:ring-[#b99b52]">
                                 <option value="active" {{ $service['status'] === 'active' ? 'selected' : '' }}>
                                     Active
                                 </option>
@@ -120,8 +122,8 @@
                                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
                                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round" />
-                                <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor"
-                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round" />
                             </svg>Edit
                         </button>
                         <button class="text-[#C7AE6A] p-1 hover:text-[#b99b52]">
@@ -132,10 +134,11 @@
                             </svg>
                         </button>
                         <button class="text-[#C7AE6A] p-1 hover:text-[#b99b52]">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                </path>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm6 0a1 1 0 112 0v6a1 1 0 11-2 0V8z"
+                                    clip-rule="evenodd" />
                             </svg>
                         </button>
                     </div>
@@ -148,20 +151,27 @@
     <div class="border-t border-gray-200"></div>
     <div class="flex items-center justify-center space-x-2 my-6 flex-wrap">
         <!-- Previous Button (disabled) -->
-        <button class="flex items-center justify-center w-8 h-8 rounded border border-gray-300 bg-gray-100 text-gray-400 cursor-not-allowed" disabled>
+        <button
+            class="flex items-center justify-center w-8 h-8 rounded border border-gray-300 bg-gray-100 text-gray-400 cursor-not-allowed"
+            disabled>
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
             </svg>
         </button>
 
-        <button class="flex items-center justify-center w-8 h-8 rounded border-2 border-[#AD8945]  text-[#AD8945] font-medium text-sm">1</button>
-        <button class="flex items-center justify-center w-8 h-8 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 font-medium text-sm">2</button>
+        <button
+            class="flex items-center justify-center w-8 h-8 rounded border-2 border-[#AD8945]  text-[#AD8945] font-medium text-sm">1</button>
+        <button
+            class="flex items-center justify-center w-8 h-8 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 font-medium text-sm">2</button>
         <span class="flex items-center justify-center w-8 h-8 text-gray-500 text-sm">...</span>
-        <button class="flex items-center justify-center w-8 h-8 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 font-medium text-sm">9</button>
-        <button class="flex items-center justify-center w-8 h-8 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 font-medium text-sm">10</button>
+        <button
+            class="flex items-center justify-center w-8 h-8 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 font-medium text-sm">9</button>
+        <button
+            class="flex items-center justify-center w-8 h-8 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 font-medium text-sm">10</button>
 
         <!-- Next Button -->
-        <button class="flex items-center justify-center w-8 h-8 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
+        <button
+            class="flex items-center justify-center w-8 h-8 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
             </svg>
