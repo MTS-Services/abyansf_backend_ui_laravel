@@ -132,6 +132,21 @@
 
             <!-- Navigation links -->
             <!-- Use a flex container that wraps and centers items on smaller screens -->
+            <div
+                class="w-full flex justify-between flex-col sm:flex-row border rounded-sm items-center pl-14 pr-14 p-1 text-1xl font-bold text-gray-900  tracking-wider bg-[#e7e7e7]">
+                <a href="{{ route('admin.users') }}"
+                    class="text-gray-900 font-medium text-lg hover:text-blue-600 transition-colors duration-200 text-center navbar_a">Users</a>
+                <a href="{{ route('admin.bookings') }}"
+                    class="text-gray-900 font-medium text-lg hover:text-blue-600 transition-colors duration-200 text-center">Bookings</a>
+                <a href="{{ route('admin.listing-list') }}"
+                    class="text-gray-900 font-medium text-lg hover:text-blue-600 transition-colors duration-200 text-center">Listings</a>
+                <a href="{{ route('admin.event-list') }}"
+                    class="text-gray-900 font-medium text-lg hover:text-blue-600 transition-colors duration-200 text-center">Event</a>
+                <a href="{{ route('admin.attendance') }}"
+                    class="text-gray-900 font-medium text-lg hover:text-blue-600 transition-colors duration-200 text-center">Attendance</a>
+            </div>
+        </div>
+    </nav>
 
         </nav>
     </main>
