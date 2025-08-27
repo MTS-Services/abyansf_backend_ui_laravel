@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     @include('partials.head')
-    
+
     @stack('css')
 </head>
 
