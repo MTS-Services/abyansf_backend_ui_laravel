@@ -1,7 +1,7 @@
 <main>
 
     <div class="p-4 md:p-8">
-        <div class="sm:max-w-7xl lg:w-[1200px] mx-auto lg:pl-8 lg:pr-8">
+        <div class="sm:max-w-7xl lg:w-[1200px] mx-auto  lg:pr-8">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">User Management</h2>
             <div class="  overflow-hidden">
                 <!-- Table Container: Adds horizontal scroll for small devices if needed -->
