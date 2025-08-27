@@ -1,10 +1,10 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <header class="w-full">
     <!-- Outer container using flexbox for centering -->
-    <div class="flex flex-col items-center justify-center relative mx-auto p-4 w-full md:w-[1200px] h-32">
+    <div class="flex flex-col items-center justify-center relative mx-auto w-full md:w-[1200px] h-32">
 
         <!-- Top Left Logo - Positioned absolutely -->
-        <div class="absolute top-8 left-4 md:left-0">
+        <div class="absolute top-6 left-4 md:left-0">
             <!-- Note: Using a placeholder image for demonstration -->
             <img src="{{ asset('image/Maskgroup.png') }}" alt="Logo" class="w-20 h-20 rounded-full">
         </div>

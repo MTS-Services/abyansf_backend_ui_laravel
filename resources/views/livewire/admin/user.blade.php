@@ -1,7 +1,7 @@
 <main>
 
-    <div class="p-4 md:p-8 ">
-        <div class="sm:max-w-7xl lg:w-[1200px] mx-auto lg:pl-4 lg:pr-4">
+    <div class="p-4 md:p-8">
+        <div class="sm:max-w-7xl lg:w-[1200px] mx-auto lg:pl-8 lg:pr-8">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">User Management</h2>
             <div class="  overflow-hidden">
                 <!-- Table Container: Adds horizontal scroll for small devices if needed -->
@@ -9,15 +9,15 @@
                     <table class="min-w-full leading-normal hidden sm:table">
                         <thead>
                             <tr class="bg-[#e7e7e7] text-gray-600 uppercase text-sm leading-normal font-bold">
-                                <th class="py-3 px-6 text-left">ID</th>
-                                <th class="py-3 px-6 text-left">Name</th>
-                                <th class="py-3 px-6 text-left">Email</th>
-                                <th class="py-3 px-6 text-left">Number</th>
-                                <th class="py-3 px-6 text-left">Join Date</th>
-                                <th class="py-3 px-6 text-left">Password</th>
-                                <th class="py-3 px-6 text-left">Status</th>
-                                <th class="py-3 px-6 text-left">Payment Link</th>
-                                <th class="py-3 px-6 text-center">Action</th>
+                                <th class="py-4 px-6 text-left">ID</th>
+                                <th class="py-4 px-6 text-left">Name</th>
+                                <th class="py-4 px-6 text-left">Email</th>
+                                <th class="py-4 px-6 text-left">Number</th>
+                                <th class="py-4 px-6 text-left">Join Date</th>
+                                <th class="py-4 px-6 text-left">Password</th>
+                                <th class="py-4 px-6 text-left">Status</th>
+                                <th class="py-4 px-6 text-left">Payment Link</th>
+                                <th class="py-4 px-6 text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody class="text-gray-600 text-sm font-bold">
@@ -31,7 +31,7 @@
                                 <td class="py-3 px-6 text-left">**********</td>
                                 <td class="py-3 px-6 text-left">Pending</td>
                                 <td class="py-3 px-6 text-left">
-                                    <a href="#" class="text-blue-500 hover:underline">Send</a>
+                                    <a href="#" class="text-[#AD8945] hover:underline">Send</a>
                                 </td>
                                 <td class="py-3 px-6 text-center">
                                     <div class="flex items-center justify-center space-x-2">
@@ -74,7 +74,7 @@
                                 <td class="py-3 px-6 text-left">***********</td>
                                 <td class="py-3 px-6 text-left">Confirmed</td>
                                 <td class="py-3 px-6 text-left">
-                                    <a href="#" class="text-blue-500 hover:underline">Send</a>
+                                    <a href="#" class="text-[#AD8945] hover:underline">Send</a>
                                 </td>
                                 <td class="py-3 px-6 text-center">
                                     <div class="flex items-center justify-center space-x-2">
