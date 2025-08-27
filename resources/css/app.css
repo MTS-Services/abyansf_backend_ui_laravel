@@ -10,20 +10,22 @@
 
 /* @custom-variant dark (&:where(.dark, .dark *)); */
 
-:root{
+:root {
     --font-family: poppins;
+    --font-playfair: 'Playfair Display', serif;
+    --font-poppins: 'Poppins', sans-serif;
 
 }
 
 @theme {
     --font-sans: 'Instrument Sans',
-    ui-sans-serif,
-    system-ui,
-    sans-serif,
-    'Apple Color Emoji',
-    'Segoe UI Emoji',
-    'Segoe UI Symbol',
-    'Noto Color Emoji';
+        ui-sans-serif,
+        system-ui,
+        sans-serif,
+        'Apple Color Emoji',
+        'Segoe UI Emoji',
+        'Segoe UI Symbol',
+        'Noto Color Emoji';
 
 
     --color-zinc-50: #fafafa;
@@ -46,6 +48,16 @@
     --font-playfair: 'Playfair Display', serif;
     --font-inter: 'Inter', sans-serif;
     --font-poppins: 'Poppins', sans-serif;
+}
+
+@layer base {
+    .font-playfair {
+        font-family: var(--font-playfair);
+    }
+
+    .font-poppins {
+        font-family: var(--font-poppins);
+    }
 }
 
 @layer theme {
@@ -86,6 +98,7 @@ select:focus[data-flux-control] {
 
 /* \[:where(&)\]:size-4 {
     @apply size-4;
+<<<<<<< HEAD
 } */
 
     body {
@@ -207,3 +220,6 @@ select:focus[data-flux-control] {
         }
     }
 
+=======
+} */
+>>>>>>> main
