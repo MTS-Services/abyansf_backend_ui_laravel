@@ -130,7 +130,7 @@
     @endphp
 
     <div class="bg-white rounded-lg w-full overflow-hidden mt-4 lg:mt-8 mb-4 lg:mb-10">
-        <div class="hidden lg:block overflow-x-auto">
+        <div class="hidden md:block overflow-x-auto">
             <table class="w-full">
                 <thead class="border-b-2 border-gray-300">
                     <tr>
@@ -184,7 +184,7 @@
             </table>
         </div>
 
-        <div class="lg:hidden divide-y divide-gray-200 mt-4">
+        <div class="md:hidden divide-y divide-gray-200 mt-4">
             @foreach ($attendances as $attendance)
                 <div x-data="{ open: false }" class="p-4">
                     <div class="flex justify-between items-center border-b pb-2">
