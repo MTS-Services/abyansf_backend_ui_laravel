@@ -1,4 +1,4 @@
-<section class="bg-white font-playfair">
+<section class="bg-white font-playfair mb-20">
     @php
         $bookings = [
             [
