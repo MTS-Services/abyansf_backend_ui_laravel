@@ -69,7 +69,7 @@
                     class="text-gray-900 font-medium text-lg hover:text-blue-600 transition-colors duration-200 text-center navbar_a">Users</a>
                 <a href="{{ route('admin.bookings') }}"
                     class="text-gray-900 font-medium text-lg hover:text-blue-600 transition-colors duration-200 text-center">Bookings</a>
-                <a href="#"
+                <a href="{{ route('admin.listing-list') }}"
                     class="text-gray-900 font-medium text-lg hover:text-blue-600 transition-colors duration-200 text-center">Listings</a>
                 <a href="{{ route('admin.event-list') }}"
                     class="text-gray-900 font-medium text-lg hover:text-blue-600 transition-colors duration-200 text-center">Event</a>

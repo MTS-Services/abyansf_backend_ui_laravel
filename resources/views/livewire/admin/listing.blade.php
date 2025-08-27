@@ -1,10 +1,10 @@
 <section class="mx-auto max-w-[1200px] p-4">
-    <x-admin.searchbar page="Add Event" />
+    <x-admin.searchbar page="Add Listing" />
 
     <div class="bg-white rounded-lg overflow-hidden mt-14 mb-5">
         <!-- Table Header -->
         <div class="grid grid-cols-6 py-3 ">
-            <div class="col-span-3 text-xl  text-black">Event Name</div>
+            <div class="col-span-3 text-xl  text-black">Service Name</div>
             <div class="col-span-1 text-xl  text-black">Status</div>
             <div class="col-span-2 text-right pr-12 text-xl  text-black">Action</div>
         </div>
@@ -13,55 +13,56 @@
         <div class="divide-y divide-gray-200">
             @php
                 $services = [
+                   
                     [
-                        'name' => 'Breakfast',
+                        'name' => 'Camel Camp',
                         'location' => 'Jumeirah Beach Residence',
                         'image' =>
-                            asset('image/event (1).jpg'),
+                            asset('image/listing (2).jpg'),
                         'status' => 'active',
                     ],
                     [
-                        'name' => 'Nightlife',
+                        'name' => 'Single Buggy Ride',
                         'location' => 'Jumeirah Beach Residence',
                         'image' =>
-                            asset('image/event (2).jpg'),
+                            asset('image/listing (3).jpg'),
+                        'status' => 'inactive',
+                    ],
+                    [
+                        'name' => 'Aura Sky Pool',
+                        'location' => 'Jumeirah Beach Residence',
+                        'image' =>
+                            asset('image/listing (4).jpg'),
+                        'status' => 'inactive',
+                    ],
+                    [
+                        'name' => 'Eva beach',
+                        'location' => 'Jumeirah Beach Residence',
+                        'image' =>
+                            asset('image/listing (5).jpg'),
+                        'status' => 'inactive',
+                    ],
+                    [
+                        'name' => 'Super car',
+                        'location' => 'Jumeirah Beach Residence',
+                        'image' =>
+                            asset('image/listing (6).jpg'),
+                        'status' => 'inactive',
+                    ],
+                    [
+                        'name' => 'Helicopter tour',
+                        'location' => 'Jumeirah Beach Residence',
+                        'image' =>
+                            asset('image/listing (7).jpg'),
+                        'status' => 'inactive',
+                    ],
+                     [
+                        'name' => 'Luxury Real Estate Consultant',
+                        'location' => 'Jumeirah Beach Residence',
+                        'image' =>
+                            asset('image/listing (1).jpg'),
                         'status' => 'active',
-                    ],
-                    [
-                        'name' => 'Breakfast',
-                        'location' => 'Jumeirah Beach Residence',
-                        'image' =>
-                            asset('image/event (3).jpg'),
-                        'status' => 'inactive',
-                    ],
-                    [
-                        'name' => 'Nightlife',
-                        'location' => 'Jumeirah Beach Residence',
-                        'image' =>
-                            asset('image/event (4).jpg'),
-                        'status' => 'inactive',
-                    ],
-                    [
-                        'name' => 'Breakfast',
-                        'location' => 'Jumeirah Beach Residence',
-                        'image' =>
-                            asset('image/event (5).jpg'),
-                        'status' => 'inactive',
-                    ],
-                    [
-                        'name' => 'Nightlife',
-                        'location' => 'Jumeirah Beach Residence',
-                        'image' =>
-                            asset('image/event (6).jpg'),
-                        'status' => 'inactive',
-                    ],
-                    [
-                        'name' => 'Breakfast',
-                        'location' => 'Jumeirah Beach Residence',
-                        'image' =>
-                            asset('image/event (7).jpg'),
-                        'status' => 'inactive',
-                    ],
+                    ]
                 ];
             @endphp
 
@@ -131,14 +132,14 @@
                                     stroke-linecap="round" stroke-linejoin="round" />
                             </svg>Edit
                         </button>
-                        <button class="text-[#C7AE6A] p-1 hover:text-[#b99b52]">
+                        {{-- <button class="text-[#C7AE6A] p-1 hover:text-[#b99b52]">
                             <svg class="w-5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z">
                                 </path>
                             </svg>
-                        </button>
+                        </button> --}}
                         <button class="text-[#C7AE6A] p-1 hover:text-[#b99b52]">
                             <svg class="w-5 h-4.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                                 xmlns="http://www.w3.org/2000/svg">
