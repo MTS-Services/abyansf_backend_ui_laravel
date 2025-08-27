@@ -99,34 +99,34 @@
                             - The active tab gets a different background and text color to stand out,
                               plus the custom `tab-active` class for the underline effect.
                         -->
-                        <button
+                        <a href="{{ route('admin.users') }}"
                             class="flex-1 py-3 text-center font-semibold text-gray-800 bg-white rounded-sm shadow-sm focus:outline-none transition-colors duration-200 ease-in-out tab-active">
                             Users
-                        </button>
+                        </a>
 
                         <!-- Tab Item for Bookings -->
-                        <button
+                        <a href="{{ route('admin.bookings') }}"
                             class="flex-1 py-3 text-center font-semibold text-gray-700 hover:bg-gray-200 rounded-lg focus:outline-none transition-colors duration-200 ease-in-out">
                             Bookings
-                        </button>
+                        </a>
 
                         <!-- Tab Item for Listings -->
-                        <button
+                        <a href="{{ route('admin.listing-list') }}"
                             class="flex-1 py-3 text-center font-semibold text-gray-700 hover:bg-gray-200 rounded-lg focus:outline-none transition-colors duration-200 ease-in-out">
                             Listings
-                        </button>
+                        </a>
 
                         <!-- Tab Item for Events -->
-                        <button
+                        <a href="{{ route('admin.event-list') }}"
                             class="flex-1 py-3 text-center font-semibold text-gray-700 hover:bg-gray-200 rounded-lg focus:outline-none transition-colors duration-200 ease-in-out">
                             Event
-                        </button>
+                        </a>
 
                         <!-- Tab Item for Attendance -->
-                        <button
+                        <a href="{{ route('admin.attendance') }}"
                             class="flex-1 py-3 text-center font-semibold text-gray-700 hover:bg-gray-200 rounded-lg focus:outline-none transition-colors duration-200 ease-in-out">
                             Attendance
-                        </button>
+                        </a>
                     </div>
                 </div>
 
