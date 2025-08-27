@@ -99,7 +99,7 @@
 
                             <!-- Status indicator -->
                             <span
-                                class="absolute left-3 bottom-2 transform -translate-y-1/2 w-2 h-2 rounded-full {{ $service['status'] === 'active' ? 'bg-lime-500' : 'bg-gray-400' }}">
+                                class="absolute left-3 bottom-2 transform -translate-y-1/2 w-2 h-2 rounded-full {{ $service['status'] === 'active' ? 'bg-[#22C55E]' : 'bg-[#9A9A9A]' }}">
                             </span>
 
                             <!-- Dropdown arrow -->
