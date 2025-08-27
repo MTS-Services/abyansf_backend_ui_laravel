@@ -114,7 +114,7 @@
                     </div>
                     <!-- Actions -->
                     <div class="flex items-center justify-start md:justify-end col-span-2 space-x-2 mt-3 md:mt-0">
-                        <button
+                        <button id="editBtn"
                             class="bg-[#C7AE6A] hover:bg-[#b99b52] text-black px-3 md:px-4 py-2 font-playfair rounded-sm flex items-center text-xs md:text-sm font-medium">
                             <svg class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none">
                                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
@@ -124,6 +124,109 @@
                                     stroke-linecap="round" stroke-linejoin="round" />
                             </svg>Edit
                         </button>
+                        <!-- Modal Background -->
+<div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+    <!-- Modal Content -->
+    <div class="bg-white w-full max-w-[1200px] mx-auto rounded-lg p-6 overflow-y-auto max-h-[90vh]">
+        <!-- Close Button -->
+        <div class="flex justify-end">
+            <button id="closeModal" class="text-gray-600 hover:text-gray-900 text-xl font-bold">&times;</button>
+        </div>
+
+        <!-- Edit Listing Form (same as your current design) -->
+        <h2 class="text-2xl font-semibold text-gray-800">Edit Listing</h2>
+
+        <!-- Add Photos Section -->
+        <div onclick="document.getElementById('photoUpload').click()"
+            class="w-full h-[457px] bg-gray-200 rounded-lg flex items-center justify-center text-gray-600 text-lg cursor-pointer hover:bg-gray-300 transition mt-4">
+            Change Images
+        </div>
+        <input type="file" id="photoUpload" class="hidden" accept="image/*" multiple>
+
+      
+
+        <!-- Category Selection -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div>
+                <label class="block text-sm font-medium mb-1">Title</label>
+                <input type="text"
+                    class="w-full border border-yellow-200 bg-[#F8F6EE] rounded p-2 h-[50px] focus:ring focus:ring-yellow-300"
+                    placeholder="Enter title">
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Sub Title</label>
+                <input type="text"
+                    class="w-full border border-yellow-200 bg-[#F8F6EE] rounded p-2 h-[50px] focus:ring focus:ring-yellow-300"
+                    placeholder="Enter sub title">
+            </div>
+        </div>
+
+        <!-- Description -->
+        <div class="mt-4">
+            <label class="block text-sm font-medium mb-1">Description</label>
+            <textarea class="w-full border border-yellow-200 rounded p-2 h-[264px] focus:ring focus:ring-yellow-300"
+                placeholder="Enter description"></textarea>
+        </div>
+
+        <!-- Location & Open Time -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div>
+                <label class="block text-sm font-medium mb-1">Location</label>
+                <input type="text" placeholder="Location"
+                    class="w-full border border-yellow-200 bg-[#F8F6EE] rounded p-2 h-[50px] focus:ring focus:ring-yellow-300" />
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1">Open time</label>
+                <input type="text" placeholder="Open time"
+                    class="w-full border border-yellow-200 bg-[#F8F6EE] rounded p-2 h-[50px] focus:ring focus:ring-yellow-300" />
+            </div>
+        </div>
+
+        <!-- Status -->
+        <div class="flex items-center space-x-6 mt-4">
+            <label class="flex items-center space-x-2">
+                <input type="checkbox" class="form-checkbox" />
+                <span>Active</span>
+            </label>
+            <label class="flex items-center space-x-2">
+                <input type="checkbox" class="form-checkbox" />
+                <span>Disable</span>
+            </label>
+        </div>
+
+        <!-- Save Button -->
+        <div class="flex justify-center md:justify-start mt-6">
+            <button class="px-8 py-2 bg-[#C7AE6A] text-black rounded-md hover:bg-opacity-90 transition-colors font-medium">
+                Save
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Script -->
+<script>
+    const editBtn = document.getElementById('editBtn');
+    const editModal = document.getElementById('editModal');
+    const closeModal = document.getElementById('closeModal');
+
+    editBtn.addEventListener('click', () => {
+        editModal.classList.remove('hidden');
+        editModal.classList.add('flex');
+    });
+
+    closeModal.addEventListener('click', () => {
+        editModal.classList.add('hidden');
+        editModal.classList.remove('flex');
+    });
+
+    // Close modal when clicking outside
+    editModal.addEventListener('click', e => {
+        if(e.target === editModal){
+            editModal.classList.add('hidden');
+            editModal.classList.remove('flex');
+        }
+    });
+</script>
                         <button class="text-[#C7AE6A] p-1 hover:text-[#b99b52]">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
                                 fill="currentColor">

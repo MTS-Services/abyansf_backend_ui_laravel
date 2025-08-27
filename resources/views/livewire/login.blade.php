@@ -2,11 +2,11 @@
 
 
         <!-- First Shape -->
-        <div class="absolute w-[635px] h-[635px] top-[-200px] right-[-100px] bg-[#F8F6EE] rounded-full opacity-40 rotate-0"
+        <div class="absolute w-[635px] h-[635px] top-[-200px] right-[-100px] bg-[#F8F6EE] rounded-full opacity-40 rotate-0 z-[-1]"
             aria-hidden="true"></div>
 
         <!-- Second Shape -->
-        <div class="absolute w-[718px] h-[718px] top-[-240px] right-[-150px] rounded-full opacity-100 border-[3px] border-[#F8F6EE] rotate-0"
+        <div class="absolute w-[718px] h-[718px] top-[-240px] right-[-150px] rounded-full opacity-100 border-[3px] border-[#F8F6EE] rotate-0 z-[-1]"
             aria-hidden="true"></div>
 
 
