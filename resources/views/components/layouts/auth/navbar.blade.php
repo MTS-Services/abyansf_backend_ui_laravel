@@ -63,7 +63,7 @@
         - `px-4` adds default horizontal padding on small screens.
         - `sm:px-6` and `lg:px-8` add more padding on larger screens for better spacing.
     -->
-    <main class=" w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
+    <main class=" w-[1200px] mx-auto px-4 ">
 
         <!-- Main navigation container -->
         <nav class="mt-8 sm:mt-12">

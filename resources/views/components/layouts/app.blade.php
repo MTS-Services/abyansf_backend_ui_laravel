@@ -7,6 +7,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     @include('partials.head')
+    
+    @stack('css')
 </head>
 
 <body class="overflow-x-hidden relative">
@@ -19,7 +21,7 @@
     {{ $slot }}
 
     @fluxScripts
-
+    @stack('js')
 </body>
 
 </html>
