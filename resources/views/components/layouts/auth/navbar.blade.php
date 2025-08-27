@@ -99,14 +99,10 @@
                             - The active tab gets a different background and text color to stand out,
                               plus the custom `tab-active` class for the underline effect.
                         -->
-
-
-
-
                         <a href="{{ route('admin.users') }}"
-                            class="flex-1 py-3 text-center font-semibold text-gray-800 bg-white rounded-sm shadow-sm focus:outline-none transition-colors duration-200 ease-in-out tab-active navbar_a">Users</a>
-                       
-
+                            class="flex-1 py-3 text-center font-semibold text-gray-800 bg-white rounded-sm shadow-sm focus:outline-none transition-colors duration-200 ease-in-out tab-active">
+                            Users
+                        </a>
 
                         <!-- Tab Item for Bookings -->
                         <a href="{{ route('admin.bookings') }}"
@@ -115,27 +111,44 @@
                         </a>
 
                         <!-- Tab Item for Listings -->
-                        <button
+                        <a href="{{ route('admin.listing-list') }}"
                             class="flex-1 py-3 text-center font-semibold text-gray-700 hover:bg-gray-200 rounded-lg focus:outline-none transition-colors duration-200 ease-in-out">
                             Listings
-                        </button>
+                        </a>
 
                         <!-- Tab Item for Events -->
-                        <button
+                        <a href="{{ route('admin.event-list') }}"
                             class="flex-1 py-3 text-center font-semibold text-gray-700 hover:bg-gray-200 rounded-lg focus:outline-none transition-colors duration-200 ease-in-out">
                             Event
-                        </button>
+                        </a>
 
                         <!-- Tab Item for Attendance -->
-                        <button
+                        <a href="{{ route('admin.attendance') }}"
                             class="flex-1 py-3 text-center font-semibold text-gray-700 hover:bg-gray-200 rounded-lg focus:outline-none transition-colors duration-200 ease-in-out">
                             Attendance
-                        </button>
+                        </a>
                     </div>
                 </div>
 
                 <!-- Navigation links -->
                 <!-- Use a flex container that wraps and centers items on smaller screens -->
+            <!-- Navigation links -->
+            <!-- Use a flex container that wraps and centers items on smaller screens -->
+            {{-- <div
+                class="w-full flex justify-between flex-col sm:flex-row border rounded-sm items-center pl-14 pr-14 p-1 text-1xl font-bold text-gray-900  tracking-wider bg-[#e7e7e7]">
+                <a href="{{ route('admin.users') }}"
+                    class="text-gray-900 font-medium text-lg hover:text-blue-600 transition-colors duration-200 text-center navbar_a">Users</a>
+                <a href="{{ route('admin.bookings') }}"
+                    class="text-gray-900 font-medium text-lg hover:text-blue-600 transition-colors duration-200 text-center">Bookings</a>
+                <a href="{{ route('admin.listing-list') }}"
+                    class="text-gray-900 font-medium text-lg hover:text-blue-600 transition-colors duration-200 text-center">Listings</a>
+                <a href="{{ route('admin.event-list') }}"
+                    class="text-gray-900 font-medium text-lg hover:text-blue-600 transition-colors duration-200 text-center">Event</a>
+                <a href="{{ route('admin.attendance') }}"
+                    class="text-gray-900 font-medium text-lg hover:text-blue-600 transition-colors duration-200 text-center">Attendance</a>
+            </div> --}}
+        </div>
+    </nav>
 
         </nav>
     </main>
