@@ -1,12 +1,12 @@
-<section class="mx-auto max-w-[1200px] p-4">
+<section class="mx-auto max-w-[1200px] p-4 font-playfair">
     <x-admin.searchbar page="Add Event" />
 
     <div class="bg-white rounded-lg overflow-hidden mt-14 mb-5">
         <!-- Table Header (Hidden on mobile) -->
         <div class="hidden md:grid grid-cols-6 py-3 px-2">
-            <div class="col-span-3 text-lg md:text-xl font-semibold text-black">Event Name</div>
-            <div class="col-span-1 text-lg md:text-xl font-semibold text-black">Status</div>
-            <div class="col-span-2 text-right pr-4 md:pr-12 text-lg md:text-xl font-semibold text-black">Action</div>
+            <div class="col-span-3 text-lg md:text-xl font-semibold text-black font-playfair">Event Name</div>
+            <div class="col-span-1 text-lg md:text-xl font-semibold text-black font-playfair pl-1">Status</div>
+            <div class="col-span-2 text-right pr-4 md:pr-16 text-lg md:text-xl font-semibold text-black font-playfair">Action</div>
         </div>
 
         <!-- Services Loop -->
@@ -65,15 +65,15 @@
                         <input type="checkbox"
                             class="w-4 h-4 text-[#C7AE6A] border-gray-300 rounded focus:ring-[#C7AE6A] mt-1 md:mt-0">
                         
-                        <div class="w-20 h-20 md:w-26 md:h-26 overflow-hidden rounded shadow-sm flex-shrink-0">
+                        <div class="w-20 h-20 md:w-26 md:h-26 overflow-hidden rounded shadow-sm flex-shrink-0 ">
                             <img src="{{ $service['image'] }}" alt="{{ $service['name'] }}"
                                 class="object-cover w-full h-full">
                         </div>
                         
                         <div>
-                            <div class="font-semibold text-gray-800 text-base md:text-xl">{{ $service['name'] }}</div>
+                            <div class="font-semibold text-gray-800 text-base md:text-xl font-playfair">{{ $service['name'] }}</div>
                             <div class="my-2 md:my-5"></div>
-                            <div class="flex items-center text-xs md:text-sm text-black">
+                            <div class="flex items-center text-xs md:text-sm text-black font-playfair">
                                 <svg class="w-4 h-4 mr-1 text-black" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd"
                                         d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
@@ -99,7 +99,7 @@
 
                             <!-- Status indicator -->
                             <span
-                                class="absolute left-3 bottom-2 transform -translate-y-1/2 w-2 h-2 rounded-full {{ $service['status'] === 'active' ? 'bg-[#22C55E]' : 'bg-[#9A9A9A]' }}">
+                                class="absolute left-3 bottom-2 transform font-playfair -translate-y-1/2 w-2 h-2 rounded-full {{ $service['status'] === 'active' ? 'bg-[#22C55E]' : 'bg-[#9A9A9A]' }}">
                             </span>
 
                             <!-- Dropdown arrow -->
@@ -115,7 +115,7 @@
                     <!-- Actions -->
                     <div class="flex items-center justify-start md:justify-end col-span-2 space-x-2 mt-3 md:mt-0">
                         <button
-                            class="bg-[#C7AE6A] hover:bg-[#b99b52] text-black px-3 md:px-4 py-2 rounded-sm flex items-center text-xs md:text-sm font-medium">
+                            class="bg-[#C7AE6A] hover:bg-[#b99b52] text-black px-3 font-playfair md:px-4 py-2 rounded-sm flex items-center text-xs md:text-sm font-medium">
                             <svg class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none">
                                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
                                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -154,7 +154,7 @@
             </svg>
         </button>
 
-        <button class="flex items-center justify-center w-8 h-8 rounded border-2 border-[#C7AE6A] bg-[#C7AE6A] text-white font-medium text-sm">1</button>
+        <button class="flex items-center justify-center w-8 h-8 rounded border-2 border-[#AD8945]  text-[#AD8945] font-medium text-sm">1</button>
         <button class="flex items-center justify-center w-8 h-8 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 font-medium text-sm">2</button>
         <span class="flex items-center justify-center w-8 h-8 text-gray-500 text-sm">...</span>
         <button class="flex items-center justify-center w-8 h-8 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 font-medium text-sm">9</button>
