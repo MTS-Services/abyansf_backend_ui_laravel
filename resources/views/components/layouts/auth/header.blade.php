@@ -3,7 +3,9 @@
     <div class="hidden sm:flex items-center justify-between mx-auto max-w-[1200px] h-28 sm:h-32 px-4">
         <!-- Logo -->
         <div>
-            <img src="{{ asset('image/Maskgroup.png') }}" alt="Logo" class="w-16 sm:w-20 h-16 sm:h-20 rounded-full">
+           <a href="{{ route('dashboard') }}">
+               <img src="{{ asset('image/Maskgroup.png') }}" alt="Logo" class="w-16 sm:w-20 h-16 sm:h-20 rounded-full">
+           </a>
         </div>
 
         <!-- Notification + User Icon -->
@@ -58,7 +60,10 @@
     <!-- Mobile Header -->
     <div class="flex sm:hidden items-center justify-between mx-auto w-full h-20 px-4">
         <!-- Logo -->
-        <img src="{{ asset('image/Maskgroup.png') }}" alt="Logo" class="w-14 h-14 rounded-full">
+        <div>
+            <a href="{{ route('dashboard') }}">
+                <img src="{{ asset('image/Maskgroup.png') }}" alt="Logo" class="w-12 h-12 rounded-full">
+            </a>
 
         <!-- Notification + Menu -->
         <div class="flex items-center space-x-2">
