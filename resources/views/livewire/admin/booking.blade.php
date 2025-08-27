@@ -1,5 +1,5 @@
-<section class="bg-white font-playfair mt-15">
-    
+<section class="bg-white font-playfair mt-14">
+
 
     @php
         $bookings = [
@@ -38,13 +38,9 @@
         ];
     @endphp
 
-    <section class="sm:max-w-7xl lg:w-[1200px] mx-auto p-4 mt-8 font-poppins">
+    <section class="sm:max-w-7xl lg:w-[1200px] mx-auto p-4   font-poppins">
         <div class="booking_h2">
-<<<<<<< HEAD
-            <h2 class="font-semibold mb-6 mt-18 text-black text-2xl sm:text-3xl">Booking Management</h2>
-=======
             <h2 class="font-semibold mb-10 font-poppins text-black text-2xl sm:text-3xl">Booking Management</h2>
->>>>>>> main
 
             <div class="bg-white rounded-lg max-w-[1200px] min-h-[60px] relative z-10">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
