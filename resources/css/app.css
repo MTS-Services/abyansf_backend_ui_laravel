@@ -90,7 +90,7 @@ select:focus[data-flux-control] {
 
     body {
         font-family: var(--font-poppins);
-        margin: 0;
+
     }
 
     .sidebar {
@@ -102,7 +102,6 @@ select:focus[data-flux-control] {
         right: 0;
         background-color: #111;
         overflow-x: hidden;
-        transition: 0.5s;
         padding-top: 60px;
     }
 
@@ -112,12 +111,12 @@ select:focus[data-flux-control] {
         font-size: 25px;
         color: #818181;
         display: block;
-        transition: 0.3s;
 
     }
 
     .sidebar a:hover {
         color: #f1f1f1;
+
     }
 
     .sidebar .closebtn {
@@ -148,6 +147,7 @@ select:focus[data-flux-control] {
         width: 100%;
         background-color: #e7e7e7;
         padding: 1rem 0;
+
     }
 
     .desktop-nav .nav-links {
@@ -164,20 +164,20 @@ select:focus[data-flux-control] {
         font-weight: bold;
         color: #333;
         padding: 0.5rem 1rem;
-        transition: color 0.3s ease;
+        margin: 0;
     }
 
     .desktop-nav .nav-links a:hover {
         color: #000000;
-        background-color: #ffffff;
-        padding-left:50px;
-        padding-right: 50px;
+        /* background-color: #ffffff; */
         border-radius: 5px;
+        /* padding: 10px 100px; */
+        /* transition: 0.3s ease-in-out; */
+
     }
 
     .main-content {
         padding: 16px;
-        transition: margin-left .5s;
     }
 
     /* Media Query for Desktop */

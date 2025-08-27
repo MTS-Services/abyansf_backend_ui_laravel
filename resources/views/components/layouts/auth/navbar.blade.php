@@ -1,4 +1,4 @@
-<main class="flex max-w-[1200px] mx-auto">
+<main class="flex max-w-[1200px] mx-auto ">
     <div id="mySidebar" class="sidebar">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
         <a href="{{ route('admin.users') }}">Users</a>

@@ -1,6 +1,6 @@
 <div class="bg-gray-50">
-    <main class="sm:max-w-7xl lg:w-[1200px] mx-auto p-4 sm:p-6 lg:p-8 font-poppins">
-        <div class="booking_h2">
+    <main class=" lg:w-[1200px] mx-auto pt-14  pr-8 font-poppins">
+        <div class="lg:pl-0 pl-6">
             <h2 class="font-semibold mb-6 text-gray-900 text-2xl sm:text-3xl">Booking Management</h2>
 
             <!-- Filter Section -->
