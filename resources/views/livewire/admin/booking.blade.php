@@ -143,7 +143,7 @@
                                     class="px-5 py-3   text-left text-base font-semibold text-balck uppercase tracking-wider">
                                     STATUS</th>
                                 <th
-                                    class="px-5 py-3   text-right text-base font-semibold text-balck uppercase tracking-wider">
+                                    class="px-5 py-3   text-center text-base font-semibold text-balck uppercase tracking-wider">
                                     ACTIONS</th>
                             </tr>
                         </thead>
@@ -197,7 +197,7 @@
                                             </ul>
                                         </div>
                                     </td>
-                                    <td class="px-5 py-5 border-b  bg-white text-sm text-right">
+                                    <td class="px-5 py-5 border-b  bg-white text-sm text-center">
                                         <button class="text-[#C7AE6A] hover:text-red-500 transition-colors duration-200"
                                             title="Delete Booking">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20"
