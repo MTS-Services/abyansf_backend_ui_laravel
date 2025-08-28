@@ -1,36 +1,38 @@
 # ----------------------------------------
-# 1. Build Frontend
+# 1. Composer Dependencies
 # ----------------------------------------
-FROM node:latest AS node_builder
-
-# Set the working directory inside the container
+FROM composer:2 AS vendor
 WORKDIR /var/www
 
-# Copy all project files into the container
+# Copy composer files only for caching
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+
+# Copy the whole app (so migrations, configs etc. are available later)
 COPY . .
 
-# Copy the Composer executable into the node_builder stage
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Install PHP dependencies with Composer to generate the vendor directory
-# This is required so the 'livewire/flux' CSS file can be moved in the next step
-RUN composer install --no-dev --optimize-autoloader
-
-# Move Livewire Flux CSS from the newly created vendor directory to the resources directory
-RUN cp ./vendor/livewire/flux/dist/flux.css ./resources/css/livewire-flux.css
-
-# Install npm dependencies and run the frontend build
-RUN npm install && npm run build
 
 # ----------------------------------------
-# 2. Build PHP backend
+# 2. Build Frontend
+# ----------------------------------------
+FROM node:20 AS node_builder
+WORKDIR /var/www
+
+# Copy package files first (for caching)
+COPY package*.json ./
+RUN npm install
+
+# Copy rest of project & build frontend
+COPY . .
+RUN npm run build
+
+
+# ----------------------------------------
+# 3. PHP Backend Runtime
 # ----------------------------------------
 FROM php:8.3-fpm
 
-# Add custom php.ini file
-COPY ./docker/php.ini /usr/local/etc/php/conf.d/custom.ini
-
-# Install system dependencies required for the application
+# Install required system packages
 RUN apt-get update && apt-get install -y \
     nginx \
     git \
@@ -46,41 +48,45 @@ RUN apt-get update && apt-get install -y \
     supervisor \
     gnupg2 \
     ca-certificates \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl gd
+ && docker-php-ext-configure gd --with-freetype --with-jpeg \
+ && docker-php-ext-install pdo_mysql mbstring zip exif pcntl gd \
+ && rm -rf /var/lib/apt/lists/*
 
 # Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Set working directory for the final image
+# Add custom php.ini
+COPY ./docker/php.ini /usr/local/etc/php/conf.d/custom.ini
+
+# Set working directory
 WORKDIR /var/www
 
-# Copy Laravel app source
+# Copy application source
 COPY . .
 
-# Copy built frontend assets from the node_builder stage
-COPY --from=node_builder /var/www/public/build public/build
+# Copy vendor from composer stage
+COPY --from=vendor /var/www/vendor ./vendor
 
-# Prepare Laravel cache paths & permissions
+# Copy built frontend assets from node stage
+COPY --from=node_builder /var/www/public/build ./public/build
+
+# Ensure Laravel storage and cache dirs exist & set permissions
 RUN mkdir -p storage/framework/{views,sessions,cache} \
     && mkdir -p bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
-# Install PHP dependencies (again, in the final stage)
-RUN composer install --no-dev --optimize-autoloader
-
-# Run Laravel Artisan commands to clear and cache configurations
+# Run Laravel optimization commands
 RUN php artisan config:clear \
-    && php artisan route:clear \
-    && php artisan view:clear \
-    && php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache \
-    && php artisan migrate --force || true \
-    && php artisan optimize:clear
+ && php artisan route:clear \
+ && php artisan view:clear \
+ && php artisan config:cache \
+ && php artisan route:cache \
+ && php artisan view:cache \
+ && php artisan migrate --force || true \
+ && php artisan optimize:clear
 
-# Configure Nginx and Supervisor
+# Configure Nginx & Supervisor
 RUN rm -f /etc/nginx/sites-enabled/default
 COPY ./docker/nginx.conf /etc/nginx/nginx.conf
 COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
@@ -88,5 +94,5 @@ COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Expose HTTP port
 EXPOSE 80
 
-# Start all services with Supervisor
+# Start Supervisor (manages php-fpm + nginx)
 CMD ["/usr/bin/supervisord", "-n"]
