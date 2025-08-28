@@ -1,7 +1,7 @@
 # ----------------------------------------
 # 1. Composer Dependencies
 # ----------------------------------------
-FROM composer:2 AS vendor
+FROM composer:latest AS vendor
 WORKDIR /var/www
 
 # Copy composer files only for caching
