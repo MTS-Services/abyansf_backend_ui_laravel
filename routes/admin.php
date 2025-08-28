@@ -14,7 +14,7 @@ use App\Livewire\Admin\User;
 use App\Livewire\Admin\Notification;
 use Illuminate\Support\Facades\Route;
 
-Route::name('admin.')->group(function () {
+Route::name('admin.')->middleware(['api.auth'])->group(function () {
     Route::get('users', User::class)->name('users');
     Route::get('notifications', Notification::class)->name('notifications');
     Route::get('bookings', Booking::class)->name('bookings');
