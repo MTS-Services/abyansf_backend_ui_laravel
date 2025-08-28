@@ -16,10 +16,10 @@
     @stack('css')
 </head>
 
-<body x-data @navigate.start="window.scrollTo({top: 0, behavior: 'smooth'})">
+<body x-data @navigate.start="window.scroll({top: 0, behavior: 'smooth'})">
 
     @livewire('layouts.header')
-    
+
     @if (api_is_authenticated())
         @livewire('layouts.navbar')
     @endif
