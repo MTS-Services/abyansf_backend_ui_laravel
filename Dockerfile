@@ -23,10 +23,17 @@ RUN apt-get update && apt-get install -y \
     gnupg2 \
     ca-certificates \
     sqlite3 \
-    # Add Node.js repository
-    && curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Node.js
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
     && apt-get install -y nodejs \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Configure and install PHP extensions
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo_mysql pdo_sqlite mbstring zip exif pcntl gd
 
 # Install Composer
