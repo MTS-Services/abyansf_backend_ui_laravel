@@ -1,16 +1,15 @@
 # ----------------------------------------
 # 1. Composer Dependencies
 # ----------------------------------------
-# Use a specific version of Composer for more predictable builds
-FROM composer:2 AS vendor
+FROM composer:latest AS vendor
 WORKDIR /var/www
 
-# Copy composer files only for caching, then install dependencies
+# Copy composer files only for caching
 COPY composer.json composer.lock ./
-[cite_start]RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts [cite: 118]
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
-# Copy the rest of the application source code
-COPY . [cite_start]. [cite: 118]
+# Copy the whole app (so migrations, configs etc. are available later)
+COPY . .
 
 
 # ----------------------------------------
@@ -19,21 +18,13 @@ COPY . [cite_start]. [cite: 118]
 FROM node:20 AS node_builder
 WORKDIR /var/www
 
-# Copy package files first for caching, then install dependencies
+# Copy package files first (for caching)
 COPY package*.json ./
-[cite_start]RUN npm install [cite: 118]
+RUN npm install
 
-# Copy the rest of the application source code
-COPY . [cite_start]. [cite: 120]
-
-# --- FIX ---
-# Copy the vendor directory from the composer stage.
-# This makes assets from PHP packages available to the Vite build process.
-COPY --from=vendor /var/www/vendor ./vendor
-# --- END FIX ---
-
-# Build the frontend assets
-[cite_start]RUN npm run build [cite: 120]
+# Copy rest of project & build frontend
+COPY . .
+RUN npm run build
 
 
 # ----------------------------------------
@@ -41,7 +32,7 @@ COPY --from=vendor /var/www/vendor ./vendor
 # ----------------------------------------
 FROM php:8.3-fpm
 
-# Install required system packages and PHP extensions
+# Install required system packages
 RUN apt-get update && apt-get install -y \
     nginx \
     git \
@@ -59,33 +50,33 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
  && docker-php-ext-configure gd --with-freetype --with-jpeg \
  && docker-php-ext-install pdo_mysql mbstring zip exif pcntl gd \
- [cite_start]&& rm -rf /var/lib/apt/lists/* [cite: 121]
+ && rm -rf /var/lib/apt/lists/*
 
-# Install Composer from the official image
-[cite_start]COPY --from=composer:2 /usr/bin/composer /usr/bin/composer [cite: 121]
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Add custom php.ini (ensure this file exists in ./docker/php.ini)
-[cite_start]COPY ./docker/php.ini /usr/local/etc/php/conf.d/custom.ini [cite: 121]
+# Add custom php.ini
+COPY ./docker/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 # Set working directory
 WORKDIR /var/www
 
-# Copy application source from the build context
-COPY . [cite_start]. [cite: 122]
+# Copy application source
+COPY . .
 
-# Copy vendor directory from the dedicated composer stage
-[cite_start]COPY --from=vendor /var/www/vendor ./vendor [cite: 122]
+# Copy vendor from composer stage
+COPY --from=vendor /var/www/vendor ./vendor
 
-# Copy built frontend assets from the node stage
-[cite_start]COPY --from=node_builder /var/www/public/build ./public/build [cite: 122]
+# Copy built frontend assets from node stage
+COPY --from=node_builder /var/www/public/build ./public/build
 
-# Create Laravel storage directories and set correct permissions
+# Ensure Laravel storage and cache dirs exist & set permissions
 RUN mkdir -p storage/framework/{views,sessions,cache} \
     && mkdir -p bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache \
-    [cite_start]&& chmod -R 775 storage bootstrap/cache [cite: 122]
+    && chmod -R 775 storage bootstrap/cache
 
-# Run Laravel optimization commands for production
+# Run Laravel optimization commands
 RUN php artisan config:clear \
  && php artisan route:clear \
  && php artisan view:clear \
@@ -93,15 +84,15 @@ RUN php artisan config:clear \
  && php artisan route:cache \
  && php artisan view:cache \
  && php artisan migrate --force || true \
- [cite_start]&& php artisan optimize:clear [cite: 123]
+ && php artisan optimize:clear
 
-# Configure Nginx & Supervisor (ensure these files exist in ./docker/)
+# Configure Nginx & Supervisor
 RUN rm -f /etc/nginx/sites-enabled/default
-[cite_start]COPY ./docker/nginx.conf /etc/nginx/nginx.conf [cite: 123]
-[cite_start]COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf [cite: 123]
+COPY ./docker/nginx.conf /etc/nginx/nginx.conf
+COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Expose the HTTP port
-[cite_start]EXPOSE 80 [cite: 123]
+# Expose HTTP port
+EXPOSE 80
 
-# Start Supervisor, which manages both nginx and php-fpm
-[cite_start]CMD ["/usr/bin/supervisord", "-n"] [cite: 123]
+# Start Supervisor (manages php-fpm + nginx)
+CMD ["/usr/bin/supervisord", "-n"]
