@@ -11,98 +11,125 @@
      <input type="file" id="photoUpload" class="hidden" accept="image/*" multiple>
 
      <!-- Preview Slider -->
-    <!-- Preview Slider -->
-<div class="w-full max-w-8xl mx-auto px-4">
-    <div class="overflow-x-auto scroll-smooth snap-x snap-mandatory flex gap-4 pb-8 no-scrollbar" id="previewSlider">
-        <!-- Example cards -->
-        <article class="flex-shrink-0 snap-start bg-white rounded-2xl shadow border border-gray-100 overflow-hidden">
-            <img src="https://picsum.photos/seed/slide1/640/360" alt="Card 1" class="w-full h-40 md:h-48 object-cover" />
-        </article>
-        <article class="flex-shrink-0 snap-start bg-white rounded-2xl shadow border border-gray-100 overflow-hidden">
-            <img src="https://picsum.photos/seed/slide2/640/360" alt="Card 2" class="w-full h-40 md:h-48 object-cover" />
-        </article>
-        <article class="flex-shrink-0 snap-start bg-white rounded-2xl shadow border border-gray-100 overflow-hidden">
-            <img src="https://picsum.photos/seed/slide3/640/360" alt="Card 3" class="w-full h-40 md:h-48 object-cover" />
-        </article>
-        <article class="flex-shrink-0 snap-start bg-white rounded-2xl shadow border border-gray-100 overflow-hidden">
-            <img src="https://picsum.photos/seed/slide4/640/360" alt="Card 4" class="w-full h-40 md:h-48 object-cover" />
-        </article>
-        <article class="flex-shrink-0 snap-start bg-white rounded-2xl shadow border border-gray-100 overflow-hidden">
-            <img src="https://picsum.photos/seed/slide5/640/360" alt="Card 5" class="w-full h-40 md:h-48 object-cover" />
-        </article>
-        <article class="flex-shrink-0 snap-start bg-white rounded-2xl shadow border border-gray-100 overflow-hidden">
-            <img src="https://picsum.photos/seed/slide6/640/360" alt="Card 6" class="w-full h-40 md:h-48 object-cover" />
-        </article>
-    </div>
-</div>
+     <!-- Preview Slider -->
+     <div class="w-full max-w-8xl mx-auto px-4">
+         <div class="overflow-x-auto scroll-smooth snap-x snap-mandatory flex gap-4 pb-8 no-scrollbar"
+             id="previewSlider">
+             <!-- Example cards -->
+             <article
+                 class="flex-shrink-0 snap-start bg-white rounded-2xl shadow border border-gray-100 overflow-hidden">
+                 <img src="https://picsum.photos/seed/slide1/640/360" alt="Card 1"
+                     class="w-full h-40 md:h-48 object-cover" />
+             </article>
+             <article
+                 class="flex-shrink-0 snap-start bg-white rounded-2xl shadow border border-gray-100 overflow-hidden">
+                 <img src="https://picsum.photos/seed/slide2/640/360" alt="Card 2"
+                     class="w-full h-40 md:h-48 object-cover" />
+             </article>
+             <article
+                 class="flex-shrink-0 snap-start bg-white rounded-2xl shadow border border-gray-100 overflow-hidden">
+                 <img src="https://picsum.photos/seed/slide3/640/360" alt="Card 3"
+                     class="w-full h-40 md:h-48 object-cover" />
+             </article>
+             <article
+                 class="flex-shrink-0 snap-start bg-white rounded-2xl shadow border border-gray-100 overflow-hidden">
+                 <img src="https://picsum.photos/seed/slide4/640/360" alt="Card 4"
+                     class="w-full h-40 md:h-48 object-cover" />
+             </article>
+             <article
+                 class="flex-shrink-0 snap-start bg-white rounded-2xl shadow border border-gray-100 overflow-hidden">
+                 <img src="https://picsum.photos/seed/slide5/640/360" alt="Card 5"
+                     class="w-full h-40 md:h-48 object-cover" />
+             </article>
+             <article
+                 class="flex-shrink-0 snap-start bg-white rounded-2xl shadow border border-gray-100 overflow-hidden">
+                 <img src="https://picsum.photos/seed/slide6/640/360" alt="Card 6"
+                     class="w-full h-40 md:h-48 object-cover" />
+             </article>
+         </div>
+     </div>
 
-<script>
-(function() {
-    const slider = document.getElementById('previewSlider');
-    if (!slider) return;
+     <script>
+         (function() {
+             const slider = document.getElementById('previewSlider');
+             if (!slider) return;
 
-    const cards = slider.querySelectorAll('article');
+             const cards = slider.querySelectorAll('article');
 
-    // Responsive card width: mobile=2, tablet=3, desktop=5
-    function updateCardWidth() {
-        const containerWidth = slider.clientWidth;
-        let visibleCount = 5;
+             // Responsive card width: mobile=2, tablet=3, desktop=5
+             function updateCardWidth() {
+                 const containerWidth = slider.clientWidth;
+                 let visibleCount = 5;
 
-        if (window.innerWidth < 640) visibleCount = 2; // mobile
-        else if (window.innerWidth < 1024) visibleCount = 3; // tablet
-        // else desktop = 5
+                 if (window.innerWidth < 640) visibleCount = 2; // mobile
+                 else if (window.innerWidth < 1024) visibleCount = 3; // tablet
+                 // else desktop = 5
 
-        const gap = 16; // Tailwind gap-4
-        const cardWidth = (containerWidth - gap * (visibleCount - 1)) / visibleCount;
-        cards.forEach(card => card.style.width = `${cardWidth}px`);
-    }
+                 const gap = 16; // Tailwind gap-4
+                 const cardWidth = (containerWidth - gap * (visibleCount - 1)) / visibleCount;
+                 cards.forEach(card => card.style.width = `${cardWidth}px`);
+             }
 
-    window.addEventListener('resize', updateCardWidth);
-    updateCardWidth();
+             window.addEventListener('resize', updateCardWidth);
+             updateCardWidth();
 
-    // Drag/Swipe to scroll
-    let isDown = false, startX, scrollLeft;
+             // Drag/Swipe to scroll
+             let isDown = false,
+                 startX, scrollLeft;
 
-    slider.addEventListener('mousedown', e => {
-        isDown = true;
-        slider.classList.add('cursor-grabbing');
-        startX = e.pageX - slider.offsetLeft;
-        scrollLeft = slider.scrollLeft;
-    });
-    slider.addEventListener('mouseleave', () => { isDown = false; slider.classList.remove('cursor-grabbing'); });
-    slider.addEventListener('mouseup', () => { isDown = false; slider.classList.remove('cursor-grabbing'); });
-    slider.addEventListener('mousemove', e => {
-        if (!isDown) return;
-        e.preventDefault();
-        const x = e.pageX - slider.offsetLeft;
-        const walk = (x - startX);
-        slider.scrollLeft = scrollLeft - walk;
-    });
+             slider.addEventListener('mousedown', e => {
+                 isDown = true;
+                 slider.classList.add('cursor-grabbing');
+                 startX = e.pageX - slider.offsetLeft;
+                 scrollLeft = slider.scrollLeft;
+             });
+             slider.addEventListener('mouseleave', () => {
+                 isDown = false;
+                 slider.classList.remove('cursor-grabbing');
+             });
+             slider.addEventListener('mouseup', () => {
+                 isDown = false;
+                 slider.classList.remove('cursor-grabbing');
+             });
+             slider.addEventListener('mousemove', e => {
+                 if (!isDown) return;
+                 e.preventDefault();
+                 const x = e.pageX - slider.offsetLeft;
+                 const walk = (x - startX);
+                 slider.scrollLeft = scrollLeft - walk;
+             });
 
-    // Touch support
-    slider.addEventListener('touchstart', e => {
-        startX = e.touches[0].pageX - slider.offsetLeft;
-        scrollLeft = slider.scrollLeft;
-    });
-    slider.addEventListener('touchmove', e => {
-        const x = e.touches[0].pageX - slider.offsetLeft;
-        const walk = (x - startX);
-        slider.scrollLeft = scrollLeft - walk;
-    });
-})();
-</script>
+             // Touch support
+             slider.addEventListener('touchstart', e => {
+                 startX = e.touches[0].pageX - slider.offsetLeft;
+                 scrollLeft = slider.scrollLeft;
+             });
+             slider.addEventListener('touchmove', e => {
+                 const x = e.touches[0].pageX - slider.offsetLeft;
+                 const walk = (x - startX);
+                 slider.scrollLeft = scrollLeft - walk;
+             });
+         })();
+     </script>
 
-<style>
-.no-scrollbar::-webkit-scrollbar { display: none; }
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-#previewSlider { cursor: grab; }
-#previewSlider.cursor-grabbing { cursor: grabbing; }
-</style>
+     <style>
+         .no-scrollbar::-webkit-scrollbar {
+             display: none;
+         }
 
+         .no-scrollbar {
+             -ms-overflow-style: none;
+             scrollbar-width: none;
+         }
 
+         #previewSlider {
+             cursor: grab;
+         }
 
-
-
+         #previewSlider.cursor-grabbing {
+             cursor: grabbing;
+         }
+     </style>
 
      <!-- Category Selection -->
      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">

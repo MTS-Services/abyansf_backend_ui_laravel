@@ -1,7 +1,5 @@
 @props(['page' => '', 'route' => null]) {{-- default "listing" --}}
 
-
-
 <div class="flex flex-col md:flex-row md:items-center md:space-x-4 mt-10 px-4 md:px-0 font-playfair">
     <!-- Dropdown -->
     <div class="relative w-full md:w-1/4 mb-4 md:mb-0">
@@ -27,7 +25,7 @@
             </svg>
         </div>
         <input type="text" placeholder="Search by services"
-            class="block font-semibold  font-playfair text-sm w-full lg:max-w-[600px] md:text-base px-4 py-3 pl-14 text-gray-700 bg-[#F4F4F4]  rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] custom-shadow" />
+            class="block font-semibold  font-playfair text-sm w-full lg:max-w-[600px] md:text-base px-4 py-3 pl-14 text-gray-700 bg-[#F4F4F4]    rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] custom-shadow" />
     </div>
 
     <!-- Button -->
