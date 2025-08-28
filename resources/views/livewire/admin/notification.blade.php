@@ -22,8 +22,9 @@
                         class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover flex-shrink-0">
                     <div class="flex-1 min-w-0">
                         <p class="text-sm text-gray-900">
-                            <span class="font-bold">Brian Griffin</span>
-                            <span class="text-gray-600"> wants to collaborate</span>
+                            <span class="font-bold ">Brian Griffin</span>
+                            <span class=" text-[#666C7E] font-normal leading-1 tracking-normal text-sm/6">
+                                wants to collaborate</span>
                         </p>
                         <p class="text-xs text-gray-500 mt-1">5 days ago</p>
                     </div>
@@ -36,7 +37,7 @@
                     <img src="{{ asset('image/Avatar(1).svg') }}" alt="Adam"
                         class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover flex-shrink-0">
                     <div class="flex-1 min-w-0">
-                        <p class="text-base text-[#666C7E]  font-normal leading-1 tracking-normal">
+                        <p class=" text-[#666C7E] font-normal leading-1 tracking-normal text-sm/6">
                             Hey Peter, we've got a new user research opportunity for you. Adam from <br> The Mayor's
                             Office
                             is looking for people like you.
@@ -52,7 +53,7 @@
                     <img src="{{ asset('image/image.svg') }}" alt="Adam"
                         class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover flex-shrink-0">
                     <div class="flex-1 min-w-0">
-                        <p class="text-base text-[#666C7E]  font-normal leading-1 tracking-normal">
+                        <p class=" text-[#666C7E]  font-normal leading-1 tracking-normal text-sm/6">
                             Hey Peter, we’ve got a new user research opportunity for you. Neil is looking for people
                             like
                             you.
@@ -68,8 +69,9 @@
                     <img src="{{ asset('image/image (1).svg') }}" alt="Adam"
                         class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover flex-shrink-0">
                     <div class="flex-1 min-w-0">
-                        <p class="text-base text-[#666C7E]  font-normal leading-1 tracking-normal">
-                            Hey Peter, we’ve got a new user research opportunity for you. Quagmire from Giggity Co. is <br>
+                        <p class=" text-[#666C7E]  font-normal leading-1 tracking-normal text-sm/6">
+                            Hey Peter, we’ve got a new user research opportunity for you. Quagmire from Giggity Co. is
+                            <br>
                             looking for people like you.
                         </p>
                         <p class="text-xs text-gray-500 mt-2">1 month ago</p>
@@ -83,8 +85,9 @@
                     <img src="{{ asset('image/Image (2).svg') }}" alt="Adam"
                         class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover flex-shrink-0">
                     <div class="flex-1 min-w-0">
-                        <p class="text-base text-[#666C7E]  font-normal leading-1 tracking-normal">
-                            Hey Peter, we’ve got a new side project opportunity for <br> you. Herbert from Children’s Program
+                        <p class=" text-[#666C7E]  font-normal leading-1 tracking-normal text-sm/6">
+                            Hey Peter, we’ve got a new side project opportunity for <br> you. Herbert from Children’s
+                            Program
                             is looking for people like you.
                         </p>
                         <p class="text-xs text-gray-500 mt-2">1 month ago</p>
@@ -98,8 +101,9 @@
                     <img src="{{ asset('image/Image (3).svg') }}" alt="Adam"
                         class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover flex-shrink-0">
                     <div class="flex-1 min-w-0">
-                        <p class="text-base text-[#666C7E]  font-normal leading-1 tracking-normal">
-                            Hey Peter, we’ve got a new side project opportunity for you. Clevaland from The Post <br> Office
+                        <p class=" text-[#666C7E]  font-normal leading-1 tracking-normal text-sm/6">
+                            Hey Peter, we’ve got a new side project opportunity for you. Clevaland from The Post <br>
+                            Office
                             is looking for people like you.
                         </p>
                         <p class="text-xs text-gray-500 mt-2">1 month ago</p>
@@ -113,7 +117,7 @@
                     <img src="{{ asset('image/Avatar (2).svg') }}" alt="Adam"
                         class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover flex-shrink-0">
                     <div class="flex-1 min-w-0">
-                        <p class="text-base text-[#666C7E]  font-normal leading-1 tracking-normal">
+                        <p class=" text-[#666C7E]  font-normal leading-1 tracking-normal text-sm/6">
                             Hey Peter, we’ve got a new user research opportunity for you. Joe is <br> looking for people
                             like you.
                         </p>
@@ -128,8 +132,9 @@
                     <img src="{{ asset('image/Avatar (3).svg') }}" alt="Adam"
                         class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover flex-shrink-0">
                     <div class="flex-1 min-w-0">
-                        <p class="text-base text-[#666C7E]  font-normal leading-1 tracking-normal">
-                            Hey Peter, we’ve got a new user research opportunity for you. Stewie from <br> World Takeover is
+                        <p class=" text-[#666C7E]  font-normal leading-1 tracking-normal text-sm/6">
+                            Hey Peter, we’ve got a new user research opportunity for you. Stewie from <br> World
+                            Takeover is
                             looking for people like you.
                         </p>
                         <p class="text-xs text-gray-500 mt-2">1 month ago</p>
