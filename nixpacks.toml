@@ -1,8 +1,11 @@
 [start]
-cmd = "supervisord -c /etc/supervisor/conf.d/supervisord.conf"
+cmd = "php artisan serve --host=0.0.0.0 --port=8080"
 
 [phases.setup]
-nixPkgs = ["php", "composer", "nginx", "supervisor", "gnupg"]
+nixPkgs = ["php", "composer", "nodejs"]
 
 [phases.install]
-cmds = ["composer install --no-dev --optimize-autoloader"]
+cmds = ["composer install --no-dev --optimize-autoloader", "npm install"]
+
+[phases.build]
+cmds = ["npm run build"]

@@ -1,7 +1,6 @@
 # ----------------------------------------
 # 1. Composer Dependencies
 # ----------------------------------------
-# Use a specific version of Composer for more predictable builds
 FROM composer:2 AS vendor
 WORKDIR /var/www
 
@@ -12,7 +11,6 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --no-script
 # Copy the rest of the application source code
 COPY . .
 
-
 # ----------------------------------------
 # 2. Build Frontend
 # ----------------------------------------
@@ -20,7 +18,7 @@ FROM node:20 AS node_builder
 WORKDIR /var/www
 
 # Copy package files first for caching, then install dependencies
-COPY package*.json ./
+COPY package*.json .
 RUN npm install
 
 # Copy the rest of the application source code
@@ -33,12 +31,10 @@ COPY --from=vendor /var/www/vendor ./vendor
 # Build the frontend assets
 RUN npm run build
 
-
 # ----------------------------------------
 # 3. PHP Backend Runtime
 # ----------------------------------------
 FROM php:8.3-fpm
-
 # Install required system packages and PHP extensions
 RUN apt-get update && apt-get install -y \
     nginx \
@@ -56,14 +52,13 @@ RUN apt-get update && apt-get install -y \
     gnupg2 \
     ca-certificates \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl gd \
-    && rm -rf /var/lib/apt/lists/*
+    && docker-php-ext-install pdo_mysql mbstring zip exif pcntl gd
+
+# Add custom php.ini (ensure this file exists in ./docker/php.ini)
+COPY ./docker/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 # Install Composer from the official image
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
-# Add custom php.ini
-COPY ./docker/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 # Set working directory
 WORKDIR /var/www
@@ -93,7 +88,7 @@ RUN php artisan config:clear \
     && php artisan migrate --force || true \
     && php artisan optimize:clear
 
-# Configure Nginx & Supervisor
+# Configure Nginx & Supervisor (ensure these files exist in ./docker/)
 RUN rm -f /etc/nginx/sites-enabled/default
 COPY ./docker/nginx.conf /etc/nginx/sites-available/default
 RUN ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
@@ -102,5 +97,5 @@ COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Expose the HTTP port
 EXPOSE 80
 
-# Start Supervisor, which manages both nginx and php-fpm
-CMD ["/usr/bin/supervisord", "-n"]
+# Start Supervisor to manage Nginx and PHP-FPM processes
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
