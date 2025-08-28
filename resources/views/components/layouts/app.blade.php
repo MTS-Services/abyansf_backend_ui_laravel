@@ -16,7 +16,7 @@
     @stack('css')
 </head>
 
-<body>
+<body x-data @navigate.start="window.scrollTo({top: 0, behavior: 'smooth'})">
 
     @livewire('layouts.header')
     
