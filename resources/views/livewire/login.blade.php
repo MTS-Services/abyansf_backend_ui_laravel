@@ -32,40 +32,48 @@
 
 
 
-    <!-- Login Container -->
-    <div class="container mx-auto flex items-center justify-center min-h-full pt-10">
-        <div class="w-full max-w-sm text-center">
-            <h1 class="text-4xl font-bold mb-2 font-playfair ">Login Here</h1>
-            <p class="text-gray-600 mb-6 font-Inter">Welcome back you’ve <br>been missed!</p>
+   <!-- Login Container -->
+<div class="container mx-auto flex items-center justify-center min-h-full pt-6 sm:pt-8 md:pt-10">
+    <div class="w-full max-w-xs sm:max-w-sm md:max-w-md text-center px-4">
+        
+        <!-- Title -->
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 font-playfair">Login Here</h1>
+        
+        <!-- Subtitle -->
+        <p class="text-gray-600 mb-6 font-Inter text-sm sm:text-base md:text-lg">
+            Welcome back you’ve <br class="sm:hidden">been missed!
+        </p>
 
-            <!-- Email Input -->
-            <input type="email" placeholder="Email"
-                class="w-full px-4 py-4 bg-[#c5a86a] border-[#c5a86a] rounded-md mb-4 ">
+        <!-- Email Input -->
+        <input type="email" placeholder="Email"
+            class="w-full px-3 sm:px-4 py-3 sm:py-4 bg-[#c5a86a] border-[#c5a86a] rounded-md mb-4 text-sm sm:text-base">
 
-            <!-- Password Input -->
-            <div class="relative mb-4">
-                <input type="password" placeholder="Password"
-                    class="w-full px-4 py-4 bg-[#c5a86a] border border-[#c5a86a] rounded-md ">
-                <span class="absolute right-3 top-2.5 cursor-pointer">
-                    <img src="{{ asset('image/PasswordProjection.png') }}" alt="" class="pt-2">
-                </span>
-            </div>
-
-            <!-- Login Button -->
-            <button
-                class="w-full bg-[#c5a86a] text-white font-medium py-4 rounded-md shadow-lg hover:bg-[#b8964c] font-playfair transition shadow-[#c5a86a] ">
-                Login
-            </button>
-
-            <!-- Remember Me -->
-            <p class="text-sm text-[#AD8945] mt-4 cursor-pointer font-semibold text-left">Remember me!</p>
+        <!-- Password Input -->
+        <div class="relative mb-4">
+            <input type="password" placeholder="Password"
+                class="w-full px-3 sm:px-4 py-3 sm:py-4 bg-[#c5a86a] border border-[#c5a86a] rounded-md text-sm sm:text-base">
+            <span class="absolute right-3 top-2 sm:top-3 cursor-pointer">
+                <img src="{{ asset('image/PasswordProjection.png') }}" alt="" class="w-4 sm:w-5 pt-1 sm:pt-2">
+            </span>
         </div>
+
+        <!-- Login Button -->
+        <button
+            class="w-full bg-[#c5a86a] text-white font-medium py-3 sm:py-4 rounded-md shadow-lg hover:bg-[#b8964c] font-playfair transition shadow-[#c5a86a] text-sm sm:text-base">
+            Login
+        </button>
+
+        <!-- Remember Me -->
+        <p class="text-xs sm:text-sm md:text-base text-[#AD8945] mt-4 cursor-pointer font-semibold text-left">
+            Remember me!
+        </p>
     </div>
+</div>
 
 
 
 
-    <!-- Square 1 -->
+
     <!-- Square 1 -->
 <div 
     class="absolute 

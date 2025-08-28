@@ -1,47 +1,41 @@
 <section class="mx-auto max-w-[1200px] p-4 font-playfair">
-    <x-admin.searchbar page="Add Listing" id="addListingBtn" />
+    <x-admin.searchbar page="Add Listing" livewire_method="switchAddListingModal" />
 
     <!-- Add Listing Modal -->
-    <div id="addListingModal"
-        class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 overflow-auto flex items-center justify-center p-4">
+    <div
+        class="fixed inset-0 bg-black/70 {{ $addListingModal ? 'block' : 'hidden' }} z-50 overflow-auto flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-[1200px] mx-auto rounded-lg p-6 relative max-h-[90vh] overflow-y-auto">
 
             <!-- Close Button -->
-            <button id="closeListingModal"
-                class="absolute top-4 right-4 text-gray-600 hover:text-gray-900 text-2xl font-bold">&times;</button>
+            <button wire:click="closeAddListingModal"
+                class="absolute top-4 right-4 text-gray-600 cursor-pointer hover:text-gray-900 text-2xl font-bold">&times;</button>
 
             <div class="max-w-[1200px] mx-auto bg-white rounded-lg p-6 space-y-6 mt-4">
                 <!-- Title -->
                 <h2 class="text-4xl font-semibold text-gray-800 h-40px">Add Listing</h2>
 
                 <!-- Add Photos Section -->
-                <div onclick="document.getElementById('photoUpload').click()"
-                    class="h-56 sm:h-72 md:h-[457px] 
-           bg-gray-200 rounded-lg flex items-center justify-center 
-           border-2 border-dotted border-gray-400 
-           transition-colors cursor-pointer">
+                <div id="photoArea"
+                    class="h-56 sm:h-72 md:h-[457px] rounded-lg flex items-center justify-center transition-colors cursor-pointer"
+                    style="border: 4px dashed #C7AE6A;">
                     <div class="text-center px-2">
-                        <div class="mb-4">
-                            <svg class="w-12 h-12 mx-auto text-gray-400" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 21a9 9 0 100-18 9 9 0 000 18z" stroke-linecap="round"
-                                    stroke-linejoin="round" stroke-width="2"></path>
-                                <path d="M12 11a.5.5 0 100 1 .5.5 0 000-1zM8 12a4 4 0 118 0" stroke-linecap="round"
-                                    stroke-linejoin="round" stroke-width="2"></path>
-                                <path d="M12 7v8" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-                                </path>
-                                <path d="M9 12h6" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-                                </path>
+                        <div class="mb-4 flex items-center justify-center">
+                            <!-- Upload Icon -->
+                            <svg class="w-8 h-8 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
                             </svg>
                         </div>
                         <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop it here</p>
-                        <p class="text-sm text-gray-500 mt-1">JPEG, PNG, PDG, and MP4 formats, up to 50MB</p>
                         <button
                             class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                             Browse File
                         </button>
                     </div>
                 </div>
+
 
                 <input type="file" id="photoUpload" class="hidden" accept="image/*" multiple>
 
@@ -58,21 +52,21 @@
                     <div>
                         <label class="block text-sm font-medium mb-1">Main Service</label>
                         <select
-                            class="w-full border border-yellow-200 bg-[#F8F6EE] rounded p-2 h-[50px] focus:ring focus:ring-yellow-300">
+                            class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-4 h-[50px] focus:ring focus:ring-[#C7AE6A]">
                             <option>Select one category</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-sm font-medium mb-1">Sub Category</label>
                         <select
-                            class="w-full border border-yellow-200 bg-[#F8F6EE] rounded p-2 h-[50px] focus:ring focus:ring-yellow-300">
+                            class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:ring focus:ring-[#C7AE6A]">
                             <option>Select one category</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-sm font-medium mb-1">Specific Category</label>
                         <select
-                            class="w-full border border-yellow-200 bg-[#F8F6EE] rounded p-2 h-[50px] focus:ring focus:ring-yellow-300">
+                            class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:ring focus:ring-[#C7AE6A]">
                             <option>Select one category</option>
                         </select>
                     </div>
@@ -81,7 +75,7 @@
                 <!-- Description -->
                 <div>
                     <label class="block text-sm font-medium mb-1">Description</label>
-                    <textarea class="w-full border border-yellow-200 rounded p-2 h-[264px] focus:ring focus:ring-yellow-300"
+                    <textarea class="w-full border border-[#C7AE6A] rounded p-2 h-[264px] focus:ring focus:ring-[#C7AE6A]"
                         placeholder="Enter description"></textarea>
                 </div>
 
@@ -90,49 +84,35 @@
                     <div>
                         <label class="block text-sm font-medium mb-1">Location</label>
                         <input type="text" placeholder="Location"
-                            class="w-full border border-yellow-200 bg-[#F8F6EE] rounded p-2 h-[50px] focus:ring focus:ring-yellow-300" />
+                            class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:ring focus:ring-[#C7AE6A]" />
                     </div>
                     <div>
                         <label class="block text-sm font-medium mb-1">Open time</label>
                         <input type="text" placeholder="Open time"
-                            class="w-full border border-yellow-200 bg-[#F8F6EE] rounded p-2 h-[50px] focus:ring focus:ring-yellow-300" />
+                            class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:ring focus:ring-[#C7AE6A]" />
                     </div>
                 </div>
 
                 <!-- Status -->
-                <!-- Checkboxes -->
                 <div class="flex gap-6">
                     <!-- Active -->
                     <label class="relative flex items-center cursor-pointer">
                         <input type="checkbox"
-                            class="peer w-4 h-4 border border-gray-300 rounded 
-             appearance-none checked:bg-[#C7AE6A] checked:border-[#C7AE6A] 
-             focus:ring-[#C7AE6A]">
-                        <!-- Custom Tick -->
+                            class="peer w-4 h-4 border border-gray-300 rounded appearance-none checked:bg-[#C7AE6A] checked:border-[#C7AE6A] focus:ring-[#C7AE6A]">
                         <span
-                            class="pointer-events-none absolute left-0 top-0 w-4 h-4 flex items-center justify-center 
-             text-white text-sm hidden peer-checked:flex">
-                            ✔
-                        </span>
+                            class="pointer-events-none absolute left-0 top-0 w-4 h-4 flex items-center justify-center text-white text-sm hidden peer-checked:flex">✔</span>
                         <span class="ml-2 text-sm text-gray-700">Active</span>
                     </label>
 
                     <!-- Disable -->
                     <label class="relative flex items-center cursor-pointer">
                         <input type="checkbox"
-                            class="peer w-4 h-4 border border-gray-300 rounded 
-             appearance-none checked:bg-[#C7AE6A] checked:border-[#C7AE6A] 
-             focus:ring-[#C7AE6A]">
-                        <!-- Custom Tick -->
+                            class="peer w-4 h-4 border border-gray-300 rounded appearance-none checked:bg-[#C7AE6A] checked:border-[#C7AE6A] focus:ring-[#C7AE6A]">
                         <span
-                            class="pointer-events-none absolute left-0 top-0 w-4 h-4 flex items-center justify-center 
-             text-white text-sm hidden peer-checked:flex">
-                            ✔
-                        </span>
+                            class="pointer-events-none absolute left-0 top-0 w-4 h-4 flex items-center justify-center text-white text-sm hidden peer-checked:flex">✔</span>
                         <span class="ml-2 text-sm text-gray-700">Disable</span>
                     </label>
                 </div>
-
 
                 <!-- Save Button -->
                 <div class="flex justify-center md:justify-start">
@@ -145,79 +125,7 @@
         </div>
     </div>
 
-    <script>
-        const addBtn = document.getElementById('addListingBtn');
-        const addModal = document.getElementById('addListingModal');
-        const closeModal = document.getElementById('closeListingModal');
-        const input = document.getElementById("photoUpload");
-        const previewSlider = document.getElementById("previewSlider");
 
-        // Open modal
-        addBtn.addEventListener('click', () => {
-            addModal.classList.remove('hidden');
-            addModal.classList.add('flex');
-        });
-
-        // Close modal
-        closeModal.addEventListener('click', () => {
-            addModal.classList.add('hidden');
-            addModal.classList.remove('flex');
-        });
-
-        // Close when clicking outside
-        addModal.addEventListener('click', e => {
-            if (e.target === addModal) {
-                addModal.classList.add('hidden');
-                addModal.classList.remove('flex');
-            }
-        });
-
-        // Photo upload preview
-        input.addEventListener("change", () => {
-            previewSlider.innerHTML = "";
-            [...input.files].forEach((file) => {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    const wrapper = document.createElement("div");
-                    wrapper.className = "relative flex-shrink-0 w-[20%]"; // 5 images visible on desktop
-
-                    const img = document.createElement("img");
-                    img.src = e.target.result;
-                    img.className = "w-full h-32 object-cover rounded-lg";
-
-                    const delBtn = document.createElement("button");
-                    delBtn.innerHTML = "❌";
-                    delBtn.className =
-                        "absolute top-1 right-1 bg-black bg-opacity-50 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-red-600";
-                    delBtn.onclick = () => wrapper.remove();
-
-                    wrapper.appendChild(img);
-                    wrapper.appendChild(delBtn);
-                    previewSlider.appendChild(wrapper);
-                };
-                reader.readAsDataURL(file);
-            });
-        });
-    </script>
-
-    <style>
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        #previewSlider {
-            cursor: grab;
-        }
-
-        #previewSlider.cursor-grabbing {
-            cursor: grabbing;
-        }
-    </style>
 
 
     <div class="bg-white rounded-lg overflow-hidden mt-14 mb-5">
@@ -333,15 +241,16 @@
                     </div>
                     <!-- Actions -->
                     <div class="flex items-center justify-start md:justify-end col-span-2 space-x-2 mt-3 md:mt-0">
-                        <button id="editBtn"
-                            class="bg-[#C7AE6A] hover:bg-[#b99b52] text-black px-3 md:px-4 py-2 font-playfair rounded-sm flex items-center text-xs md:text-sm font-medium">
+                        <button wire:click="editListingModel"
+                            class="bg-[#C7AE6A] hover:bg-[#b99b52] text-black px-3 md:px-4 py-2 cursor-pointer font-playfair rounded-sm flex items-center text-xs md:text-sm font-medium">
                             <svg class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none">
                                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
                                     stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round" />
                                 <path d="m18.5 2.5 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2"
                                     stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>Edit
+                            </svg>
+                            Edit
                         </button>
 
                         <button class="text-[#C7AE6A] p-1 hover:text-[#b99b52]">
@@ -352,102 +261,79 @@
                                     clip-rule="evenodd" />
                             </svg>
                         </button>
-                        <!-- Modal Background -->
-                        <div id="editModal"
-                            class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+                        <!-- Modal -->
+                        @if ($editListingModal)
                             <div
-                                class="bg-white w-full max-w-[1200px] mx-auto rounded-lg p-6 overflow-y-auto max-h-[90vh]">
-                                <div class="flex justify-end">
-                                    <button id="closeModal"
-                                        class="text-gray-600 hover:text-gray-900 text-xl font-bold">&times;</button>
-                                </div>
-
-                                <h2 class="text-2xl font-semibold text-gray-800">Edit Listing</h2>
-
-                                <div onclick="document.getElementById('photoUpload').click()"
-                                    class="w-full h-[457px] bg-gray-200 rounded-lg flex items-center justify-center text-gray-600 text-lg cursor-pointer hover:bg-gray-300 transition mt-4">
-                                    Change Images
-                                </div>
-                                <input type="file" id="photoUpload" class="hidden" accept="image/*" multiple>
-
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                                    <div>
-                                        <label class="block text-sm font-medium mb-1">Title</label>
-                                        <input type="text"
-                                            class="w-full border border-yellow-200 bg-[#F8F6EE] rounded p-2 h-[50px] focus:ring focus:ring-yellow-300"
-                                            placeholder="Enter title">
+                                class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+                                <div
+                                    class="bg-white w-full max-w-[1200px] mx-auto rounded-lg p-6 overflow-y-auto max-h-[90vh]">
+                                    <div class="flex justify-end">
+                                        <button wire:click="closeEditListingModal"
+                                            class="text-gray-600 hover:text-gray-900 text-xl font-bold">&times;</button>
                                     </div>
-                                    <div>
-                                        <label class="block text-sm font-medium mb-1">Sub Title</label>
-                                        <input type="text"
-                                            class="w-full border border-yellow-200 bg-[#F8F6EE] rounded p-2 h-[50px] focus:ring focus:ring-yellow-300"
-                                            placeholder="Enter sub title">
+
+                                    <h2 class="text-2xl font-semibold text-gray-800">Edit Listing</h2>
+
+                                    <div onclick="document.getElementById('photoUpload').click()"
+                                        class="w-full h-[457px] bg-gray-200 rounded-lg flex items-center justify-center text-gray-600 text-lg cursor-pointer hover:bg-gray-300 transition mt-4">
+                                        Change Images
                                     </div>
-                                </div>
+                                    <input type="file" id="photoUpload" class="hidden" accept="image/*" multiple>
 
-                                <div class="mt-4">
-                                    <label class="block text-sm font-medium mb-1">Description</label>
-                                    <textarea class="w-full border border-yellow-200 rounded p-2 h-[264px] focus:ring focus:ring-yellow-300"
-                                        placeholder="Enter description"></textarea>
-                                </div>
-
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                                    <div>
-                                        <label class="block text-sm font-medium mb-1">Location</label>
-                                        <input type="text" placeholder="Location"
-                                            class="w-full border border-yellow-200 bg-[#F8F6EE] rounded p-2 h-[50px] focus:ring focus:ring-yellow-300" />
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                        <div>
+                                            <label class="block text-sm font-medium mb-1">Title</label>
+                                            <input type="text"
+                                                class="w-full border border-yellow-200 bg-[#F8F6EE] rounded p-2 h-[50px] focus:ring focus:ring-yellow-300"
+                                                placeholder="Enter title">
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium mb-1">Sub Title</label>
+                                            <input type="text"
+                                                class="w-full border border-yellow-200 bg-[#F8F6EE] rounded p-2 h-[50px] focus:ring focus:ring-yellow-300"
+                                                placeholder="Enter sub title">
+                                        </div>
                                     </div>
-                                    <div>
-                                        <label class="block text-sm font-medium mb-1">Open time</label>
-                                        <input type="text" placeholder="Open time"
-                                            class="w-full border border-yellow-200 bg-[#F8F6EE] rounded p-2 h-[50px] focus:ring focus:ring-yellow-300" />
+
+                                    <div class="mt-4">
+                                        <label class="block text-sm font-medium mb-1">Description</label>
+                                        <textarea class="w-full border border-yellow-200 rounded p-2 h-[264px] focus:ring focus:ring-yellow-300"
+                                            placeholder="Enter description"></textarea>
                                     </div>
-                                </div>
 
-                                <div class="flex items-center space-x-6 mt-4">
-                                    <label class="flex items-center space-x-2">
-                                        <input type="checkbox" class="form-checkbox" />
-                                        <span>Active</span>
-                                    </label>
-                                    <label class="flex items-center space-x-2">
-                                        <input type="checkbox" class="form-checkbox" />
-                                        <span>Disable</span>
-                                    </label>
-                                </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                        <div>
+                                            <label class="block text-sm font-medium mb-1">Location</label>
+                                            <input type="text" placeholder="Location"
+                                                class="w-full border border-yellow-200 bg-[#F8F6EE] rounded p-2 h-[50px] focus:ring focus:ring-yellow-300" />
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium mb-1">Open time</label>
+                                            <input type="text" placeholder="Open time"
+                                                class="w-full border border-yellow-200 bg-[#F8F6EE] rounded p-2 h-[50px] focus:ring focus:ring-yellow-300" />
+                                        </div>
+                                    </div>
 
-                                <div class="flex justify-center md:justify-start mt-6">
-                                    <button
-                                        class="px-8 py-2 bg-[#C7AE6A] text-black rounded-md hover:bg-opacity-90 transition-colors font-medium">
-                                        Save
-                                    </button>
+                                    <div class="flex items-center space-x-6 mt-4">
+                                        <label class="flex items-center space-x-2">
+                                            <input type="checkbox" class="form-checkbox" />
+                                            <span>Active</span>
+                                        </label>
+                                        <label class="flex items-center space-x-2">
+                                            <input type="checkbox" class="form-checkbox" />
+                                            <span>Disable</span>
+                                        </label>
+                                    </div>
+
+                                    <div class="flex justify-center md:justify-start mt-6">
+                                        <button
+                                            class="px-8 py-2 bg-[#C7AE6A] text-black rounded-md hover:bg-opacity-90 transition-colors font-medium">
+                                            Save
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <script>
-                            const editBtn = document.getElementById('editBtn');
-                            const editModal = document.getElementById('editModal');
-                            const closeModal = document.getElementById('closeModal');
-
-                            editBtn.addEventListener('click', () => {
-                                editModal.classList.remove('hidden');
-                                editModal.classList.add('flex');
-                            });
-
-                            closeModal.addEventListener('click', () => {
-                                editModal.classList.add('hidden');
-                                editModal.classList.remove('flex');
-                            });
-
-                            // Close modal when clicking outside
-                            editModal.addEventListener('click', e => {
-                                if (e.target === editModal) {
-                                    editModal.classList.add('hidden');
-                                    editModal.classList.remove('flex');
-                                }
-                            });
-                        </script>
-
+                        @endif
                     </div>
                 </div>
             @endforeach
