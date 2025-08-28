@@ -1,6 +1,6 @@
 <div class="flex items-center justify-center font-poppins">
 
-    <main class=" w-[1200px] mx-auto px-4 ">
+    <main class="max-w-[1200px] w-full mx-auto px-4">
 
         <!-- Main navigation container -->
         <nav class="mt-8 sm:mt-12 ">
@@ -22,7 +22,7 @@
                             class="flex-1 py-3 text-center font-semibold  {{ request()->routeIs('admin.users') ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-700 hover:bg-gray-200' }} rounded-sm focus:outline-none transition-colors duration-200 ease-in-out tab-active">
                             Users
                         </a>
-                       
+
 
                         <!-- Tab Item for Bookings -->
                         <a href="{{ route('admin.bookings') }}"
@@ -47,7 +47,7 @@
                             class="flex-1 py-3 text-center font-semibold rounded-sm focus:outline-none transition-colors duration-200 ease-in-out 
                            {{ request()->routeIs('admin.attendance') ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-700 hover:bg-gray-200' }}">
                             Attendance
-                        </a>    
+                        </a>
                     </div>
                 </div>
 

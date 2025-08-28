@@ -13,7 +13,7 @@ use App\Livewire\Admin\ListingManagement\Update as ListingUpdate;
 use App\Livewire\Admin\User;
 use Illuminate\Support\Facades\Route;
 
-Route::name('admin.')->group(function () {
+Route::name('admin.')->middleware(['api.auth'])->group(function () {
     Route::get('users', User::class)->name('users');
 
     Route::get('bookings', Booking::class)->name('bookings');
