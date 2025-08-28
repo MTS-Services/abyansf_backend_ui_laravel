@@ -1,4 +1,4 @@
-<section class="bg-white font-playfair mt-15">
+<section class="bg-white font-playfair mt-15 mb-20">
     
 
     @php
