@@ -4,7 +4,7 @@
     <div class="flex flex-col items-center justify-center relative mx-auto md:w-[1200px] h-32 ">
 
         <!-- Top Left Logo - Positioned absolutely -->
-        <div class="absolute top-6 left-4 md:left-0">
+        <div class="absolute top-4 left-4 md:left-0">
             <!-- Note: Using a placeholder image for demonstration -->
             <button>
                 <img src="{{ asset('image/Maskgroup.png') }}" alt="Logo" class="w-20 h-20 rounded-full">
@@ -13,7 +13,7 @@
         </div>
 
         <!-- Top Right Icons - Positioned absolutely -->
-        <div class="absolute top-12 right-4 md:right-6 flex items-center space-x-4">
+        <div class="absolute top-10 right-4 md:right-6 flex items-center space-x-4">
             <div class="relative inline-block">
                 <!-- Notification Button -->
                 <button id="notifyBtn"
