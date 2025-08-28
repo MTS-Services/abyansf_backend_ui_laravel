@@ -62,7 +62,7 @@ RUN apt-get update && apt-get install -y \
 # Install Composer from the official image
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Add custom php.ini (ensure this file exists in ./docker/php.ini)
+# Add custom php.ini
 COPY ./docker/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 # Set working directory
@@ -93,9 +93,10 @@ RUN php artisan config:clear \
     && php artisan migrate --force || true \
     && php artisan optimize:clear
 
-# Configure Nginx & Supervisor (ensure these files exist in ./docker/)
+# Configure Nginx & Supervisor
 RUN rm -f /etc/nginx/sites-enabled/default
-COPY ./docker/nginx.conf /etc/nginx/nginx.conf
+COPY ./docker/nginx.conf /etc/nginx/sites-available/default
+RUN ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Expose the HTTP port
