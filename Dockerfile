@@ -1,7 +1,7 @@
 # ----------------------------------------
 # 1. Build Frontend
 # ----------------------------------------
-FROM node:latest as node_builder
+FROM node:latest AS node_builder
 
 # Set the working directory inside the container
 WORKDIR /var/www
@@ -13,11 +13,11 @@ COPY . .
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Install PHP dependencies with Composer to generate the vendor directory
-# This is required so the 'livewire/flux' CSS file can be copied in the next step
+# This is required so the 'livewire/flux' CSS file can be moved in the next step
 RUN composer install --no-dev --optimize-autoloader
 
-# Copy Livewire Flux CSS from the newly created vendor directory
-COPY ./vendor/livewire/flux/dist/flux.css ./resources/css/livewire-flux.css
+# Move Livewire Flux CSS from the newly created vendor directory to the resources directory
+RUN cp ./vendor/livewire/flux/dist/flux.css ./resources/css/livewire-flux.css
 
 # Install npm dependencies and run the frontend build
 RUN npm install && npm run build
