@@ -22,7 +22,7 @@
                             class="flex-1 py-3 text-center font-semibold  {{ request()->routeIs('admin.users') ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-700 hover:bg-gray-200' }} rounded-sm focus:outline-none transition-colors duration-200 ease-in-out tab-active">
                             Users
                         </a>
-                       
+
 
                         <!-- Tab Item for Bookings -->
                         <a href="{{ route('admin.bookings') }}"
@@ -44,14 +44,12 @@
 
                         <!-- Tab Item for Attendance -->
                         <a href="{{ route('admin.attendance') }}"
-                            class="flex-1 py-3 text-center font-semibold rounded-sm focus:outline-none transition-colors duration-200 ease-in-out 
+                            class="flex-1 py-3 text-center font-semibold rounded-sm focus:outline-none transition-colors duration-200 ease-in-out
                            {{ request()->routeIs('admin.attendance') ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-700 hover:bg-gray-200' }}">
                             Attendance
-                        </a>    
+                        </a>
                     </div>
                 </div>
-
-
             </div>
         </nav>
     </main>
