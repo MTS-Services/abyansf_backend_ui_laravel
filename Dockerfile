@@ -3,15 +3,23 @@
 # ----------------------------------------
 FROM node:latest as node_builder
 
+# Set the working directory inside the container
 WORKDIR /var/www
 
-# Copy all files from the project directory into the container
+# Copy all project files into the container
 COPY . .
 
-# Copy Livewire Flux CSS
+# Copy the Composer executable into the node_builder stage
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Install PHP dependencies with Composer to generate the vendor directory
+# This is required so the 'livewire/flux' CSS file can be copied in the next step
+RUN composer install --no-dev --optimize-autoloader
+
+# Copy Livewire Flux CSS from the newly created vendor directory
 COPY ./vendor/livewire/flux/dist/flux.css ./resources/css/livewire-flux.css
 
-# Install npm dependencies and build assets
+# Install npm dependencies and run the frontend build
 RUN npm install && npm run build
 
 # ----------------------------------------
@@ -22,7 +30,7 @@ FROM php:8.3-fpm
 # Add custom php.ini file
 COPY ./docker/php.ini /usr/local/etc/php/conf.d/custom.ini
 
-# Install system dependencies
+# Install system dependencies required for the application
 RUN apt-get update && apt-get install -y \
     nginx \
     git \
@@ -42,9 +50,9 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo_mysql mbstring zip exif pcntl gd
 
 # Install Composer
-COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory
+# Set working directory for the final image
 WORKDIR /var/www
 
 # Copy Laravel app source
@@ -59,10 +67,10 @@ RUN mkdir -p storage/framework/{views,sessions,cache} \
     && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
-# Install PHP dependencies
+# Install PHP dependencies (again, in the final stage)
 RUN composer install --no-dev --optimize-autoloader
 
-# Laravel Artisan commands
+# Run Laravel Artisan commands to clear and cache configurations
 RUN php artisan config:clear \
     && php artisan route:clear \
     && php artisan view:clear \
@@ -80,5 +88,5 @@ COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Expose HTTP port
 EXPOSE 80
 
-# Start all services
+# Start all services with Supervisor
 CMD ["/usr/bin/supervisord", "-n"]
