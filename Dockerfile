@@ -38,6 +38,9 @@ WORKDIR /var/www
 # Copy Laravel app source
 COPY . .
 
+# Change ownership of the entire application directory to the www-data user
+RUN chown -R www-data:www-data /var/www
+
 # Prepare Laravel cache paths & permissions
 RUN mkdir -p storage/framework/{views,sessions,cache} \
     && mkdir -p bootstrap/cache \
