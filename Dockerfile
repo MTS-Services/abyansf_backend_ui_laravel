@@ -8,8 +8,11 @@ WORKDIR /var/www
 # Copy all files from the project directory into the container
 COPY . .
 
+# Copy Livewire Flux CSS
+COPY ./vendor/livewire/flux/dist/flux.css ./resources/css/livewire-flux.css
+
 # Install npm dependencies and build assets
-RUN npm install
+RUN npm install && npm run build
 
 # ----------------------------------------
 # 2. Build PHP backend
@@ -68,9 +71,6 @@ RUN php artisan config:clear \
     && php artisan view:cache \
     && php artisan migrate --force || true \
     && php artisan optimize:clear
-
-# Install Node dependencies
-RUN npm install && npm run build
 
 # Configure Nginx and Supervisor
 RUN rm -f /etc/nginx/sites-enabled/default
