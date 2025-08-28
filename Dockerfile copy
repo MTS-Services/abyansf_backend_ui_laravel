@@ -1,3 +1,19 @@
+# ----------------------------------------
+# 1. Build Frontend
+# ----------------------------------------
+FROM node:latest as node_builder
+
+WORKDIR /var/www
+
+# Copy all files from the project directory into the container
+COPY . .
+
+# Install npm dependencies and build assets
+RUN npm install && npm run build
+
+# ----------------------------------------
+# 2. Build PHP backend
+# ----------------------------------------
 FROM php:8.3-fpm
 
 # Add custom php.ini file
@@ -22,13 +38,6 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo_mysql mbstring zip exif pcntl gd
 
-
-# Install Node.js 20 LTS for better performance
-RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
 # Install Composer
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 
@@ -38,6 +47,9 @@ WORKDIR /var/www
 # Copy Laravel app source
 COPY . .
 
+# Copy built frontend assets from the node_builder stage
+COPY --from=node_builder /var/www/public/build public/build
+
 # Prepare Laravel cache paths & permissions
 RUN mkdir -p storage/framework/{views,sessions,cache} \
     && mkdir -p bootstrap/cache \
@@ -46,9 +58,6 @@ RUN mkdir -p storage/framework/{views,sessions,cache} \
 
 # Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
-
-# Install npm dependencies and build assets
-RUN npm install && npm run build
 
 # Laravel Artisan commands
 RUN php artisan config:clear \
