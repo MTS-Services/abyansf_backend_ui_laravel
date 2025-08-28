@@ -5,7 +5,7 @@
         <!-- Main navigation container -->
         <nav class="mt-8 sm:mt-12 ">
             <!-- Main heading for the dashboard -->
-            <h1 class="navbar_h1 text-4xl md:text-4xl font-semibold pb-4 sm:pb-8 text-left text-gray-800">
+            <h1 class="navbar_h1 text-4xl md:text-4xl font-semibold  sm:pb-6 text-left text-gray-800">
                 Admin Dashboard
             </h1>
 

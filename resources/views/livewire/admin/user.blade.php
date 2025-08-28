@@ -1,8 +1,8 @@
 <main>
 
     <div class="#">
-        <div class="w-[1200px] mx-auto p-4 mt-6">
-            <h2 class=" font-medium text-3xl text-black mb-6">User Management</h2>
+        <div class="w-[1200px] mx-auto p-4 mt-10">
+            <h2 class=" font-medium text-3xl text-black mb-8">User Management</h2>
             <div class="overflow-hidden">
                 <!-- Table Container: Adds horizontal scroll for small devices if needed -->
                 <div class="overflow-x-auto">

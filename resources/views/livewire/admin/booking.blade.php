@@ -1,5 +1,4 @@
-<section class="bg-white font-playfair mt-15 mb-20">
-
+<section class="bg-white font-playfair">
 
     @php
         $bookings = [
@@ -38,38 +37,39 @@
         ];
     @endphp
 
-    <section class="sm:max-w-7xl lg:w-[1200px] mx-auto p-4   font-poppins">
+    <section class="sm:max-w-7xl lg:w-[1200px] mx-auto p-4 font-poppins">
         <div class="booking_h2">
-            <h2 class="font-semibold mb-10 font-poppins text-black text-2xl sm:text-3xl">Booking Management</h2>
+            <h2 class="font-medium mt-6 mb-6 font-poppins text-black text-2xl sm:text-2xl">Booking Management</h2>
 
             <div class="bg-white rounded-lg max-w-[1200px] min-h-[60px] relative z-10">
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
                     <div>
-                        <label class="block text-sm lg:text-base font-semibold text-gray-700 mb-2">User</label>
+                        <label class="block text-base lg:text-base font-semibold text-[#5D5D5D] mb-2">User</label>
                         <select
-                            class="w-full border-b border-gray-400 text-base font-poppins bg-transparent focus:outline-none focus:border-blue-500">
+                            class="w-full border-b border-gray-400 text-[#5D5D5D] text-base font-normal font-poppins bg-transparent focus:outline-none focus:border-blue-500">
                             <option>All Users</option>
                         </select>
                     </div>
 
                     <div>
-                        <label class="block text-sm lg:text-base font-medium text-gray-700 mb-2">Services</label>
+                        <label class="block text-base lg:text-base font-semibold text-[#5D5D5D] mb-2">Services</label>
                         <select
-                            class="w-full border-b border-gray-400 text-base font-poppins bg-transparent focus:outline-none focus:border-blue-500">
+                            class="w-full border-b border-gray-400 text-[#5D5D5D] text-base font-normal font-poppins bg-transparent focus:outline-none focus:border-blue-500">
                             <option>All Services</option>
                         </select>
                     </div>
 
                     <div>
-                        <label class="block text-sm lg:text-base font-medium text-gray-700 mb-2">Date</label>
+                        <label
+                            class="block text-base lg:text-base font-semibold text-[#5D5D5D] mb-2 text-[#5D5D5D]">Date</label>
                         <input type="date"
-                            class="w-full border-b border-gray-400 text-base font-poppins bg-transparent focus:outline-none focus:border-blue-500"
+                            class="w-full border-b border-gray-400 text-[#5D5D5D] text-base font-normal font-poppins bg-transparent focus:outline-none focus:border-blue-500"
                             placeholder="dd/mm/yyyy">
                     </div>
 
                     <div>
                         <button
-                            class="w-full bg-[#C7AE6A] hover:bg-[#b49a5e] text-black text-sm font-playfair py-4 px-4 rounded-md transition-colors duration-200">
+                            class="w-full bg-[#C7AE6A] hover:bg-[#b49a5e] text-black font-medium font-playfair text-base py-4 px-4 rounded-md transition-colors duration-200">
                             Apply Filters
                         </button>
                     </div>
@@ -95,7 +95,7 @@
                                                 d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                                         </svg>
                                         <svg x-show="open" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                                            stroke="currentColor">
+                                            stroke="currentColor">     
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M20 12H4" />
                                         </svg>
@@ -138,22 +138,22 @@
                         <thead>
                             <tr>
                                 <th
-                                    class="px-5 py-3 text-left text-base font-semibold text-black uppercase tracking-wider">
+                                    class="px-5 py-3 text-left text-base font-medium text-black uppercase tracking-wider">
                                     ID</th>
                                 <th
-                                    class="px-5 py-3 text-left text-base font-semibold text-black uppercase tracking-wider">
+                                    class="px-5 py-3 text-left text-base font-medium text-black uppercase tracking-wider">
                                     MEMBER</th>
                                 <th
-                                    class="px-5 py-3 text-left text-base font-semibold text-black uppercase tracking-wider">
+                                    class="px-5 py-3 text-left text-base font-medium text-black uppercase tracking-wider">
                                     SERVICE</th>
                                 <th
-                                    class="px-5 py-3 text-left text-base font-semibold text-black uppercase tracking-wider">
+                                    class="px-5 py-3 text-left text-base font-medium text-black uppercase tracking-wider">
                                     TIME & DATE</th>
                                 <th
-                                    class="px-5 py-3 text-left text-base font-semibold text-black uppercase tracking-wider">
+                                    class="px-5 py-3 text-left text-base font-medium text-black uppercase tracking-wider">
                                     STATUS</th>
                                 <th
-                                    class="px-5 py-3 text-center text-base font-semibold text-black uppercase tracking-wider">
+                                    class="px-5 py-3 text-center text-base font-medium text-black uppercase tracking-wider">
                                     ACTIONS</th>
                             </tr>
                         </thead>
