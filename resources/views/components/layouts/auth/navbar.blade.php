@@ -3,9 +3,9 @@
     <main class=" w-[1200px] mx-auto px-4 ">
 
         <!-- Main navigation container -->
-        <nav class="mt-8 sm:mt-12 ">
+        <nav class=" sm:mt-12 ">
             <!-- Main heading for the dashboard -->
-            <h1 class="navbar_h1 text-4xl md:text-4xl font-semibold  sm:pb-6 text-left text-gray-800">
+            <h1 class="navbar_h1 text-4xl md:text-4xl pb-4 font-semibold text-left text-gray-800">
                 Admin Dashboard
             </h1>
 

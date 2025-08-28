@@ -1,15 +1,15 @@
-<main>
+<main class="font-family">
 
     <div class="#">
-        <div class="w-[1200px] mx-auto p-4 mt-10">
-            <h2 class=" font-medium text-3xl text-black mb-8">User Management</h2>
+        <div class="w-[1200px] mx-auto p-4 mt-5">
+            <h2 class=" font-medium text-3xl text-black mb-4 ">User Management</h2>
             <div class="overflow-hidden">
                 <!-- Table Container: Adds horizontal scroll for small devices if needed -->
                 <div class="overflow-x-auto">
                     <table class="min-w-full leading-normal hidden sm:table">
                         <thead>
                             <tr class="bg-[#e7e7e7] text-black font-medium ">
-                                <th class="p-4 text-left font-medium text-base">ID</th>
+                                <th class="p-4 text-left font-medium text-base ">ID</th>
                                 <th class="p-4 text-left font-medium text-base">Name</th>
                                 <th class="p-4 text-left font-medium text-base">Email</th>
                                 <th class="p-4 text-left font-medium text-base">Number</th>
