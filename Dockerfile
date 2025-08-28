@@ -1,114 +1,58 @@
-# ----------------------------------------
-# 1. Build Frontend Assets
-# ----------------------------------------
-FROM node:18-alpine AS frontend
-
-WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-
-# Install dependencies
-RUN npm ci --only=production=false
-
-# Copy source code
-COPY . .
-
-# Install PHP for composer (needed for Livewire dependencies)
-RUN apk add --no-cache php81 php81-phar php81-json php81-curl php81-openssl php81-zip
-
-# Install composer
-COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
-
-# Install PHP dependencies for frontend build
-RUN composer install --no-dev --optimize-autoloader --no-scripts
-
-# Build frontend assets
-RUN npm run build
-
-# ----------------------------------------
-# 2. Production PHP Container
-# ----------------------------------------
+# Simple Laravel Dockerfile
 FROM php:8.3-fpm
 
-# Install system dependencies
+# Install basic system packages
 RUN apt-get update && apt-get install -y \
-    nginx \
-    git \
-    unzip \
-    curl \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    libzip-dev \
-    zip \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
-    supervisor \
-    sqlite3 \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    nginx supervisor sqlite3 curl git unzip \
+    libpng-dev libjpeg62-turbo-dev libfreetype6-dev libzip-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo_mysql pdo_sqlite mbstring zip exif pcntl gd \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Configure and install PHP extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo_mysql pdo_sqlite mbstring zip exif pcntl gd
+# Install Node.js 18 (LTS)
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install Composer
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 
-# Add custom php.ini
+# Custom PHP configuration
 COPY ./docker/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 # Set working directory
 WORKDIR /var/www
 
-# Copy composer files first
+# Copy and install PHP dependencies first
 COPY composer.json composer.lock ./
-
-# Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Copy application files
+# Copy and install Node dependencies
+COPY package*.json ./
+RUN npm ci
+
+# Copy all files
 COPY . .
 
-# Copy built assets from frontend stage
-COPY --from=frontend /app/public/build ./public/build
+# Run post-install scripts and build assets
+RUN composer run-script post-autoload-dump && npm run build
 
-# Set proper permissions
-RUN chown -R www-data:www-data /var/www \
-    && find /var/www -type f -exec chmod 644 {} \; \
-    && find /var/www -type d -exec chmod 755 {} \; \
-    && chmod -R 775 /var/www/storage \
-    && chmod -R 775 /var/www/bootstrap/cache \
-    && chmod 755 /var/www/artisan
-
-# Run composer scripts
-RUN composer run-script post-autoload-dump
-
-# Prepare Laravel directories
-RUN mkdir -p storage/framework/{views,sessions,cache} \
-    && mkdir -p bootstrap/cache \
-    && touch storage/logs/laravel.log \
+# Set up Laravel
+RUN mkdir -p storage/framework/{views,sessions,cache} bootstrap/cache \
     && touch database/database.sqlite \
-    && chown -R www-data:www-data storage bootstrap/cache database/database.sqlite \
+    && chown -R www-data:www-data storage bootstrap/cache database \
     && chmod -R 775 storage bootstrap/cache \
     && chmod 664 database/database.sqlite
 
-# Configure PHP-FPM
-RUN echo "listen = 127.0.0.1:9000" >> /usr/local/etc/php-fpm.d/zz-docker.conf
+# Configure services
+RUN echo "listen = 127.0.0.1:9000" >> /usr/local/etc/php-fpm.d/zz-docker.conf \
+    && rm -f /etc/nginx/sites-enabled/default
 
-# Laravel Artisan commands
-RUN php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
-
-# Configure Nginx and Supervisor
-RUN rm -f /etc/nginx/sites-enabled/default
 COPY ./docker/nginx.conf /etc/nginx/nginx.conf
 COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Expose port
-EXPOSE 80
+# Laravel commands
+RUN php artisan config:cache && php artisan route:cache && php artisan view:cache
 
-# Start services
+EXPOSE 80
 CMD ["/usr/bin/supervisord", "-n"]
