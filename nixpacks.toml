@@ -1,9 +1,8 @@
-# nixpacks.toml
 [start]
-cmd = "php artisan serve --host=0.0.0.0 --port=8080"
+cmd = "supervisord -c /etc/supervisor/conf.d/supervisord.conf"
 
 [phases.setup]
-nixPkgs = ["php", "composer", "mysql"]
+nixPkgs = ["php", "composer", "nginx", "supervisor", "gnupg"]
 
 [phases.install]
 cmds = ["composer install --no-dev --optimize-autoloader"]
