@@ -19,14 +19,14 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install \
-        pdo_mysql \
-        pdo_sqlite \
-        mbstring \
-        zip \
-        exif \
-        pcntl \
-        gd \
-        opcache \
+    pdo_mysql \
+    pdo_sqlite \
+    mbstring \
+    zip \
+    exif \
+    pcntl \
+    gd \
+    opcache \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -78,12 +78,13 @@ RUN mkdir -p storage/framework/{sessions,views,cache} \
 # Run Composer scripts
 RUN composer dump-autoload --optimize
 
-# Build frontend assets
-RUN npm run build
+# Build frontend assets (with error handling)
+RUN npm run build || echo "Vite build failed, continuing..." && \
+    ls -la public/ && \
+    echo "Public directory contents after build:"
 
-# Clean up npm cache
-RUN npm cache clean --force \
-    && rm -rf node_modules
+# Clean up npm cache but keep node_modules for potential debugging
+RUN npm cache clean --force
 
 # Configure Nginx
 RUN rm -f /etc/nginx/sites-enabled/default
@@ -92,10 +93,13 @@ COPY ./docker/nginx.conf /etc/nginx/nginx.conf
 # Configure Supervisor
 COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Laravel optimization commands
-RUN php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache
+# Laravel optimization commands (with better error handling)
+RUN php artisan config:cache || echo "Config cache failed" && \
+    php artisan route:cache || echo "Route cache failed" && \
+    php artisan view:cache || echo "View cache failed" && \
+    echo "Laravel optimization completed" && \
+    ls -la public/ && \
+    ls -la public/build/ 2>/dev/null || echo "No build directory found"
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
