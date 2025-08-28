@@ -1,10 +1,35 @@
 # ----------------------------------------
-# Laravel Application with Starter Kits
+# 1. Build Frontend Assets
+# ----------------------------------------
+FROM node:18-alpine AS frontend
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci --only=production=false
+
+# Copy source code
+COPY . .
+
+# Install PHP for composer (needed for Livewire dependencies)
+RUN apk add --no-cache php81 php81-phar php81-json php81-curl php81-openssl php81-zip
+
+# Install composer
+COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
+
+# Install PHP dependencies for frontend build
+RUN composer install --no-dev --optimize-autoloader --no-scripts
+
+# Build frontend assets
+RUN npm run build
+
+# ----------------------------------------
+# 2. Production PHP Container
 # ----------------------------------------
 FROM php:8.3-fpm
-
-# Add custom php.ini file
-COPY ./docker/php.ini /usr/local/etc/php/conf.d/custom.ini
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -20,15 +45,7 @@ RUN apt-get update && apt-get install -y \
     libjpeg62-turbo-dev \
     libfreetype6-dev \
     supervisor \
-    gnupg2 \
-    ca-certificates \
     sqlite3 \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Node.js
-RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
-    && apt-get install -y nodejs \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -39,25 +56,25 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 # Install Composer
 COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 
+# Add custom php.ini
+COPY ./docker/php.ini /usr/local/etc/php/conf.d/custom.ini
+
 # Set working directory
 WORKDIR /var/www
 
-# Copy composer files first for better caching
+# Copy composer files first
 COPY composer.json composer.lock ./
 
-# Install PHP dependencies first (this makes vendor/livewire available)
+# Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-# Copy package.json files for better caching
-COPY package*.json ./
-
-# Install Node.js dependencies
-RUN npm ci --production=false
-
-# Copy all application files
+# Copy application files
 COPY . .
 
-# Set proper ownership and permissions BEFORE running scripts
+# Copy built assets from frontend stage
+COPY --from=frontend /app/public/build ./public/build
+
+# Set proper permissions
 RUN chown -R www-data:www-data /var/www \
     && find /var/www -type f -exec chmod 644 {} \; \
     && find /var/www -type d -exec chmod 755 {} \; \
@@ -65,53 +82,33 @@ RUN chown -R www-data:www-data /var/www \
     && chmod -R 775 /var/www/bootstrap/cache \
     && chmod 755 /var/www/artisan
 
-# Run composer scripts after copying all files and fixing permissions
+# Run composer scripts
 RUN composer run-script post-autoload-dump
 
-# Build frontend assets (now vendor/livewire is available)
-RUN npm run build
-
-# Prepare Laravel cache paths & permissions
+# Prepare Laravel directories
 RUN mkdir -p storage/framework/{views,sessions,cache} \
     && mkdir -p bootstrap/cache \
     && touch storage/logs/laravel.log \
-    && chown -R www-data:www-data storage bootstrap/cache \
-    && chmod -R 775 storage bootstrap/cache
+    && touch database/database.sqlite \
+    && chown -R www-data:www-data storage bootstrap/cache database/database.sqlite \
+    && chmod -R 775 storage bootstrap/cache \
+    && chmod 664 database/database.sqlite
 
-# Create SQLite database file if using SQLite
-RUN touch /var/www/database/database.sqlite \
-    && chown www-data:www-data /var/www/database/database.sqlite \
-    && chmod 664 /var/www/database/database.sqlite
-
-# Configure PHP-FPM to listen on 127.0.0.1:9000
-RUN echo "listen = 127.0.0.1:9000" >> /usr/local/etc/php-fpm.d/zz-docker.conf \
-    && echo "pm = dynamic" >> /usr/local/etc/php-fpm.d/zz-docker.conf \
-    && echo "pm.max_children = 20" >> /usr/local/etc/php-fpm.d/zz-docker.conf \
-    && echo "pm.start_servers = 2" >> /usr/local/etc/php-fpm.d/zz-docker.conf \
-    && echo "pm.min_spare_servers = 1" >> /usr/local/etc/php-fpm.d/zz-docker.conf \
-    && echo "pm.max_spare_servers = 3" >> /usr/local/etc/php-fpm.d/zz-docker.conf
+# Configure PHP-FPM
+RUN echo "listen = 127.0.0.1:9000" >> /usr/local/etc/php-fpm.d/zz-docker.conf
 
 # Laravel Artisan commands
-RUN php artisan config:clear \
-    && php artisan route:clear \
-    && php artisan view:clear \
-    && php artisan config:cache \
+RUN php artisan config:cache \
     && php artisan route:cache \
-    && php artisan view:cache \
-    && php artisan migrate --force || true \
-    && php artisan optimize:clear
+    && php artisan view:cache
 
 # Configure Nginx and Supervisor
-RUN rm -f /etc/nginx/sites-enabled/default \
-    && rm -f /etc/nginx/sites-available/default
+RUN rm -f /etc/nginx/sites-enabled/default
 COPY ./docker/nginx.conf /etc/nginx/nginx.conf
 COPY ./docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Final permission fix
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
-
-# Expose HTTP port
+# Expose port
 EXPOSE 80
 
-# Start all services
+# Start services
 CMD ["/usr/bin/supervisord", "-n"]
