@@ -22,7 +22,7 @@ class Login extends Component
     public function mount()
     {
         if (api_is_authenticated()) {
-            $this->redirect(route('admin.users'));
+            return $this->redirectRoute('admin.users',  navigate: true);
         }
     }
 
@@ -41,7 +41,7 @@ class Login extends Component
             if ($response->successful()) {
                 $accessToken = $response->json('token');
                 Session::put('api_token', $accessToken);
-                $this->redirect(route('admin.users'));
+                return $this->redirectRoute('admin.users',  navigate: true);
             } else {
                 // Set the error message directly without throwing an exception.
                 $this->errorMessage = $response->json('message') ?? 'Login failed. Please check your credentials.';
