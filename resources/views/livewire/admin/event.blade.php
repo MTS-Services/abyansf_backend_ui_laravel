@@ -3,147 +3,141 @@
 
     <!-- Add Event Modal -->
     <!-- Add Event Modal -->
-<div 
-    x-data 
-    x-effect="document.body.classList.toggle('overflow-hidden', @entangle('addEventModal'))"
-    class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 {{ $addEventModal ? '' : 'hidden' }}">
+    <div x-data x-init="$watch('$wire.addEventModal', value => document.body.classList.toggle('overflow-hidden', value))"
+        class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 {{ $addEventModal ? '' : 'hidden' }}">
 
-    <!-- Modal Content -->
-    <div class="bg-white w-full max-w-[1200px] mx-auto rounded-lg p-6 relative max-h-[90vh] overflow-y-auto">
-        
-        <!-- Close button -->
-        <button wire:click="switchAddEventModal"
-            class="absolute top-4 right-4 text-gray-600 cursor-pointer hover:text-gray-900 text-2xl font-bold">&times;
-        </button>
+        <!-- Modal Content -->
+        <div class="bg-white w-full max-w-[1200px] mx-auto rounded-lg p-6 relative max-h-[90vh] overflow-y-auto">
 
-        <!-- Header -->
-        <div class="flex items-center justify-between border-b border-gray-200 pb-4">
-            <h1 class="text-4xl font-semibold text-gray-900">Add Event</h1>
-        </div>
+            <!-- Close button -->
+            <button wire:click="switchAddEventModal"
+                class="absolute top-4 right-4 text-gray-600 cursor-pointer hover:text-gray-900 text-2xl font-bold">&times;
+            </button>
 
-        <!-- Form Content -->
-        <div class="p-6 space-y-6">
-            <!-- Photo Upload Area -->
-            <div x-data="fileUpload()" class="space-y-4">
-                <!-- Upload Box -->
-                <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A]"
-                    @dragover.prevent="dragOver = true"
-                    @dragleave.prevent="dragOver = false"
-                    @drop.prevent="handleDrop($event)"
-                    @click="$refs.fileInput.click()"
-                    :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
+            <!-- Header -->
+            <div class="flex items-center justify-between border-b border-gray-200 pb-4">
+                <h1 class="text-4xl font-semibold text-gray-900">Add Event</h1>
+            </div>
 
-                    <!-- Hidden File Input -->
-                    <input type="file" x-ref="fileInput" multiple class="hidden" @change="handleFiles($event)">
+            <!-- Form Content -->
+            <div class="p-6 space-y-6">
+                <!-- Photo Upload Area -->
+                <div x-data="fileUpload()" class="space-y-4">
+                    <!-- Upload Box -->
+                    <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
+                        @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
+                        @drop.prevent="handleDrop($event)" @click="$refs.fileInput.click()"
+                        :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
 
-                    <div class="text-center px-2">
-                        <div class="mb-4 flex items-center justify-center">
-                            <!-- Upload Icon -->
-                            <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 20 16">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-                            </svg>
-                        </div>
+                        <!-- Hidden File Input -->
+                        <input type="file" x-ref="fileInput" multiple class="hidden" @change="handleFiles($event)">
 
-                        <!-- Placeholder Text -->
-                        <template x-if="!images.length">
-                            <div>
-                                <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop it here</p>
-                                <button type="button"
-                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                                    Browse File
-                                </button>
+                        <!-- Placeholder Text (Always visible) -->
+                        <div class="text-center px-2">
+                            <div class="mb-4 flex items-center justify-center">
+                                <!-- Upload Icon -->
+                                <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                    viewBox="0 0 20 16">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                </svg>
                             </div>
-                        </template>
-                    </div>
-                </div>
 
-                <!-- Image Preview Section -->
-                <div x-show="images.length" class="flex flex-wrap gap-2 mt-3">
-                    <template x-for="(img, index) in images" :key="index">
-                        <div class="relative">
-                            <img :src="img" class="w-32 h-32 object-cover rounded-md border" alt="Preview">
-                            <button type="button" @click="removeImage(index)"
-                                class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">×</button>
+                            <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop it here</p>
+                            <button type="button"
+                                class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                                Browse File
+                            </button>
                         </div>
-                    </template>
-                </div>
-            </div>
+                    </div>
 
-            <!-- Title and Max Person -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
-                    <input type="text" placeholder="Title text"
-                        class="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
+                    <!-- Image Preview Section -->
+                    <div x-show="images.length" class="overflow-x-auto mt-3">
+                        <div class="flex gap-2 min-w-max">
+                            <template x-for="(img, index) in images" :key="index">
+                                <div class="relative w-32 flex-shrink-0">
+                                    <img :src="img" class="w-full h-32 object-cover rounded-md border"
+                                        alt="Preview">
+                                    <button type="button" @click="removeImage(index)"
+                                        class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">×</button>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Max person</label>
-                    <input type="number" placeholder="Max person"
-                        class="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
-                </div>
-            </div>
 
-            <!-- Description -->
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                <textarea rows="6" placeholder="Enter description"
-                    class="w-full px-3 py-2 h-[264px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] resize-none"></textarea>
-            </div>
-
-            <!-- Location, Time, Date -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
-                    <input type="text" placeholder="Location"
-                        class="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
-                </div>
-                <div class="col-span-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Title and Max Person -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Time</label>
-                        <input type="time"
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                        <input type="text" placeholder="Title text"
                             class="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Date</label>
-                        <input type="date"
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Max person</label>
+                        <input type="number" placeholder="Max person"
                             class="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
                     </div>
                 </div>
-            </div>
 
-            <!-- Checkboxes -->
-            <div class="flex gap-6">
-                <label class="relative flex items-center cursor-pointer">
-                    <input type="checkbox"
-                        class="peer w-4 h-4 border border-gray-300 rounded appearance-none checked:bg-[#C7AE6A] checked:border-[#C7AE6A] focus:ring-[#C7AE6A]">
-                    <span
-                        class="pointer-events-none absolute left-0 top-0 w-4 h-4 flex items-center justify-center text-white text-sm hidden peer-checked:flex">✔</span>
-                    <span class="ml-2 text-sm text-gray-700">Active</span>
-                </label>
+                <!-- Description -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                    <textarea rows="6" placeholder="Enter description"
+                        class="w-full px-3 py-2 h-[264px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] resize-none"></textarea>
+                </div>
 
-                <label class="relative flex items-center cursor-pointer">
-                    <input type="checkbox"
-                        class="peer w-4 h-4 border border-gray-300 rounded appearance-none checked:bg-[#C7AE6A] checked:border-[#C7AE6A] focus:ring-[#C7AE6A]">
-                    <span
-                        class="pointer-events-none absolute left-0 top-0 w-4 h-4 flex items-center justify-center text-white text-sm hidden peer-checked:flex">✔</span>
-                    <span class="ml-2 text-sm text-gray-700">Disable</span>
-                </label>
-            </div>
+                <!-- Location, Time, Date -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                        <input type="text" placeholder="Location"
+                            class="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
+                    </div>
+                    <div class="col-span-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Time</label>
+                            <input type="time"
+                                class="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                            <input type="date"
+                                class="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
+                        </div>
+                    </div>
+                </div>
 
-            <!-- Save Button -->
-            <div class="flex justify-center md:justify-start mt-6">
-                <button
-                    class="px-6 py-2 bg-[#C7AE6A] text-black rounded-md hover:bg-opacity-90 transition-colors font-medium">
-                    Save
-                </button>
+                <!-- Checkboxes -->
+                <div class="flex gap-6">
+                    <label class="relative flex items-center cursor-pointer">
+                        <input type="checkbox"
+                            class="peer w-4 h-4 border border-gray-300 rounded appearance-none checked:bg-[#C7AE6A] checked:border-[#C7AE6A] focus:ring-[#C7AE6A]">
+                        <span
+                            class="pointer-events-none absolute left-0 top-0 w-4 h-4 flex items-center justify-center text-white text-sm hidden peer-checked:flex">✔</span>
+                        <span class="ml-2 text-sm text-gray-700">Active</span>
+                    </label>
+
+                    <label class="relative flex items-center cursor-pointer">
+                        <input type="checkbox"
+                            class="peer w-4 h-4 border border-gray-300 rounded appearance-none checked:bg-[#C7AE6A] checked:border-[#C7AE6A] focus:ring-[#C7AE6A]">
+                        <span
+                            class="pointer-events-none absolute left-0 top-0 w-4 h-4 flex items-center justify-center text-white text-sm hidden peer-checked:flex">✔</span>
+                        <span class="ml-2 text-sm text-gray-700">Disable</span>
+                    </label>
+                </div>
+
+                <!-- Save Button -->
+                <div class="flex justify-center md:justify-start mt-6">
+                    <button
+                        class="px-6 py-2 bg-[#C7AE6A] text-black rounded-md cursor-pointer hover:bg-opacity-90 transition-colors font-medium">
+                        Save
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-</div>
-
 
 
     <div class="bg-white rounded-lg overflow-hidden mt-14 mb-5">
@@ -263,7 +257,7 @@
                     <div class="flex items-center justify-start md:justify-end col-span-2 space-x-2 mt-3 md:mt-0">
                         <!-- Edit Button -->
                         <!-- Edit Button -->
-                        <button wire:click="editEventModel"
+                        <button wire:click="switchEditEventModel"
                             class="bg-[#C7AE6A] hover:bg-[#b99b52] text-black cursor-pointer px-3 font-playfair md:px-4 py-2 rounded-sm flex items-center text-xs md:text-sm font-medium">
                             <svg class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none">
                                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
@@ -294,139 +288,133 @@
                 </div>
             @endforeach
             <!-- Modal -->
-            <!-- Modal -->
-            @if ($editEventModal)
-                <div class="fixed inset-0  bg-black/70 z-50 flex items-center justify-center p-4">
-                    <div
-                        class="bg-white w-full max-w-[1200px] mx-auto rounded-lg p-6 relative max-h-[90vh] overflow-y-auto">
-                        <!-- Close button -->
-                        <button wire:click="closeEditEventModal"
-                            class="absolute top-4 right-4 text-gray-600 cursor-pointer hover:text-gray-900 text-2xl font-bold">&times;</button>
 
-                        <!-- Header -->
-                        <div class="flex items-center justify-between border-b border-gray-200 pb-4">
-                            <h1 class="text-2xl font-semibold text-gray-900">Edit Event</h1>
-                        </div>
+            <div x-data x-data x-init="$watch('$wire.editEventModal', value => document.body.classList.toggle('overflow-hidden', value))"
+                class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 {{ $editEventModal ? '' : 'hidden' }}">
 
-                        <!-- Content (just layout, no data) -->
-                        <div class="p-6 space-y-6">
-                            <div x-data="fileUpload()" class="space-y-4">
-                                <!-- Upload Box -->
-                                <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex items-center justify-center transition-colors cursor-pointer relative
-            border-4 border-[#C7AE6A]"
-                                    style="border: 4px dashed #C7AE6A;" @dragover.prevent="dragOver = true"
-                                    @dragleave.prevent="dragOver = false" @drop.prevent="handleDrop($event)"
-                                    @click="$refs.fileInput.click()"
-                                    :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
+                <div
+                    class="bg-white w-full max-w-[1200px] mx-auto rounded-lg p-6 relative max-h-[90vh] overflow-y-auto">
+                    <!-- Close button -->
+                    <button wire:click="switchEditEventModel"
+                        class="absolute top-4 right-4 text-gray-600 cursor-pointer hover:text-gray-900 text-2xl font-bold">&times;</button>
 
-                                    <!-- Hidden File Input -->
-                                    <input type="file" x-ref="fileInput" multiple class="hidden"
-                                        @change="handleFiles($event)">
+                    <!-- Header -->
+                    <div class="flex items-center justify-between border-b border-gray-200 pb-4">
+                        <h1 class="text-2xl font-semibold text-gray-900">Edit Event</h1>
+                    </div>
 
-                                    <div class="text-center px-2">
-                                        <div class="mb-4 flex items-center justify-center">
-                                            <!-- Upload Icon -->
-                                            <svg class="w-8 h-8 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                                                xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                viewBox="0 0 20 16">
-                                                <path stroke="currentColor" stroke-linecap="round"
-                                                    stroke-linejoin="round" stroke-width="2"
-                                                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-                                            </svg>
-                                        </div>
+                    <!-- Content (just layout, no data) -->
+                    <div class="p-6 space-y-6">
+                        <div x-data="fileUpload()" class="space-y-4">
+                            <!-- Upload Box -->
+                            <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
+                                @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
+                                @drop.prevent="handleDrop($event)" @click="$refs.fileInput.click()"
+                                :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
 
-                                        <!-- Placeholder Text -->
-                                        <template x-if="!images.length">
-                                            <div>
-                                                <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop
-                                                    it here</p>
-                                                <button type="button"
-                                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                                                    Browse File
-                                                </button>
-                                            </div>
-                                        </template>
+                                <!-- Hidden File Input -->
+                                <input type="file" x-ref="fileInput" multiple class="hidden"
+                                    @change="handleFiles($event)">
+
+                                <!-- Placeholder Text (Always visible) -->
+                                <div class="text-center px-2">
+                                    <div class="mb-4 flex items-center justify-center">
+                                        <!-- Upload Icon -->
+                                        <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg"
+                                            fill="none" viewBox="0 0 20 16">
+                                            <path stroke="currentColor" stroke-linecap="round"
+                                                stroke-linejoin="round" stroke-width="2"
+                                                d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                        </svg>
                                     </div>
+
+                                    <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop it here</p>
+                                    <button type="button"
+                                        class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                                        Browse File
+                                    </button>
                                 </div>
+                            </div>
 
-
-                                <!-- Image Preview Section (Always below box) -->
-                                <div x-show="images.length" class="flex flex-wrap gap-2 mt-3">
+                            <!-- Image Preview Section -->
+                            <div x-show="images.length" class="overflow-x-auto mt-3">
+                                <div class="flex gap-2 min-w-max">
                                     <template x-for="(img, index) in images" :key="index">
-                                        <div class="relative">
+                                        <div class="relative w-32 flex-shrink-0">
                                             <img :src="img"
-                                                class="w-40 h-40 object-cover rounded-md border" alt="Preview">
+                                                class="w-full h-32 object-cover rounded-md border" alt="Preview">
                                             <button type="button" @click="removeImage(index)"
                                                 class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">×</button>
                                         </div>
                                     </template>
                                 </div>
-
-
                             </div>
+                        </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
-                                    <input type="text" placeholder="Title text"
-                                        class="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2 ">Max person</label>
-                                    <input type="number" placeholder="Max person"
-                                        class="w-full px-3 py-2 h-[50px] border border-gray-300 bg-[#F8F6EE] rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
-                                </div>
-                            </div>
 
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                                <textarea rows="6" placeholder="Enter description"
-                                    class="w-full px-3 py-2 h-[264px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] resize-none"></textarea>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                                <input type="text" placeholder="Title text"
+                                    class="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
                             </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
-                                    <input type="text" placeholder="Location"
-                                        class="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Time & Date</label>
-                                    <input type="datetime-local" placeholder="Select time & date"
-                                        class="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] appearance-none">
-                                </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2 ">Max person</label>
+                                <input type="number" placeholder="Max person"
+                                    class="w-full px-3 py-2 h-[50px] border border-gray-300 bg-[#F8F6EE] rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
                             </div>
+                        </div>
 
-                            <div class="flex gap-6">
-                                <!-- Active -->
-                                <label class="relative flex items-center cursor-pointer">
-                                    <input type="checkbox"
-                                        class="peer w-4 h-4 border border-gray-300 rounded appearance-none checked:bg-[#C7AE6A] checked:border-[#C7AE6A] focus:ring-[#C7AE6A]">
-                                    <span
-                                        class="pointer-events-none absolute left-0 top-0 w-4 h-4 flex items-center justify-center text-white text-sm hidden peer-checked:flex">✔</span>
-                                    <span class="ml-2 text-sm text-gray-700">Active</span>
-                                </label>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                            <textarea rows="6" placeholder="Enter description"
+                                class="w-full px-3 py-2 h-[264px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] resize-none"></textarea>
+                        </div>
 
-                                <!-- Disable -->
-                                <label class="relative flex items-center cursor-pointer">
-                                    <input type="checkbox"
-                                        class="peer w-4 h-4 border border-gray-300 rounded appearance-none checked:bg-[#C7AE6A] checked:border-[#C7AE6A] focus:ring-[#C7AE6A]">
-                                    <span
-                                        class="pointer-events-none absolute left-0 top-0 w-4 h-4 flex items-center justify-center text-white text-sm hidden peer-checked:flex">✔</span>
-                                    <span class="ml-2 text-sm text-gray-700">Disable</span>
-                                </label>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                                <input type="text" placeholder="Location"
+                                    class="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
                             </div>
-
-                            <div class="flex justify-center md:justify-start mt-6">
-                                <button
-                                    class="px-6 py-2 bg-[#C7AE6A] text-black rounded-md hover:bg-opacity-90 transition-colors font-medium">
-                                    Save
-                                </button>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Time & Date</label>
+                                <input type="datetime-local" placeholder="Select time & date"
+                                    class="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] appearance-none">
                             </div>
+                        </div>
+
+                        <div class="flex gap-6">
+                            <!-- Active -->
+                            <label class="relative flex items-center cursor-pointer">
+                                <input type="checkbox"
+                                    class="peer w-4 h-4 border border-gray-300 rounded appearance-none checked:bg-[#C7AE6A] checked:border-[#C7AE6A] focus:ring-[#C7AE6A]">
+                                <span
+                                    class="pointer-events-none absolute left-0 top-0 w-4 h-4 flex items-center justify-center text-white text-sm hidden peer-checked:flex">✔</span>
+                                <span class="ml-2 text-sm text-gray-700">Active</span>
+                            </label>
+
+                            <!-- Disable -->
+                            <label class="relative flex items-center cursor-pointer">
+                                <input type="checkbox"
+                                    class="peer w-4 h-4 border border-gray-300 rounded appearance-none checked:bg-[#C7AE6A] checked:border-[#C7AE6A] focus:ring-[#C7AE6A]">
+                                <span
+                                    class="pointer-events-none absolute left-0 top-0 w-4 h-4 flex items-center justify-center text-white text-sm hidden peer-checked:flex">✔</span>
+                                <span class="ml-2 text-sm text-gray-700">Disable</span>
+                            </label>
+                        </div>
+
+                        <div class="flex justify-center md:justify-start mt-6">
+                            <button
+                                class="px-6 py-2 bg-[#C7AE6A] text-black rounded-md cursor-pointer hover:bg-opacity-90 transition-colors font-medium">
+                                Save
+                            </button>
                         </div>
                     </div>
                 </div>
-            @endif
+            </div>
+
+
 
             <!-- Hidden File Input -->
             <input type="file" id="photoUpload" accept="image/*" multiple class="hidden">

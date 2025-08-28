@@ -2,62 +2,60 @@
     <x-admin.searchbar page="Add Listing" livewire_method="switchAddListingModal" />
 
     <!-- Add Listing Modal -->
-    <div  x-data 
-    x-effect="document.body.classList.toggle('overflow-hidden', @entangle('addEventModal'))"
+    <div x-data x-init="$watch('$wire.addListingModal', value => document.body.classList.toggle('overflow-hidden', value))"
         class="fixed inset-0 bg-black/70 {{ $addListingModal ? 'block' : 'hidden' }} z-50 overflow-auto flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-[1200px] mx-auto rounded-lg p-6 relative max-h-[90vh] overflow-y-auto">
 
-            <!-- Close Button -->
-            <button wire:click="closeAddListingModal"
-                class="absolute top-4 right-4 text-gray-600 cursor-pointer hover:text-gray-900 text-2xl font-bold">&times;</button>
 
-            <div class="max-w-[1200px] mx-auto bg-white rounded-lg p-6 space-y-6 mt-4">
-                <!-- Title -->
-                <h2 class="text-4xl font-semibold text-gray-800 h-40px">Add Listing</h2>
 
-                <!-- Add Photos Section -->
-                <div x-data="fileUpload()" class="space-y-4">
-                    <!-- Upload Box -->
-                    <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex items-center justify-center transition-colors cursor-pointer relative
-            border-4 border-[#C7AE6A]"
-                        style="border: 4px dashed #C7AE6A;" @dragover.prevent="dragOver = true"
-                        @dragleave.prevent="dragOver = false" @drop.prevent="handleDrop($event)"
-                        @click="$refs.fileInput.click()"
-                        :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
 
-                        <!-- Hidden File Input -->
-                        <input type="file" x-ref="fileInput" multiple class="hidden" @change="handleFiles($event)">
+            <!-- Close button -->
+            <button wire:click="switchAddListingModal"
+                class="absolute top-4 right-4 text-gray-600 cursor-pointer hover:text-gray-900 text-2xl font-bold">&times;
+            </button>
 
-                        <div class="text-center px-2">
-                            <div class="mb-4 flex items-center justify-center">
-                                <!-- Upload Icon -->
-                                <svg class="w-8 h-8 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-                                </svg>
-                            </div>
+            <!-- Header -->
+            <div class="flex items-center justify-between border-b border-gray-200 pb-4">
+                <h1 class="text-4xl font-semibold text-gray-900">Add Listing</h1>
+            </div>
 
-                            <!-- Placeholder Text -->
-                            <template x-if="!images.length">
-                                <div>
-                                    <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop it here</p>
-                                    <button type="button"
-                                        class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                                        Browse File
-                                    </button>
-                                </div>
-                            </template>
+            <!-- Add Photos Section -->
+            <div x-data="fileUpload()" class="space-y-4">
+                <!-- Upload Box -->
+                <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
+                    @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
+                    @drop.prevent="handleDrop($event)" @click="$refs.fileInput.click()"
+                    :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
+
+                    <!-- Hidden File Input -->
+                    <input type="file" x-ref="fileInput" multiple class="hidden" @change="handleFiles($event)">
+
+                    <!-- Placeholder Text (Always visible) -->
+                    <div class="text-center px-2">
+                        <div class="mb-4 flex items-center justify-center">
+                            <!-- Upload Icon -->
+                            <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 20 16">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                            </svg>
                         </div>
+
+                        <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop it here</p>
+                        <button type="button"
+                            class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                            Browse File
+                        </button>
                     </div>
+                </div>
 
-
-                    <!-- Image Preview Section (Always below box) -->
-                    <div x-show="images.length" class="flex flex-wrap gap-2 mt-3">
+                <!-- Image Preview Section -->
+                <div x-show="images.length" class="overflow-x-auto mt-3">
+                    <div class="flex gap-2 min-w-max">
                         <template x-for="(img, index) in images" :key="index">
-                            <div class="relative">
-                                <img :src="img" class="w-40 h-40 object-cover rounded-md border"
+                            <div class="relative w-32 flex-shrink-0">
+                                <img :src="img" class="w-full h-32 object-cover rounded-md border"
                                     alt="Preview">
                                 <button type="button" @click="removeImage(index)"
                                     class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">×</button>
@@ -65,91 +63,94 @@
                         </template>
                     </div>
                 </div>
-                <input type="file" id="photoUpload" class="hidden" accept="image/*" multiple>
+            </div>
 
-                <!-- Preview Slider -->
-                <div class="w-full max-w-8xl mx-auto px-4">
-                    <div class="overflow-x-auto scroll-smooth snap-x snap-mandatory flex gap-4 pb-8 no-scrollbar"
-                        id="previewSlider">
-                        <!-- Example cards (will be replaced by selected images) -->
-                    </div>
-                </div>
-                <!-- Category Selection -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Main Service</label>
-                        <select
-                            class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-4 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
-                            <option>Select one category</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Sub Category</label>
-                        <select
-                            class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
-                            <option>Select one category</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Specific Category</label>
-                        <select
-                            class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
-                            <option>Select one category</option>
-                        </select>
-                    </div>
-                </div>
+            <input type="file" id="photoUpload" class="hidden" accept="image/*" multiple>
 
-                <!-- Description -->
-                <div>
-                    <label class="block text-sm font-medium mb-1">Description</label>
-                    <textarea class="w-full border border-[#C7AE6A] rounded p-2 h-[264px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]"
-                        placeholder="Enter description"></textarea>
-                </div>
-
-                <!-- Location & Open Time -->
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Location</label>
-                        <input type="text" placeholder="Location"
-                            class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1">Open time</label>
-                        <input type="text" placeholder="Open time"
-                            class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
-                    </div>
-                </div>
-
-                <!-- Status -->
-                <div class="flex gap-6">
-                    <!-- Active -->
-                    <label class="relative flex items-center cursor-pointer">
-                        <input type="checkbox"
-                            class="peer w-4 h-4 border border-gray-300 rounded appearance-none checked:bg-[#C7AE6A] checked:border-[#C7AE6A] focus:ring-[#C7AE6A]">
-                        <span
-                            class="pointer-events-none absolute left-0 top-0 w-4 h-4 flex items-center justify-center text-white text-sm hidden peer-checked:flex">✔</span>
-                        <span class="ml-2 text-sm text-gray-700">Active</span>
-                    </label>
-
-                    <!-- Disable -->
-                    <label class="relative flex items-center cursor-pointer">
-                        <input type="checkbox"
-                            class="peer w-4 h-4 border border-gray-300 rounded appearance-none checked:bg-[#C7AE6A] checked:border-[#C7AE6A] focus:ring-[#C7AE6A]">
-                        <span
-                            class="pointer-events-none absolute left-0 top-0 w-4 h-4 flex items-center justify-center text-white text-sm hidden peer-checked:flex">✔</span>
-                        <span class="ml-2 text-sm text-gray-700">Disable</span>
-                    </label>
-                </div>
-
-                <!-- Save Button -->
-                <div class="flex justify-center md:justify-start">
-                    <button
-                        class="px-8 py-2 bg-[#C7AE6A] text-black rounded-md hover:bg-opacity-90 transition-colors font-medium">
-                        Save
-                    </button>
+            <!-- Preview Slider -->
+            <div class="w-full max-w-8xl mx-auto px-4">
+                <div class="overflow-x-auto scroll-smooth snap-x snap-mandatory flex gap-4 pb-8 no-scrollbar"
+                    id="previewSlider">
+                    <!-- Example cards (will be replaced by selected images) -->
                 </div>
             </div>
+            <!-- Category Selection -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Main Service</label>
+                    <select
+                        class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
+                        <option>Select one category</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Sub Category</label>
+                    <select
+                        class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
+                        <option>Select one category</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Specific Category</label>
+                    <select
+                        class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
+                        <option>Select one category</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div>
+                <label class="block text-sm font-medium mb-1">Description</label>
+                <textarea
+                    class="w-full border border-[#C7AE6A] rounded p-2 h-[264px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]"
+                    placeholder="Enter description"></textarea>
+            </div>
+
+            <!-- Location & Open Time -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Location</label>
+                    <input type="text" placeholder="Location"
+                        class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Open time</label>
+                    <input type="text" placeholder="Open time"
+                        class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
+                </div>
+            </div>
+
+            <!-- Status -->
+            <div class="flex gap-6">
+                <!-- Active -->
+                <label class="relative flex items-center cursor-pointer">
+                    <input type="checkbox"
+                        class="peer w-4 h-4 border border-gray-300 rounded appearance-none checked:bg-[#C7AE6A] checked:border-[#C7AE6A] focus:ring-[#C7AE6A]">
+                    <span
+                        class="pointer-events-none absolute left-0 top-0 w-4 h-4 flex items-center justify-center text-white text-sm hidden peer-checked:flex">✔</span>
+                    <span class="ml-2 text-sm text-gray-700">Active</span>
+                </label>
+
+                <!-- Disable -->
+                <label class="relative flex items-center cursor-pointer">
+                    <input type="checkbox"
+                        class="peer w-4 h-4 border border-gray-300 rounded appearance-none checked:bg-[#C7AE6A] checked:border-[#C7AE6A] focus:ring-[#C7AE6A]">
+                    <span
+                        class="pointer-events-none absolute left-0 top-0 w-4 h-4 flex items-center justify-center text-white text-sm hidden peer-checked:flex">✔</span>
+                    <span class="ml-2 text-sm text-gray-700">Disable</span>
+                </label>
+            </div>
+
+            <!-- Save Button -->
+            <div class="flex justify-center md:justify-start">
+                <button
+                    class="px-8 py-2 bg-[#C7AE6A] text-black rounded-md hover:bg-opacity-90 transition-colors font-medium">
+                    Save
+                </button>
+            </div>
         </div>
+    </div>
     </div>
 
 
@@ -289,139 +290,132 @@
                             </svg>
                         </button>
                         <!-- Modal -->
-                        @if ($editListingModal)
-                            <div class="fixed inset-0  bg-black/70 z-50 flex items-center justify-center p-4">
-                                <div
-                                    class="bg-white w-full max-w-[1200px] mx-auto rounded-lg p-6 overflow-y-auto max-h-[90vh] ">
-                                    <div class="flex justify-end">
-                                        <button wire:click="closeEditListingModal"
-                                            class="text-gray-600 hover:text-gray-900 cursor-pointer text-xl font-bold">&times;</button>
+
+                        <div x-data x-init="$watch('$wire.switchEditListingModel', value => document.body.classList.toggle('overflow-hidden', value))"
+                            class="fixed inset-0 bg-black/70 {{ $editListingModal ? 'block' : 'hidden' }} z-50 overflow-auto flex items-center justify-center p-4">
+
+                            <div
+                                class="bg-white w-full max-w-[1200px] mx-auto rounded-lg p-6 overflow-y-auto max-h-[90vh]">
+                                <div class="flex justify-end">
+                                    <button wire:click="switchEditListingModel"
+                                        class="text-gray-600 hover:text-gray-900 cursor-pointer text-xl font-bold">&times;</button>
+                                </div>
+
+                                <h2 class="text-4xl font-semibold text-gray-800 h-40px mb-4">Edit Listing</h2>
+
+                                <div x-data="fileUpload()" class="space-y-4">
+                                    <!-- Upload Box -->
+                                    <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
+                                        @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
+                                        @drop.prevent="handleDrop($event)" @click="$refs.fileInput.click()"
+                                        :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
+
+                                        <!-- Hidden File Input -->
+                                        <input type="file" x-ref="fileInput" multiple class="hidden"
+                                            @change="handleFiles($event)">
+
+                                        <!-- Placeholder Text (Always visible) -->
+                                        <div class="text-center px-2">
+                                            <div class="mb-4 flex items-center justify-center">
+                                                <!-- Upload Icon -->
+                                                <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg"
+                                                    fill="none" viewBox="0 0 20 16">
+                                                    <path stroke="currentColor" stroke-linecap="round"
+                                                        stroke-linejoin="round" stroke-width="2"
+                                                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                                </svg>
+                                            </div>
+
+                                            <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop it
+                                                here</p>
+                                            <button type="button"
+                                                class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                                                Browse File
+                                            </button>
+                                        </div>
                                     </div>
 
-                                    <h2 class="text-4xl font-semibold text-gray-800 h-40px mb-4">Edit Listing</h2>
-
-                                    <div x-data="fileUpload()" class="space-y-4">
-                                        <!-- Upload Box -->
-                                        <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex items-center justify-center transition-colors cursor-pointer relative
-                                        border-4 border-[#C7AE6A]"
-                                            style="border: 4px dashed #C7AE6A;" @dragover.prevent="dragOver = true"
-                                            @dragleave.prevent="dragOver = false" @drop.prevent="handleDrop($event)"
-                                            @click="$refs.fileInput.click()"
-                                            :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
-
-                                            <!-- Hidden File Input -->
-                                            <input type="file" x-ref="fileInput" multiple class="hidden"
-                                                @change="handleFiles($event)">
-
-                                            <div class="text-center px-2">
-                                                <div class="mb-4 flex items-center justify-center">
-                                                    <!-- Upload Icon -->
-                                                    <svg class="w-8 h-8 text-gray-500 dark:text-gray-400"
-                                                        aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                                        fill="none" viewBox="0 0 20 16">
-                                                        <path stroke="currentColor" stroke-linecap="round"
-                                                            stroke-linejoin="round" stroke-width="2"
-                                                            d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-                                                    </svg>
-                                                </div>
-
-                                                <!-- Placeholder Text -->
-                                                <template x-if="!images.length">
-                                                    <div>
-                                                        <p class="text-lg font-bold text-gray-800">Choose a file or
-                                                            drag & drop it here</p>
-                                                        <button type="button"
-                                                            class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                                                            Browse File
-                                                        </button>
-                                                    </div>
-                                                </template>
-                                            </div>
-                                        </div>
-
-
-                                        <!-- Image Preview Section (Always below box) -->
-                                        <div x-show="images.length" class="flex flex-wrap gap-2 mt-3">
+                                    <!-- Image Preview Section -->
+                                    <div x-show="images.length" class="overflow-x-auto mt-3">
+                                        <div class="flex gap-2 min-w-max">
                                             <template x-for="(img, index) in images" :key="index">
-                                                <div class="relative">
+                                                <div class="relative w-32 flex-shrink-0">
                                                     <img :src="img"
-                                                        class="w-40 h-40 object-cover rounded-md border"
+                                                        class="w-full h-32 object-cover rounded-md border"
                                                         alt="Preview">
                                                     <button type="button" @click="removeImage(index)"
                                                         class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">×</button>
                                                 </div>
                                             </template>
                                         </div>
-
-
-                                    </div>
-
-                                    <input type="file" id="photoUpload" class="hidden" accept="image/*" multiple>
-
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                                        <div>
-                                            <label class="block text-sm font-medium mb-1">Title</label>
-                                            <input type="text"
-                                                class="w-full border border-gray-300 bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]"
-                                                placeholder="Enter title">
-                                        </div>
-                                        
-                                        <div>
-                                            <label class="block text-sm font-medium mb-1">Sub Title</label>
-                                            <input type="text"
-                                                class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]"
-                                                placeholder="Enter sub title">
-                                        </div>
-                                    </div>
-
-                                    <div class="mt-4">
-                                        <label class="block text-sm font-medium mb-1">Description</label>
-                                        <textarea class="w-full border border-[#C7AE6A] rounded p-2 h-[264px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]"
-                                            placeholder="Enter description"></textarea>
-                                    </div>
-
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                                        <div>
-                                            <label class="block text-sm font-medium mb-1">Location</label>
-                                            <input type="text" placeholder="Location"
-                                                class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
-                                        </div>
-                                        <div>
-                                            <label class="block text-sm font-medium mb-1">Open time</label>
-                                            <input type="text" placeholder="Open time"
-                                                class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
-                                        </div>
-                                    </div>
-
-                                    <div class="flex gap-6">
-                                        <!-- Active -->
-                                        <label class="relative flex items-center cursor-pointer">
-                                            <input type="checkbox"
-                                                class="peer w-4 h-4 border border-gray-300 rounded appearance-none checked:bg-[#C7AE6A] checked:border-[#C7AE6A] focus:ring-[#C7AE6A]">
-                                            <span
-                                                class="pointer-events-none absolute left-0 top-0 w-4 h-4 flex items-center justify-center text-white text-sm hidden peer-checked:flex">✔</span>
-                                            <span class="ml-2 text-sm text-gray-700">Active</span>
-                                        </label>
-
-                                        <!-- Disable -->
-                                        <label class="relative flex items-center cursor-pointer">
-                                            <input type="checkbox"
-                                                class="peer w-4 h-4 border border-gray-300 rounded appearance-none checked:bg-[#C7AE6A] checked:border-[#C7AE6A] focus:ring-[#C7AE6A]">
-                                            <span
-                                                class="pointer-events-none absolute left-0 top-0 w-4 h-4 flex items-center justify-center text-white text-sm hidden peer-checked:flex">✔</span>
-                                            <span class="ml-2 text-sm text-gray-700">Disable</span>
-                                        </label>
-                                    </div>
-
-                                    <div class="flex justify-center md:justify-start mt-6">
-                                        <button
-                                            class="px-8 py-2 bg-[#C7AE6A] text-black rounded-md hover:bg-opacity-90 transition-colors font-medium">
-                                            Save
-                                        </button>
                                     </div>
                                 </div>
+
+                                <input type="file" id="photoUpload" class="hidden" accept="image/*" multiple>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1">Title</label>
+                                        <input type="text"
+                                            class="w-full border border-gray-300 bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]"
+                                            placeholder="Enter title">
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1">Sub Title</label>
+                                        <input type="text"
+                                            class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]"
+                                            placeholder="Enter sub title">
+                                    </div>
+                                </div>
+
+                                <div class="mt-4">
+                                    <label class="block text-sm font-medium mb-1">Description</label>
+                                    <textarea
+                                        class="w-full border border-[#C7AE6A] rounded p-2 h-[264px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]"
+                                        placeholder="Enter description"></textarea>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1">Location</label>
+                                        <input type="text" placeholder="Location"
+                                            class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium mb-1">Open time</label>
+                                        <input type="text" placeholder="Open time"
+                                            class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
+                                    </div>
+                                </div>
+
+                                <div class="flex gap-6 mt-4">
+                                    <label class="relative flex items-center cursor-pointer">
+                                        <input type="checkbox"
+                                            class="peer w-4 h-4 border border-gray-300 rounded appearance-none checked:bg-[#C7AE6A] checked:border-[#C7AE6A] focus:ring-[#C7AE6A]">
+                                        <span
+                                            class="pointer-events-none absolute left-0 top-0 w-4 h-4 flex items-center justify-center text-white text-sm hidden peer-checked:flex">✔</span>
+                                        <span class="ml-2 text-sm text-gray-700">Active</span>
+                                    </label>
+
+                                    <label class="relative flex items-center cursor-pointer">
+                                        <input type="checkbox"
+                                            class="peer w-4 h-4 border border-gray-300 rounded appearance-none checked:bg-[#C7AE6A] checked:border-[#C7AE6A] focus:ring-[#C7AE6A]">
+                                        <span
+                                            class="pointer-events-none absolute left-0 top-0 w-4 h-4 flex items-center justify-center text-white text-sm hidden peer-checked:flex">✔</span>
+                                        <span class="ml-2 text-sm text-gray-700">Disable</span>
+                                    </label>
+                                </div>
+
+                                <div class="flex justify-center md:justify-start mt-6">
+                                    <button
+                                        class="px-8 py-2 bg-[#C7AE6A] text-black rounded-md hover:bg-opacity-90 transition-colors font-medium">
+                                        Save
+                                    </button>
+                                </div>
                             </div>
-                        @endif
+                        </div>
+
                     </div>
                 </div>
             @endforeach

@@ -17,16 +17,13 @@ class Event extends Component
         $this->addEventModal = !$this->addEventModal;
     }
 
-    public function editEventModel()
+    public function switchEditEventModel()
     {
         // Toggle modal
-        $this->editEventModal = true;
+        $this->editEventModal = !$this->editEventModal;
     }
 
-    public function closeEditEventModal()
-    {
-        $this->editEventModal = false;
-    }
+
 
     public function render()
     {

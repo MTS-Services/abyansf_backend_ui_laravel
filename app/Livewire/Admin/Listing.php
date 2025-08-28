@@ -17,21 +17,15 @@ class Listing extends Component
     }
   
 
-public function closeAddListingModal()
-{
-    $this->addListingModal = false;
-}
 
 
-    public function editListingModel()
+
+    public function switchEditListingModel()
     {
-        $this->editListingModal = true;
+        $this->editListingModal = !$this->editListingModal;
     }
 
-    public function closeEditListingModal()
-    {
-        $this->editListingModal = false;
-    }
+    
     public function render()
     {
         return view('livewire.admin.listing');
