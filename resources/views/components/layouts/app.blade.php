@@ -2,21 +2,27 @@
 <html lang="en" class="scroll-smooth light">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    @include('partials.head')
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <title>{{ $title ?? config('app.name') }}</title>
+
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @fluxAppearance
     @stack('css')
 </head>
 
 <body>
 
-    <x-layouts.auth.header :title="$title ?? null" />
+    <x-layouts.partials.header :title="$title ?? null" />
 
-    <x-layouts.auth.navbar />
-
+    @if (api_is_authenticated())
+        <x-layouts.partials.navbar />
+    @endif
 
     {{ $slot }}
 
