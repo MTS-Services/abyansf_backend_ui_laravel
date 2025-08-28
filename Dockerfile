@@ -1,18 +1,5 @@
 # ----------------------------------------
-# 1. Build Frontend
-# ----------------------------------------
-FROM node:latest as node_builder
-
-WORKDIR /var/www
-
-# Copy all files from the project directory into the container
-COPY . .
-
-# Install npm dependencies and build assets
-RUN npm install && npm run build
-
-# ----------------------------------------
-# 2. Build PHP backend
+# Multi-stage build for Laravel with starter kits
 # ----------------------------------------
 FROM php:8.3-fpm
 
@@ -35,6 +22,9 @@ RUN apt-get update && apt-get install -y \
     supervisor \
     gnupg2 \
     ca-certificates \
+    # Add Node.js repository
+    && curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
+    && apt-get install -y nodejs \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install pdo_mysql mbstring zip exif pcntl gd
 
@@ -44,20 +34,32 @@ COPY --from=composer:2.6 /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www
 
-# Copy Laravel app source
+# Copy composer files first for better caching
+COPY composer.json composer.lock ./
+
+# Install PHP dependencies first (this makes vendor/livewire available)
+RUN composer install --no-dev --optimize-autoloader --no-scripts
+
+# Copy package.json files for better caching
+COPY package*.json ./
+
+# Install Node.js dependencies
+RUN npm ci --production=false
+
+# Copy all application files
 COPY . .
 
-# Copy built frontend assets from the node_builder stage
-COPY --from=node_builder /var/www/public/build public/build
+# Run composer scripts after copying all files
+RUN composer run-script post-autoload-dump
+
+# Build frontend assets (now vendor/livewire is available)
+RUN npm run build
 
 # Prepare Laravel cache paths & permissions
 RUN mkdir -p storage/framework/{views,sessions,cache} \
     && mkdir -p bootstrap/cache \
     && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
-
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
 
 # Laravel Artisan commands
 RUN php artisan config:clear \
