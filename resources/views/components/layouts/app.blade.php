@@ -16,7 +16,7 @@
     @stack('css')
 </head>
 
-<body x-data @navigate.start="window.scroll({top: 0, behavior: 'smooth'})">
+<body x-data @navigate.start="setTimeout(() => window.scrollTo({top: 0, behavior: 'smooth'}), 0)">
 
     @livewire('layouts.header')
 
