@@ -6,12 +6,30 @@
     </style>
 
     <!-- First Shape -->
-    <div class="absolute w-[635px] h-[635px] top-[-200px] right-[-100px] bg-[#F8F6EE] rounded-full opacity-40 rotate-0 z-[-1]"
-        aria-hidden="true"></div>
+    <!-- First Shape -->
+<div 
+    class="absolute 
+           w-[250px] h-[250px] sm:w-[400px] sm:h-[400px] 
+           md:w-[500px] md:h-[500px] 
+           lg:w-[635px] lg:h-[635px] 
+           top-[-80px] sm:top-[-120px] md:top-[-160px] lg:top-[-200px] 
+           right-[-40px] sm:right-[-70px] md:right-[-90px] lg:right-[-100px] 
+           bg-[#F8F6EE] rounded-full opacity-40 rotate-0 z-[-1]"
+    aria-hidden="true">
+</div>
 
-    <!-- Second Shape -->
-    <div class="absolute w-[718px] h-[718px] top-[-240px] right-[-150px] rounded-full opacity-100 border-[3px] border-[#F8F6EE] rotate-0 z-[-1]"
-        aria-hidden="true"></div>
+<!-- Second Shape -->
+<div 
+    class="absolute 
+           w-[300px] h-[300px] sm:w-[500px] sm:h-[500px] 
+           md:w-[600px] md:h-[600px] 
+           lg:w-[718px] lg:h-[718px] 
+           top-[-100px] sm:top-[-150px] md:top-[-200px] lg:top-[-240px] 
+           right-[-60px] sm:right-[-100px] md:right-[-130px] lg:right-[-150px] 
+           rounded-full opacity-100 border-[3px] border-[#F8F6EE] rotate-0 z-[-1]"
+    aria-hidden="true">
+</div>
+
 
 
     <!-- Login Container -->
@@ -48,12 +66,32 @@
 
 
     <!-- Square 1 -->
-    <div
-        class="absolute w-[372px] h-[372px] border-2 border-[#f3f0e6] opacity-100  bottom-0 left-[-118.71px] rotate-0 z-10">
-    </div>
-    <div
-        class="absolute w-[372px] h-[372px] border-2 border-[#f3f0e6] opacity-100 bottom-0 left-[-127px] rotate-[27.09deg] z-10">
-    </div>
+    <!-- Square 1 -->
+<div 
+    class="absolute 
+           w-[180px] h-[180px] 
+           sm:w-[250px] sm:h-[250px] 
+           md:w-[300px] md:h-[300px] 
+           lg:w-[372px] lg:h-[372px] 
+           border-2 border-[#f3f0e6] opacity-100 
+           bottom-0 
+           left-[-60px] sm:left-[-80px] md:left-[-100px] lg:left-[-118.71px] 
+           rotate-0 z-[-1]">
+</div>
+
+<!-- Square 2 -->
+<div 
+    class="absolute 
+           w-[180px] h-[180px] 
+           sm:w-[250px] sm:h-[250px] 
+           md:w-[300px] md:h-[300px] 
+           lg:w-[372px] lg:h-[372px] 
+           border-2 border-[#f3f0e6] opacity-100 
+           bottom-0 
+           left-[-65px] sm:left-[-85px] md:left-[-110px] lg:left-[-127px] 
+           rotate-[27.09deg] z-[-1]">
+</div>
+
 
 
 
