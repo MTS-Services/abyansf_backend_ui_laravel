@@ -9,7 +9,7 @@ WORKDIR /var/www
 COPY . .
 
 # Install npm dependencies and build assets
-RUN npm install && npm run build
+RUN npm install
 
 # ----------------------------------------
 # 2. Build PHP backend
@@ -68,6 +68,9 @@ RUN php artisan config:clear \
     && php artisan view:cache \
     && php artisan migrate --force || true \
     && php artisan optimize:clear
+
+# Install Node dependencies
+RUN npm install && npm run build
 
 # Configure Nginx and Supervisor
 RUN rm -f /etc/nginx/sites-enabled/default
