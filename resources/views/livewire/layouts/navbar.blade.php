@@ -1,6 +1,6 @@
 <div class="flex items-center justify-center font-poppins">
 
-    <main class="max-w-[1200px] w-full mx-auto px-4 ">
+    <main class="max-w-[1200px] w-full mx-auto px-4">
 
         <!-- Main navigation container -->
         <nav class="mt-8 sm:mt-12 ">

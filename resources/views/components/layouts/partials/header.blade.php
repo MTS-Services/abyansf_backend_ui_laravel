@@ -3,9 +3,10 @@
     <div class="hidden sm:flex items-center justify-between mx-auto max-w-[1200px] h-28 sm:h-32 px-4">
         <!-- Logo -->
         <div>
-           <a href="{{ route('dashboard') }}">
-               <img src="{{ asset('image/Maskgroup.png') }}" alt="Logo" class="w-16 sm:w-20 h-16 sm:h-20 rounded-full">
-           </a>
+            <a href="{{ route('login') }}" wire:navigate>
+                <img src="{{ asset('image/Maskgroup.png') }}" alt="Logo"
+                    class="w-16 sm:w-20 h-16 sm:h-20 rounded-full">
+            </a>
         </div>
 
         <!-- Notification + User Icon -->
@@ -48,7 +49,8 @@
                 </button>
 
                 <!-- User Dropdown -->
-                <div id="userPanel" class="hidden absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                <div id="userPanel"
+                    class="hidden absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                     <a href="#" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
                     <form action="#" method="POST" class="m-0">
                         @csrf
@@ -63,7 +65,7 @@
     <div class="flex sm:hidden items-center justify-between mx-auto w-full h-20 px-4">
         <!-- Logo -->
         <div>
-            <a href="{{ route('dashboard') }}">
+            <a href="{{ route('login') }}" wire:navigate>
                 <img src="{{ asset('image/Maskgroup.png') }}" alt="Logo" class="w-12 h-12 rounded-full">
             </a>
         </div>
@@ -108,7 +110,8 @@
                 </button>
 
                 <!-- User Dropdown Mobile -->
-                <div id="userPanelMobile" class="hidden absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                <div id="userPanelMobile"
+                    class="hidden absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                     <a href="#" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
                     <form action="#" method="POST" class="m-0">
                         @csrf
@@ -153,22 +156,34 @@
     // Desktop notification toggle
     const notifyBtn = document.getElementById("notifyBtn");
     const notifyPanel = document.getElementById("notifyPanel");
-    notifyBtn.addEventListener("click", (e) => { e.stopPropagation(); notifyPanel.classList.toggle("hidden"); });
+    notifyBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        notifyPanel.classList.toggle("hidden");
+    });
 
     // Desktop user toggle
     const userMenuBtn = document.getElementById('userMenuBtn');
     const userPanel = document.getElementById('userPanel');
-    userMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); userPanel.classList.toggle('hidden'); });
+    userMenuBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        userPanel.classList.toggle('hidden');
+    });
 
     // Mobile notification toggle
     const notifyBtnMobile = document.getElementById("notifyBtnMobile");
     const notifyPanelMobile = document.getElementById("notifyPanelMobile");
-    notifyBtnMobile.addEventListener("click", (e) => { e.stopPropagation(); notifyPanelMobile.classList.toggle("hidden"); });
+    notifyBtnMobile.addEventListener("click", (e) => {
+        e.stopPropagation();
+        notifyPanelMobile.classList.toggle("hidden");
+    });
 
     // Mobile user toggle
     const userMenuBtnMobile = document.getElementById('userMenuBtnMobile');
     const userPanelMobile = document.getElementById('userPanelMobile');
-    userMenuBtnMobile.addEventListener('click', (e) => { e.stopPropagation(); userPanelMobile.classList.toggle('hidden'); });
+    userMenuBtnMobile.addEventListener('click', (e) => {
+        e.stopPropagation();
+        userPanelMobile.classList.toggle('hidden');
+    });
 
     // Mobile menu toggle
     const mobileBtn = document.getElementById("mobile-menu-btn");

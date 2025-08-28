@@ -18,10 +18,10 @@
 
 <body>
 
-    <x-layouts.partials.header :title="$title ?? null" />
-
+    @livewire('layouts.header')
+    
     @if (api_is_authenticated())
-        <x-layouts.partials.navbar />
+        @livewire('layouts.navbar')
     @endif
 
     {{ $slot }}
