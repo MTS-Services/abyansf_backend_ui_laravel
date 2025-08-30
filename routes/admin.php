@@ -2,6 +2,7 @@
 
 use App\Livewire\Admin\Attendance;
 use App\Livewire\Admin\Booking;
+use App\Livewire\Admin\Category;
 use App\Livewire\Admin\Event;
 use App\Livewire\Admin\EventManagement\Index as EventIndex;
 use App\Livewire\Admin\EventManagement\Create as EventCreate;
@@ -18,6 +19,8 @@ Route::name('admin.')->middleware(['api.auth'])->group(function () {
     Route::get('users', User::class)->name('users');
     Route::get('notifications', Notification::class)->name('notifications');
     Route::get('bookings', Booking::class)->name('bookings');
+    Route::get('category', Category::class)->name('category');
+
 
     Route::get('listings', ListingIndex::class)->name('listings');
     Route::get('listings/create', ListingCreate::class)->name('listings.create');

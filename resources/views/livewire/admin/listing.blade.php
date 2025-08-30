@@ -292,7 +292,7 @@
                         <!-- Modal -->
 
                         <div x-data x-init="$watch('$wire.editListingModal', value => document.body.classList.toggle('overflow-hidden', value))"
-                            class="fixed inset-0 bg-black/70 {{ $editListingModal ? 'block' : 'hidden' }} z-50 overflow-auto flex items-center justify-center p-4">
+                            class="fixed inset-0 bg-black/70 bg-opacity-50 {{ $editListingModal ? 'block' : 'hidden' }} z-50 overflow-auto flex items-center justify-center p-4">
 
                             <div
                                 class="bg-white w-full max-w-[1200px] mx-auto rounded-lg p-6 overflow-y-auto max-h-[90vh]">
