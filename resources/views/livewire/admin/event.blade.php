@@ -15,7 +15,7 @@
             </button>
 
             <!-- Header -->
-            <div class="flex items-center justify-between border-b border-gray-200 pb-4">
+            <div class="flex items-center justify-between  border-gray-200 pb-4">
                 <h1 class="text-4xl font-semibold text-gray-900">Add Event</h1>
             </div>
 
@@ -299,7 +299,7 @@
                         class="absolute top-4 right-4 text-gray-600 cursor-pointer hover:text-gray-900 text-2xl font-bold">&times;</button>
 
                     <!-- Header -->
-                    <div class="flex items-center justify-between border-b border-gray-200 pb-4">
+                    <div class="flex items-center justify-between  border-gray-200 pb-4">
                         <h1 class="text-2xl font-semibold text-gray-900">Edit Event</h1>
                     </div>
 

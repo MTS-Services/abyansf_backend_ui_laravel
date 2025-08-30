@@ -15,7 +15,7 @@
             </button>
 
             <!-- Header -->
-            <div class="flex items-center justify-between border-b border-gray-200 pb-4">
+            <div class="flex items-center justify-between  border-gray-200 pb-4">
                 <h1 class="text-4xl font-semibold text-gray-900">Add Listing</h1>
             </div>
 
@@ -269,7 +269,7 @@
                     </div>
                     <!-- Actions -->
                     <div class="flex items-center justify-start md:justify-end col-span-2 space-x-2 mt-3 md:mt-0">
-                        <button wire:click="editListingModel"
+                        <button wire:click="switchEditListingModel"
                             class="bg-[#C7AE6A] hover:bg-[#b99b52] text-black px-3 md:px-4 py-2 cursor-pointer font-playfair rounded-sm flex items-center text-xs md:text-sm font-medium">
                             <svg class="w-4 h-4 mr-2" viewBox="0 0 24 24" fill="none">
                                 <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
@@ -291,7 +291,7 @@
                         </button>
                         <!-- Modal -->
 
-                        <div x-data x-init="$watch('$wire.switchEditListingModel', value => document.body.classList.toggle('overflow-hidden', value))"
+                        <div x-data x-init="$watch('$wire.editListingModal', value => document.body.classList.toggle('overflow-hidden', value))"
                             class="fixed inset-0 bg-black/70 {{ $editListingModal ? 'block' : 'hidden' }} z-50 overflow-auto flex items-center justify-center p-4">
 
                             <div
@@ -301,7 +301,9 @@
                                         class="text-gray-600 hover:text-gray-900 cursor-pointer text-xl font-bold">&times;</button>
                                 </div>
 
-                                <h2 class="text-4xl font-semibold text-gray-800 h-40px mb-4">Edit Listing</h2>
+                                <div class="flex items-center justify-between  border-gray-200 pb-4">
+                                    <h1 class="text-4xl font-semibold text-gray-900">Edit Listing</h1>
+                                </div>
 
                                 <div x-data="fileUpload()" class="space-y-4">
                                     <!-- Upload Box -->
