@@ -1,4 +1,4 @@
-<div class="container mx-auto px-4 py-6 max-w-[1200px] space-y-6 font-poppins">
+<section class="font-poppins">
     <div class="mb-4 mt-12">
         <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Attendance</h1>
     </div>
@@ -252,4 +252,4 @@
             @endforeach
         </div>
     </div>
-</div>
+</section>

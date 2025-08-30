@@ -1,4 +1,4 @@
-<section class="mx-auto max-w-[1200px] p-4 font-playfair">
+<section class="font-playfair">
     <x-admin.searchbar page="Add Event" route="admin.listing-list" />
 
     <div class="bg-white rounded-lg overflow-hidden mt-14 mb-5">
