@@ -1,4 +1,4 @@
-<section class="mx-auto max-w-[1200px] p-4 font-playfair">
+<section class="font-playfair">
     <x-admin.searchbar page="Add Listing" />
 
     <div class="bg-white rounded-lg overflow-hidden mt-14 mb-5">
@@ -9,6 +9,8 @@
             <div class="col-span-2 text-right pr-4 md:pr-16 text-lg md:text-xl font-semibold text-black font-playfair">
                 Action</div>
         </div>
+
+      
 
         <!-- Services Loop -->
         <div class="divide-y divide-gray-200">

@@ -1,4 +1,4 @@
-<main class="font-poppins pt-4 mx-auto max-w-[1200px] px-4 lg:px-4 md:px-6 sm:px-4">
+<section class="font-poppins">
     <div class="rounded-lg shadow-sm">
         <!-- Header -->
         <div
@@ -146,4 +146,4 @@
 
         </div>
     </div>
-</main>
+</section>

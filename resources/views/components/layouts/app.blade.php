@@ -12,21 +12,63 @@
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @fluxAppearance
+
+    <style>
+        @keyframes bounce-dot {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
+        }
+    </style>
+
+
     @stack('css')
 </head>
 
 <body x-data @navigate.start="window.scrollTo({top: 0, behavior: 'smooth'})">
 
     @livewire('layouts.header')
-    
+
     @if (api_is_authenticated())
         @livewire('layouts.navbar')
     @endif
 
-    {{ $slot }}
+    <main class="container max-w-[1200px] w-full mx-auto p-4 mt-5 font-playfair">
+        {{ $slot }}
+    </main>
+
+    <div id="navigation-loader" x-transition.opacity
+        class="fixed inset-0 z-50 flex items-center justify-center bg-accent-foreground/50 backdrop-blur-md">
+        <div class="flex space-x-2">
+            <div class="w-4 h-4 rounded-full bg-[#C7AE6A] animate-[bounce-dot_1.2s_infinite]"
+                style="animation-delay: -0.8s;"></div>
+            <div class="w-4 h-4 rounded-full bg-[#C7AE6A] animate-[bounce-dot_1.2s_infinite]"
+                style="animation-delay: -0.4s;"></div>
+            <div class="w-4 h-4 rounded-full bg-[#C7AE6A] animate-[bounce-dot_1.2s_infinite]"></div>
+        </div>
+    </div>
 
     @fluxScripts
+
+    <script>
+        document.addEventListener('livewire:navigate', (event) => {
+            document.getElementById('navigation-loader').classList.remove('hidden');
+        });
+
+        document.addEventListener('livewire:navigating', () => {
+            document.getElementById('navigation-loader').classList.remove('hidden');
+        });
+
+        document.addEventListener('livewire:navigated', () => {
+            document.getElementById('navigation-loader').classList.add('hidden');
+        });
+    </script>
     @stack('js')
 </body>
 
