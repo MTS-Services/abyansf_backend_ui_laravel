@@ -169,31 +169,31 @@
                         'name' => 'Breakfast',
                         'location' => 'Jumeirah Beach Residence',
                         'image' => asset('image/event (3).jpg'),
-                        'status' => 'inactive',
+                        'status' => 'active',
                     ],
                     [
                         'name' => 'Nightlife',
                         'location' => 'Jumeirah Beach Residence',
                         'image' => asset('image/event (4).jpg'),
-                        'status' => 'inactive',
+                        'status' => 'active',
                     ],
                     [
                         'name' => 'Breakfast',
                         'location' => 'Jumeirah Beach Residence',
                         'image' => asset('image/event (5).jpg'),
-                        'status' => 'inactive',
+                        'status' => 'active',
                     ],
                     [
                         'name' => 'Nightlife',
                         'location' => 'Jumeirah Beach Residence',
                         'image' => asset('image/event (6).jpg'),
-                        'status' => 'inactive',
+                        'status' => 'active',
                     ],
                     [
                         'name' => 'Breakfast',
                         'location' => 'Jumeirah Beach Residence',
                         'image' => asset('image/event (7).jpg'),
-                        'status' => 'inactive',
+                        'status' => 'active',
                     ],
                 ];
             @endphp

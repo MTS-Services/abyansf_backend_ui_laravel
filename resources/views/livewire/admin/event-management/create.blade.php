@@ -1,4 +1,4 @@
-<div class="container max-w-[1200px] mx-auto bg-white rounded-lg    mt-4">
+<div class="container max-w-[1200px] mx-auto bg-white rounded-lg mt-4">
     <!-- Header -->
     <div class="flex items-center justify-between p-6  border-gray-200">
         <h1 class="text-xl font-semibold text-gray-900">Add Event</h1>

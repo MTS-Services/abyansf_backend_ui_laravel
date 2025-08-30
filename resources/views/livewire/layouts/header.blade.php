@@ -42,21 +42,17 @@
                 <div class="relative">
                     <button id="userMenuBtn"
                         class="flex items-center gap-2 p-2 rounded-full text-purple-500 hover:bg-purple-100 focus:outline-none focus:ring-2 focus:ring-purple-400">
-                        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                            stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                        </svg>
+                        <flux:icon name="user-circle" class="w-6 h-6" />
                     </button>
 
                     <!-- User Dropdown -->
                     <div id="userPanel"
                         class="hidden absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                         <a href="#" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
-                        <form action="#" method="POST" class="m-0">
-                            @csrf
-                            <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-100">Logout</button>
-                        </form>
+                        @if (api_is_authenticated())
+                            <button class="w-full text-left px-4 py-2 hover:bg-gray-100"
+                                wire:click="logout">Logout</button>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -76,12 +72,8 @@
                 <!-- Notification -->
                 <div class="relative">
                     <button id="notifyBtnMobile"
-                        class="relative p-2 rounded-full text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-400">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M15 17h5l-1.405-1.405C18.79 15.21 18 14.11 18 13V9c0-3.314-2.686-6-6-6S6 5.686 6 9v4c0 1.11-.79 2.21-1.595 2.595L3 17h5m7 0a3 3 0 11-6 0h6z">
-                            </path>
-                        </svg>
+                        class="relative p-2 rounded-full text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#0f0f]">
+                        <flux:icon name="bell" class="w-6 h-6" />
                         <span
                             class="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center text-xs font-bold text-white bg-red-500 rounded-full">3</span>
                     </button>
@@ -103,21 +95,20 @@
                 <div class="relative">
                     <button id="userMenuBtnMobile"
                         class="flex items-center gap-2 p-2 rounded-full text-purple-500 hover:bg-purple-100 focus:outline-none focus:ring-2 focus:ring-purple-400">
-                        <svg class="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                            stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                        </svg>
+                        <flux:icon name="user-circle" class="w-6 h-6" />
                     </button>
 
                     <!-- User Dropdown Mobile -->
                     <div id="userPanelMobile"
                         class="hidden absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+
                         <a href="#" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
-                        <form action="#" method="POST" class="m-0">
-                            @csrf
-                            <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-100">Logout</button>
-                        </form>
+
+                        @if (api_is_authenticated())
+                            <button class="w-full text-left px-4 py-2 hover:bg-gray-100" wire:click="logout">
+                                Logout Now
+                            </button>
+                        @endif
                     </div>
                 </div>
 
@@ -128,8 +119,8 @@
                         viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
-                    <svg id="closeMobile" class="h-6 w-6 hidden" fill="none" stroke="currentColor"
-                        stroke-width="2" viewBox="0 0 24 24">
+                    <svg id="closeMobile" class="h-6 w-6 hidden" fill="none" stroke="currentColor" stroke-width="2"
+                        viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
