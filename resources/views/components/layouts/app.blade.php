@@ -13,6 +13,8 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    @fluxAppearance()
+
     <style>
         @keyframes bounce-dot {
 
@@ -26,7 +28,6 @@
             }
         }
     </style>
-
 
     @stack('css')
 </head>
