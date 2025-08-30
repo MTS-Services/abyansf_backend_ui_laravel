@@ -5,50 +5,35 @@ namespace App\Livewire\Admin;
 use Livewire\Component;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
-use Livewire\Attributes\On;
 
 class User extends Component
 {
     public $users = [];
     public $pagination = [];
-    public $currentPage = 1;
     public $openActions = null;
+
+    // Add this property to sync currentPage with the URL
+    public $currentPage = 1;
+
+    protected $queryString = [
+        'currentPage' => ['as' => 'page', 'except' => 1]
+    ];
 
     /**
      * Livewire's lifecycle hook that runs once on component initialization.
      */
     public function mount()
     {
-        $this->fetchUsers();
+        $this->currentPage = request()->query('page', 1);
+        $this->fetchUsers($this->currentPage);
     }
-
-    /**
-     * Listen for page changes from the pagination component
-     */
-    #[On('page-changed')]
-    public function handlePageChange($page)
-    {
-        $this->fetchUsers($page);
-    }
-
-    /**
-     * Direct pagination method for the User component
-     * This is needed because the pagination component calls this method
-     */
-    public function gotoPage($page)
-    {
-        if ($page >= 1 && $page <= ($this->pagination['pages'] ?? 1)) {
-            $this->fetchUsers($page);
-        }
-    }
-
+    
     /**
      * Fetches users from the API.
      * @param int $page The page number to fetch.
      */
     public function fetchUsers($page = 1)
     {
-        $this->currentPage = $page;
         $token = Session::get('api_token');
 
         if (!$token) {
@@ -56,13 +41,15 @@ class User extends Component
         }
 
         $response = Http::withToken($token)->get('https://backend-ab.mtscorporate.com/api/users', [
-            'page' => $this->currentPage
+            'page' => $page
         ]);
 
         if ($response->successful()) {
             $data = $response->json();
             $this->users = $data['data']['users'] ?? [];
             $this->pagination = $data['data']['pagination'] ?? [];
+            // Update the property after a successful fetch to avoid URL issues on failure
+            $this->currentPage = $page;
         } else {
             $this->users = [];
             $this->pagination = [];
@@ -143,8 +130,97 @@ class User extends Component
         $this->fetchUsers($this->currentPage);
     }
 
+    /**
+     * Navigate to a specific page.
+     * @param int $page The page number to go to.
+     */
+    public function gotoPage($page)
+    {
+        if ($page >= 1 && $page <= ($this->pagination['pages'] ?? 1)) {
+            $this->fetchUsers($page);
+        }
+    }
+
+    /**
+     * Navigate to the previous page.
+     */
+    public function previousPage()
+    {
+        if ($this->currentPage > 1) {
+            $this->fetchUsers($this->currentPage - 1);
+        }
+    }
+
+    /**
+     * Navigate to the next page.
+     */
+    public function nextPage()
+    {
+        if ($this->currentPage < ($this->pagination['pages'] ?? 1)) {
+            $this->fetchUsers($this->currentPage + 1);
+        }
+    }
+
+    /**
+     * Get the pagination pages to display based on your custom logic.
+     * This matches the design pattern shown in your image.
+     */
+    public function getPaginationPages()
+    {
+        $pages = [];
+        $current = $this->currentPage;
+        $total = $this->pagination['pages'] ?? 1;
+
+        // If only 1 page, show just that page
+        if ($total == 1) {
+            return [1];
+        }
+
+        // If 2-4 pages, show all pages
+        if ($total <= 4) {
+            for ($i = 1; $i <= $total; $i++) {
+                $pages[] = $i;
+            }
+            return $pages;
+        }
+
+        // For 5+ pages, implement the custom logic from your design
+        if ($current == 1) {
+            // Current page is 1: show [1, 2, ..., last]
+            $pages = [1, 2, '...', $total];
+        } elseif ($current == 2) {
+            // Current page is 2: show [1, 2, 3, ..., last]
+            $pages = [1, 2, 3, '...', $total];
+        } elseif ($current == 3) {
+            // Current page is 3: show [1, 2, 3, 4, ..., last]
+            $pages = [1, 2, 3, 4, '...', $total];
+        } elseif ($current == $total) {
+            // Current page is last: show [1, ..., last-1, last]
+            $pages = [1, '...', $total - 1, $total];
+        } elseif ($current == $total - 1) {
+            // Current page is second to last: show [1, ..., last-2, last-1, last]
+            $pages = [1, '...', $total - 2, $total - 1, $total];
+        } elseif ($current == $total - 2) {
+            // Current page is third from last: show [1, ..., total-3, total-2, total-1, total]
+            $pages = [1, '...', $total - 3, $total - 2, $total - 1, $total];
+        } else {
+            // Middle pages: show [1, ..., current-1, current, current+1, ..., last]
+            $pages = [1, '...', $current - 1, $current, $current + 1, '...', $total];
+        }
+
+        return $pages;
+    }
+
     public function render()
     {
-        return view('livewire.admin.user');
+        $pages = $this->getPaginationPages();
+        $hasPrevious = $this->currentPage > 1;
+        $hasNext = $this->currentPage < ($this->pagination['pages'] ?? 1);
+
+        return view('livewire.admin.user', [
+            'pages' => $pages,
+            'hasPrevious' => $hasPrevious,
+            'hasNext' => $hasNext,
+        ]);
     }
 }
