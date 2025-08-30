@@ -1,7 +1,7 @@
-<section>
+<main>
     <h2 class="font-medium text-3xl text-black mb-4">User Management</h2>
     <div class="overflow-x-auto">
-        <table class="min-w-full leading-normal table">
+        <table class="leading-normal table">
             <thead>
                 <tr class="bg-[#e7e7e7] text-black font-medium">
                     <th class="p-4 text-left font-medium text-base">ID</th>
@@ -84,4 +84,4 @@
             </tbody>
         </table>
     </div>
-</section>
+</main>
