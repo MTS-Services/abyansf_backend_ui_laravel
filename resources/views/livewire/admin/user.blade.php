@@ -1,6 +1,5 @@
 <main class="font-family">
-
-    <div class="#">
+    <div>
         <div class="w-[1200px] mx-auto p-4 mt-5">
             <h2 class=" font-medium text-3xl text-black mb-4 ">User Management</h2>
             <div class="overflow-hidden">
@@ -20,9 +19,78 @@
                                 <th class="p-4 text-center font-medium text-base">Action</th>
                             </tr>
                         </thead>
-                        <tbody class="text-balck text-sm
-                        ">
-                            <!-- Desktop row 1 -->
+                        <tbody class="text-balck text-sm">
+                            @forelse ($users as $user)
+                                {{-- @dd($user) --}}
+                                <tr>
+                                    <td class="p-4 text-left whitespace-nowrap font-normal">{{ $loop->iteration }}</td>
+                                    <td class="p-4 text-left font-normal text-base">{{ $user['name'] }}</td>
+                                    <td class="p-4 text-left font-normal text-base">{{ $user['email'] }}</td>
+                                    <td class="p-4 text-left font-normal text-base">{{ $user['whatsapp'] }}</td>
+                                    <td class="p-4 text-left font-normal text-base">
+                                        {{ \Carbon\Carbon::parse($user['createdAt'])->format('d/m/Y') }}</td>
+                                    <td class="p-4 text-left font-normal text-base">
+                                        {{ $user['password'] == null ? 'N/A' : $user['password'] }}</td>
+                                    <td class="p-4 text-left font-normal text-base">
+                                        {{ $user['isActive'] ? 'Active' : 'Inactive' }}</td>
+                                    <td class="p-4 text-left font-normal text-base">
+                                        <a href="#"
+                                            class="text-[#AD8945] ">{{ $user['send_payment_link'] ? 'Sent' : 'Not Sent' }}</a>
+                                    </td>
+
+                                    <td class="py-3 px-6 text-center">
+                                        <div class="flex items-center justify-center space-x-2">
+                                            <div class="flex justify-center">
+                                                <div class="absolute inline-block text-left">
+                                                    <!-- Trigger Button -->
+                                                    <button data-dropdown-btn
+                                                        class="-mt-1 text-[#AD8945] rounded-full focus:outline-none"
+                                                        title="Settings">
+                                                        <flux:icon name="cog-6-tooth" class="text-[#C7AE6A]" />
+                                                    </button>
+
+                                                    <!-- Dropdown Menu -->
+                                                    <div data-dropdown-menu
+                                                        class="hidden absolute right-3 -mt-1 p-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
+
+                                                        <button
+                                                            class="w-full flex items-center px-3 text-sm hover:bg-gray-100 cursor-pointer">
+                                                            <flux:icon name="pencil-square"
+                                                                class="text-[#6D6D6D] mr-2 h-4 w-4" />
+                                                            Edit
+                                                        </button>
+
+                                                        <button
+                                                            class="w-full flex items-center px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer">
+                                                            <flux:icon name="check"
+                                                                class="text-[#6D6D6D] mr-2 h-4 w-4" />
+                                                            Active
+                                                        </button>
+
+                                                        <button
+                                                            class="w-full flex items-center px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer">
+                                                            <flux:icon name="x-circle"
+                                                                class="text-[#6D6D6D] mr-2 h-4 w-4" />
+                                                            Deactivate
+                                                        </button>
+
+                                                        <button
+                                                            class="w-full flex items-center px-3 py-2 text-sm hover:bg-red-50 cursor-pointer">
+                                                            <flux:icon name="trash"
+                                                                class="text-[#6D6D6D] mr-2 h-4 w-4" />
+                                                            Delete
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            @empty
+                            @endforelse
+
+                            {{-- <!-- Desktop row 1 -->
                             <tr class="#">
                                 <td class="p-4 text-left whitespace-nowrap font-normal">01</td>
                                 <td class="p-4 text-left font-normal text-base">John</td>
@@ -138,7 +206,7 @@
                                         </div>
                                     </div>
                                 </td>
-                            </tr>
+                            </tr> --}}
                         </tbody>
                     </table>
                 </div>
