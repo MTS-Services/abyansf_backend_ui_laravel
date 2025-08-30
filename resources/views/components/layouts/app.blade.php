@@ -29,6 +29,14 @@
         }
     </style>
 
+    <script>
+        document.addEventListener('livewire:initialized', function() {
+            Livewire.on('sweetalert2', (event) => {
+                showAlert(event.type, event.message);
+            });
+        });
+    </script>
+
     @stack('css')
 </head>
 
