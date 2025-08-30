@@ -27,7 +27,7 @@ class User extends Component
         $this->currentPage = request()->query('page', 1);
         $this->fetchUsers($this->currentPage);
     }
-    
+
     /**
      * Fetches users from the API.
      * @param int $page The page number to fetch.
@@ -51,6 +51,7 @@ class User extends Component
             // Update the property after a successful fetch to avoid URL issues on failure
             $this->currentPage = $page;
         } else {
+            $this->dispatch('sweetalert2', ['type' => 'error', 'message' => 'Failed to load users from the API.']);
             $this->users = [];
             $this->pagination = [];
             Session::flash('error', 'Failed to load users from the API.');
@@ -78,16 +79,16 @@ class User extends Component
     {
         $token = Session::get('api_token');
         if (!$token) {
-            return;
+            return $this->redirectRoute('login', navigate: true);
         }
 
         $response = Http::withToken($token)->delete('https://backend-ab.mtscorporate.com/api/users/' . $userId);
 
         if ($response->successful()) {
-            Session::flash('message', 'User deleted successfully.');
-            $this->fetchUsers($this->currentPage); // Refresh the list
+            $this->dispatch('sweetalert2', type: 'success', message: 'User deleted successfully.');
+            $this->fetchUsers($this->currentPage);
         } else {
-            Session::flash('error', 'Failed to delete user.');
+            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to delete user.');
         }
     }
 
@@ -97,7 +98,8 @@ class User extends Component
      */
     public function editUser($userId)
     {
-        Session::flash('info', "Edit action for user ID: {$userId}");
+        // Session::flash('info', "Edit action for user ID: {$userId}");
+        $this->dispatch('sweetalert2', type: 'info', message: "Edit action for user ID: {$userId}");
     }
 
     /**
@@ -106,7 +108,8 @@ class User extends Component
      */
     public function activateUser($userId)
     {
-        Session::flash('info', "Activate action for user ID: {$userId}");
+        // Session::flash('info', "Activate action for user ID: {$userId}");
+        $this->dispatch('sweetalert2', type: 'info', message: "Activate action for user ID: {$userId}");
         $this->fetchUsers($this->currentPage);
     }
 
@@ -116,7 +119,8 @@ class User extends Component
      */
     public function deactivateUser($userId)
     {
-        Session::flash('info', "Deactivate action for user ID: {$userId}");
+        // Session::flash('info', "Deactivate action for user ID: {$userId}");
+        $this->dispatch('sweetalert2', type: 'info', message: "Deactivate action for user ID: {$userId}");
         $this->fetchUsers($this->currentPage);
     }
 
@@ -126,7 +130,8 @@ class User extends Component
      */
     public function sendPaymentLink($userId)
     {
-        Session::flash('info', "Sending payment link to user ID: {$userId}");
+        // Session::flash('info', "Sending payment link to user ID: {$userId}");
+        $this->dispatch('sweetalert2', type: 'info', message: "Sending payment link to user ID: {$userId}");
         $this->fetchUsers($this->currentPage);
     }
 
