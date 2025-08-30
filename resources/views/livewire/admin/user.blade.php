@@ -1,10 +1,10 @@
-<main>
+<section>
     <h2 class="font-medium text-3xl text-black mb-4">User Management</h2>
     <div class="overflow-x-auto">
         <table class="leading-normal table">
             <thead>
                 <tr class="bg-[#e7e7e7] text-black font-medium">
-                    <th class="p-4 text-left font-medium text-base">ID</th>
+                    <th class="p-4 text-left font-medium text-base"> SL </th>
                     <th class="p-4 text-left font-medium text-base">Name</th>
                     <th class="p-4 text-left font-medium text-base">Email</th>
                     <th class="p-4 text-left font-medium text-base">Number</th>
@@ -16,9 +16,10 @@
                 </tr>
             </thead>
             <tbody class="text-balck text-sm">
-                @forelse ($users as $user)
+                @forelse ($users as $index => $user)
                     <tr wire:key="user-{{ $user['id'] }}">
-                        <td class="p-4 text-left whitespace-nowrap font-normal">{{ $loop->iteration }}</td>
+                        <td class="p-4 text-left whitespace-nowrap font-normal">
+                            {{ ($pagination['page'] - 1) * $pagination['limit'] + $index + 1 }}</td>
                         <td class="p-4 text-left font-normal text-base">{{ $user['name'] }}</td>
                         <td class="p-4 text-left font-normal text-base">{{ $user['email'] }}</td>
                         <td class="p-4 text-left font-normal text-base">{{ $user['whatsapp'] }}</td>
@@ -29,7 +30,7 @@
                         <td class="p-4 text-left font-normal text-base">
                             {{ $user['isActive'] ? 'Active' : 'Inactive' }}</td>
                         <td class="p-4 text-left font-normal text-base">
-                            <a href="#"
+                            <a href="#" wire:click.prevent="sendPaymentLink('{{ $user['id'] }}')"
                                 class="text-[#AD8945]">{{ $user['send_payment_link'] ? 'Sent' : 'Not Sent' }}</a>
                         </td>
                         <td class="py-3 px-6 text-center">
@@ -48,26 +49,26 @@
                                     x-transition:leave-end="transform opacity-0 scale-95"
                                     class="absolute right-3 -mt-1 p-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
 
-                                    <button wire:click="editUser({{ $user['id'] }})"
-                                        class="w-full flex items-center px-3 text-sm hover:bg-gray-100 cursor-pointer">
+                                    <button wire:click="editUser('{{ $user['id'] }}')"
+                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
                                         <flux:icon name="pencil-square" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Edit
                                     </button>
 
-                                    <button wire:click="activateUser({{ $user['id'] }})"
-                                        class="w-full flex items-center px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer">
+                                    <button wire:click="activateUser('{{ $user['id'] }}')"
+                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
                                         <flux:icon name="check" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Active
                                     </button>
 
-                                    <button wire:click="deactivateUser({{ $user['id'] }})"
-                                        class="w-full flex items-center px-3 py-2 text-sm hover:bg-gray-100 cursor-pointer">
+                                    <button wire:click="deactivateUser('{{ $user['id'] }}')"
+                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
                                         <flux:icon name="x-circle" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Deactivate
                                     </button>
 
-                                    <button wire:click="deleteUser({{ $user['id'] }})"
-                                        class="w-full flex items-center px-3 py-2 text-sm hover:bg-red-50 cursor-pointer">
+                                    <button wire:click="deleteUser('{{ $user['id'] }}')"
+                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
                                         <flux:icon name="trash" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Delete
                                     </button>
@@ -77,11 +78,17 @@
                     </tr>
                 @empty
                     <tr>
-                        <td class="p-4 text-left whitespace-nowrap font-normal" colspan="9">No users
-                            found</td>
+                        <td class="p-4 text-left whitespace-nowrap font-normal" colspan="9">No users found</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
-</main>
+
+    <!-- Reusable Pagination Component -->
+    @if (!empty($pagination))
+        <livewire:components.pagination :current-page="$pagination['page']" :total-pages="$pagination['pages']" wire:key="user-pagination" />
+    @endif
+
+    
+</section>
