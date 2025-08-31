@@ -40,7 +40,7 @@ class User extends Component
             return $this->redirectRoute('login', navigate: true);
         }
 
-        $response = Http::withToken($token)->get('https://backend-ab.mtscorporate.com/api/users', [
+        $response = Http::withToken($token)->get(api_base_url() . '/users', [
             'page' => $page
         ]);
 
@@ -51,7 +51,7 @@ class User extends Component
             // Update the property after a successful fetch to avoid URL issues on failure
             $this->currentPage = $page;
         } else {
-            $this->dispatch('sweetalert2', ['type' => 'error', 'message' => 'Failed to load users from the API.']);
+            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to load users from the API.');
             $this->users = [];
             $this->pagination = [];
             Session::flash('error', 'Failed to load users from the API.');
@@ -82,7 +82,7 @@ class User extends Component
             return $this->redirectRoute('login', navigate: true);
         }
 
-        $response = Http::withToken($token)->delete('https://backend-ab.mtscorporate.com/api/users/' . $userId);
+        $response = Http::withToken($token)->delete(api_base_url() . '/users/' . $userId);
 
         if ($response->successful()) {
             $this->dispatch('sweetalert2', type: 'success', message: 'User deleted successfully.');
