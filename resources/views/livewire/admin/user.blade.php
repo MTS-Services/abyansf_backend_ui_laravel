@@ -90,7 +90,7 @@
     </div>
 
     @if (!empty($pagination) && ($pagination['pages'] ?? 1) > 1)
-        <div class="flex items-center justify-center space-x-2 my-6 flex-wrap">
+        <div class="flex items-center justify-center space-x-2 py-3 my-3 flex-wrap border-t border-slate-200">
             <button wire:click="previousPage" @disabled(!$hasPrevious) @class([
                 'flex items-center justify-center w-8 h-8 rounded border border-slate-300',
                 'bg-slate-100 text-slate-400 cursor-not-allowed' => !$hasPrevious,
