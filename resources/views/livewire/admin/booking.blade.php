@@ -145,7 +145,7 @@
                                     x-transition:leave-end="transform opacity-0 scale-95"
                                     class="absolute right-3 -mt-1 p-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
 
-                                    <button
+                                    <button ware:click="editBooking('{{ $booking['id'] }}')"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
                                         <flux:icon name="pencil-square" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Edit
@@ -163,7 +163,7 @@
                                         Deactivate
                                     </button>
 
-                                    <button
+                                    <button wire:click="deleteBooking('{{ encrypt($booking['id']) }}')"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
                                         <flux:icon name="trash" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Delete

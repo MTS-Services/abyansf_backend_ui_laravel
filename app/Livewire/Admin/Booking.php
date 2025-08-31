@@ -70,7 +70,23 @@ class Booking extends Component
             $this->openActions = $userId;
         }
     }
+public function deleteBooking($listingBookingId)
+    {
+        $response = Http::withToken(api_token())->delete(api_base_url() . '/bookings/' . decrypt($listingBookingId));
 
+        if ($response->successful()) {
+            $this->dispatch('sweetalert2', type: 'success', message: 'booking deleted successfully.');
+            $this->fetchUsers($this->currentPage);
+        } else {
+            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to delete user.');
+        }
+    }
+
+    public function editBooking($listingBookingId)
+    {
+        Session::flash('info', "Edit action for user ID: {$listingBookingId}");
+        $this->dispatch('sweetalert2', type: 'info', message: "Edit action for user ID: {$listingBookingId}");
+    }
 
     public function gotoPage($page)
     {

@@ -198,7 +198,7 @@
                 ];
             @endphp
 
-            @foreach ($services as $service)
+            @foreach ($events as $event)
                 <div class="grid grid-cols-1 md:grid-cols-6 items-center py-4 px-2 gap-4 transition">
                     <!-- Service Info -->
                     <div class="flex items-start md:items-center col-span-3 space-x-3 md:space-x-4">
@@ -206,13 +206,13 @@
                             class="w-4 h-4 text-[#C7AE6A] border-gray-300 rounded focus:ring-[#C7AE6A] mt-1 md:mt-0">
 
                         <div class="w-20 h-20 md:w-26 md:h-26 overflow-hidden rounded shadow-sm flex-shrink-0 ">
-                            <img src="{{ $service['image'] }}" alt="{{ $service['name'] }}"
+                            <img src="{{ $event['event_img'] }}" alt="{{ $event['title'] }}"
                                 class="object-cover w-full h-full">
                         </div>
 
                         <div>
                             <div class="font-semibold text-gray-800 text-base md:text-xl font-playfair">
-                                {{ $service['name'] }}</div>
+                                {{ $event['title'] }}</div>
                             <div class="my-2 md:my-5"></div>
                             <div class="flex items-center text-xs md:text-sm text-black font-playfair">
                                 <svg class="w-4 h-4 mr-1 text-black" fill="currentColor" viewBox="0 0 20 20">
@@ -220,7 +220,7 @@
                                         d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
                                         clip-rule="evenodd"></path>
                                 </svg>
-                                {{ $service['location'] }}
+                                {{ $event['location'] }}
                             </div>
                         </div>
                     </div>
@@ -230,17 +230,17 @@
                         <div class="w-full md:w-24 h-[40px] bg-[#F4F4F4] rounded-sm items-center pt-1 relative">
                             <select
                                 class="block w-full text-center px-2 py-2 text-xs font-playfair md:text-[10px] text-black font-medium rounded-sm appearance-none focus:outline-none focus:ring-2 focus:ring-[#b99b52]">
-                                <option value="active" {{ $service['status'] === 'active' ? 'selected' : '' }}>
+                                <option value="active" {{ $event['status'] === 'active' ? 'selected' : '' }}>
                                     Active
                                 </option>
-                                <option value="inactive" {{ $service['status'] === 'inactive' ? 'selected' : '' }}>
+                                <option value="inactive" {{ $event['status'] === 'inactive' ? 'selected' : '' }}>
                                     Inactive
                                 </option>
                             </select>
 
                             <!-- Status indicator -->
                             <span
-                                class="absolute left-3 bottom-2 transform font-playfair -translate-y-1/2 w-2 h-2 rounded-full {{ $service['status'] === 'active' ? 'bg-[#22C55E]' : 'bg-[#9A9A9A]' }}">
+                                class="absolute left-3 bottom-2 transform font-playfair -translate-y-1/2 w-2 h-2 rounded-full {{ $event['status'] === 'active' ? 'bg-[#22C55E]' : 'bg-[#9A9A9A]' }}">
                             </span>
 
                             <!-- Dropdown arrow -->
@@ -276,7 +276,7 @@
                                 </path>
                             </svg>
                         </button>
-                        <button class="text-[#C7AE6A] p-1 hover:text-[#b99b52] cursor-pointer">
+                        <button wire:click="deleteEvent('{{ encrypt($event['id']) }}')" class="text-[#C7AE6A] p-1 hover:text-[#b99b52] cursor-pointer">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
                                 fill="currentColor">
                                 <path fill-rule="evenodd"
@@ -426,35 +426,45 @@
     <!-- Scripts -->
 
     <!-- Pagination -->
-    <div class="border-t border-gray-200"></div>
-    <div class="flex items-center justify-center space-x-2 my-6 flex-wrap">
-        <!-- Previous Button (disabled) -->
-        <button
-            class="flex items-center justify-center w-8 h-8 rounded border border-gray-300 bg-gray-100 text-gray-400 cursor-not-allowed"
-            disabled>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-            </svg>
-        </button>
+   
+    @if (!empty($pagination) && ($pagination['pages'] ?? 1) > 1)
+        <div class="flex items-center justify-center space-x-2 py-3 my-3 flex-wrap border-t border-slate-200">
+            <button wire:click="previousPage" @disabled(!$hasPrevious) @class([
+                'flex items-center justify-center w-8 h-8 rounded border border-slate-300',
+                'bg-slate-100 text-slate-400 cursor-not-allowed' => !$hasPrevious,
+                'bg-white text-slate-700 hover:bg-slate-50' => $hasPrevious,
+            ])>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
 
-        <button
-            class="flex items-center justify-center w-8 h-8 rounded border-2 border-[#AD8945]  text-[#AD8945] font-medium text-sm">1</button>
-        <button
-            class="flex items-center justify-center w-8 h-8 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 font-medium text-sm">2</button>
-        <span class="flex items-center justify-center w-8 h-8 text-gray-500 text-sm">...</span>
-        <button
-            class="flex items-center justify-center w-8 h-8 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 font-medium text-sm">9</button>
-        <button
-            class="flex items-center justify-center w-8 h-8 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 font-medium text-sm">10</button>
+            @foreach ($pages as $page)
+                @if ($page === '...')
+                    <span class="flex items-center justify-center w-8 h-8 text-slate-500 text-sm">...</span>
+                @else
+                    <button wire:click="gotoPage({{ $page }})" @class([
+                        'flex items-center justify-center w-8 h-8 rounded border font-medium text-sm',
+                        'border-2 border-[#AD8945] text-[#AD8945]' => $page == $currentPage,
+                        'border-slate-300 bg-white text-slate-700 hover:bg-slate-50' =>
+                            $page != $currentPage,
+                    ])>
+                        {{ $page }}
+                    </button>
+                @endif
+            @endforeach
 
-        <!-- Next Button -->
-        <button
-            class="flex items-center justify-center w-8 h-8 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-        </button>
-    </div>
+            <button wire:click="nextPage" @disabled(!$hasNext) @class([
+                'flex items-center justify-center w-8 h-8 rounded border border-slate-300',
+                'bg-slate-100 text-slate-400 cursor-not-allowed' => !$hasNext,
+                'bg-white text-slate-700 hover:bg-slate-50' => $hasNext,
+            ])>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </button>
+        </div>
+    @endif
 
     <script>
         function fileUpload() {

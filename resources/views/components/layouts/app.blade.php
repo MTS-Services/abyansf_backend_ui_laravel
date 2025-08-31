@@ -41,7 +41,7 @@
 </head>
 
 
-<body x-data @navigate.start="window.scrollTo({top: 0, behavior: 'smooth'}) overflow-x-hidden relative">
+<body x-data @navigate.start="window.scrollTo({top: 0, behavior: 'smooth'})" overflow-x-hidden relative>
 
     @livewire('layouts.header')
 
