@@ -9,8 +9,9 @@ use Livewire\Component;
 class Attendance extends Component
 {
 
-     public $attendances = [];
+     public $events = [];
     public $pagination = [];
+
     public $openActions = null;
 
     // Add this property to sync currentPage with the URL
@@ -41,19 +42,19 @@ class Attendance extends Component
             return $this->redirectRoute('login', navigate: true);
         }
 
-        $response = Http::withToken($token)->get(api_base_url() . '/listings', [
+        $response = Http::withToken($token)->get(api_base_url() . '/events', [
             'page' => $page
         ]);
 
         if ($response->successful()) {
             $data = $response->json();
-            $this->dispatch('sweetalert2', type: 'success', message: 'attendances loaded successfully.');
-            $this->attendances = $data['data']['attendances'] ?? [];
+            // $this->dispatch('sweetalert2', type: 'success', message: 'attendances loaded successfully.');
+            $this->events = $data['data']['events'] ?? [];
             $this->pagination = $data['data']['pagination'] ?? [];
             $this->currentPage = $page;
         } else {
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to load attendances from the API.');
-            $this->attendances = [];
+            $this->events = [];
             $this->pagination = [];
             Session::flash('error', 'Failed to load attendances from the API.');
         }
@@ -71,7 +72,17 @@ class Attendance extends Component
             $this->openActions = $userId;
         }
     }
+public function deleteEvent($eventId)
+    {
+        $response = Http::withToken(api_token())->delete(api_base_url() . '/events/' . decrypt($eventId));
 
+        if ($response->successful()) {
+            // $this->dispatch('sweetalert2', type: 'success', message: 'booking deleted successfully.');
+            $this->fetchUsers($this->currentPage);
+        } else {
+            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to delete user.');
+        }
+    }
     public function gotoPage($page)
     {
         if ($page >= 1 && $page <= ($this->pagination['pages'] ?? 1)) {

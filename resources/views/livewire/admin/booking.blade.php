@@ -130,48 +130,48 @@
                             Pending
                         </td>
 
-                        <td class="py-3 px-6 text-right">
-                            <div class="relative inline-block text-left" x-data="{ open: false }"
-                                x-on:click.outside="open = false">
-                                <button x-on:click="open = ! open"
-                                    class="-mt-1 text-[#AD8945] rounded-full focus:outline-none" title="Settings">
-                                    <flux:icon name="cog-6-tooth" class="text-[#C7AE6A]" />
-                                </button>
+                      <td class="py-3 px-6 text-right">
+    <div class="relative inline-block text-left" x-data="{ open: false }"
+        x-on:click.outside="open = false">
+        <button x-on:click="open = ! open"
+            class="-mt-1 text-[#AD8945] rounded-full focus:outline-none" title="Settings">
+            <flux:icon name="cog-6-tooth" class="text-[#C7AE6A]" />
+        </button>
 
-                                <div x-show="open" x-transition:enter="transition ease-out duration-100"
-                                    x-transition:enter-start="transform opacity-0 scale-95"
-                                    x-transition:enter-end="transform opacity-100 scale-100"
-                                    x-transition:leave="transition ease-in duration-75"
-                                    x-transition:leave-start="transform opacity-100 scale-100"
-                                    x-transition:leave-end="transform opacity-0 scale-95"
-                                    class="absolute right-3 -mt-1 p-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
+        <div x-show="open" x-transition:enter="transition ease-out duration-100"
+            x-transition:enter-start="transform opacity-0 scale-95"
+            x-transition:enter-end="transform opacity-100 scale-100"
+            x-transition:leave="transition ease-in duration-75"
+            x-transition:leave-start="transform opacity-100 scale-100"
+            x-transition:leave-end="transform opacity-0 scale-95"
+            class="absolute right-0 md:right-3 -mt-1 p-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-20 md:origin-top-right">
 
-                                    {{-- <button ware:click="editBooking('{{ $booking['id'] }}')"
-                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
-                                        <flux:icon name="pencil-square" class="text-[#6D6D6D] mr-2 h-4 w-4" />
-                                        Edit
-                                    </button> --}}
+            {{-- <button ware:click="editBooking('{{ $booking['id'] }}')"
+                class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
+                <flux:icon name="pencil-square" class="text-[#6D6D6D] mr-2 h-4 w-4" />
+                Edit
+            </button> --}}
 
-                                    <button
-                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
-                                        <flux:icon name="check" class="text-[#6D6D6D] mr-2 h-4 w-4" />
-                                        Active
-                                    </button>
+            <button
+                class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
+                <flux:icon name="check" class="text-[#6D6D6D] mr-2 h-4 w-4" />
+                Active
+            </button>
 
-                                    <button
-                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
-                                        <flux:icon name="x-circle" class="text-[#6D6D6D] mr-2 h-4 w-4" />
-                                        Deactivate
-                                    </button>
+            <button
+                class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
+                <flux:icon name="x-circle" class="text-[#6D6D6D] mr-2 h-4 w-4" />
+                Deactivate
+            </button>
 
-                                    <button wire:click="deleteBooking('{{ encrypt($booking['id']) }}')"
-                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
-                                        <flux:icon name="trash" class="text-[#6D6D6D] mr-2 h-4 w-4" />
-                                        Delete
-                                    </button>
-                                </div>
-                            </div>
-                        </td>
+            <button wire:click="deleteBooking('{{ encrypt($booking['id']) }}')"
+                class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
+                <flux:icon name="trash" class="text-[#6D6D6D] mr-2 h-4 w-4" />
+                Delete
+            </button>
+        </div>
+    </div>
+</td>
                     </tr>
                 @endforeach
 

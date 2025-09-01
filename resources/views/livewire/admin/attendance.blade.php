@@ -1,255 +1,125 @@
-<section class="font-poppins">
-    <div class="mb-4 mt-12">
-        <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Attendance</h1>
-    </div>
-
-    <div class="bg-white rounded-lg max-w-[1200px] min-h-[60px] relative z-10 py-7">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
-            <div>
-                <label class="block text-sm lg:text-base font-semibold text-black mb-2">User</label>
-                <select
-                    class="w-full border-b border-black text-base font-poppins bg-transparent focus:outline-none focus:border-[#C7AE6A]">
-                    <option>All Users</option>
-                    <option>Khalid Omar Al-Mansouri</option>
-                    <option>Other User</option>
-                </select>
-            </div>
-
-            <div>
-                <label class="block text-sm lg:text-base font-medium text-black mb-2">Services</label>
-                <select
-                    class="w-full border-b border-black text-base font-poppins bg-transparent focus:outline-none focus:border-[#C7AE6A]">
-                    <option>All Services</option>
-                    <option>Breakfast</option>
-                    <option>Lunch</option>
-                    <option>Dinner</option>
-                </select>
-            </div>
-
-            <div>
-                <label class="block text-sm lg:text-base font-medium text-black mb-2">Date</label>
-                <input type="date"
-                    class="w-full border-b border-gray-400 text-base font-poppins bg-transparent focus:outline-none focus:border-[#C7AE6A]"
-                    placeholder="dd/mm/yyyy">
-            </div>
-
-            <div>
-                <button
-                    class="w-full bg-[#C7AE6A] hover:bg-[#b49a5e] text-black text-sm font-playfair py-4 px-4 rounded-md transition-colors duration-200">
-                    Apply Filters
-                </button>
-            </div>
-        </div>
-    </div>
-
-    @php
-        // Dummy data
-        $attendances = [
-            [
-                'id' => '01',
-                'name' => 'Khalid Omar Al-Mansouri',
-                'service' => 'Breakfast',
-                'location' => 'Jumeirah Beach Residence',
-                'date' => '01/06/2025',
-                'time' => '3:00 PM - 4:00 PM',
-                'status' => 'Confirmed',
-            ],
-            [
-                'id' => '02',
-                'name' => 'Ali Hassan',
-                'service' => 'Lunch',
-                'location' => 'Dubai Marina',
-                'date' => '02/06/2025',
-                'time' => '12:00 PM - 1:00 PM',
-                'status' => 'Confirmed',
-            ],
-            [
-                'id' => '03',
-                'name' => 'Fatima Noor',
-                'service' => 'Dinner',
-                'location' => 'Downtown Dubai',
-                'date' => '03/06/2025',
-                'time' => '7:00 PM - 8:00 PM',
-                'status' => 'Confirmed',
-            ],
-            [
-                'id' => '04',
-                'name' => 'Khalid Omar Al-Mansouri',
-                'service' => 'Breakfast',
-                'location' => 'Jumeirah Beach Residence',
-                'date' => '01/06/2025',
-                'time' => '3:00 PM - 4:00 PM',
-                'status' => 'Confirmed',
-            ],
-            [
-                'id' => '05',
-                'name' => 'Ali Hassan',
-                'service' => 'Lunch',
-                'location' => 'Dubai Marina',
-                'date' => '02/06/2025',
-                'time' => '12:00 PM - 1:00 PM',
-                'status' => 'Confirmed',
-            ],
-            [
-                'id' => '06',
-                'name' => 'Fatima Noor',
-                'service' => 'Dinner',
-                'location' => 'Downtown Dubai',
-                'date' => '03/06/2025',
-                'time' => '7:00 PM - 8:00 PM',
-                'status' => 'Confirmed',
-            ],
-            [
-                'id' => '07',
-                'name' => 'Khalid Omar Al-Mansouri',
-                'service' => 'Breakfast',
-                'location' => 'Jumeirah Beach Residence',
-                'date' => '01/06/2025',
-                'time' => '3:00 PM - 4:00 PM',
-                'status' => 'Confirmed',
-            ],
-            [
-                'id' => '08',
-                'name' => 'Ali Hassan',
-                'service' => 'Lunch',
-                'location' => 'Dubai Marina',
-                'date' => '02/06/2025',
-                'time' => '12:00 PM - 1:00 PM',
-                'status' => 'Confirmed',
-            ],
-            [
-                'id' => '09',
-                'name' => 'Fatima Noor',
-                'service' => 'Dinner',
-                'location' => 'Downtown Dubai',
-                'date' => '03/06/2025',
-                'time' => '7:00 PM - 8:00 PM',
-                'status' => 'Confirmed',
-            ],
-        ];
-    @endphp
-
-    <div class="bg-white rounded-lg w-full overflow-hidden mt-4 lg:mt-8 mb-4 lg:mb-10">
-        <div class="hidden md:block overflow-x-auto">
-            <table class="w-full">
-                <thead class="border-b-2 border-gray-300">
-                    <tr>
-                        <th class="px-4 py-3 text-left text-base font-medium text-black">ID</th>
-                        <th class="px-4 py-3 text-left text-base font-medium text-black">Name</th>
-                        <th class="px-4 py-3 text-left text-base font-medium text-black">Service</th>
-                        <th class="px-4 py-3 text-left text-base font-medium text-black">Location</th>
-                        <th class="px-4 py-3 text-left text-base font-medium text-black">Date</th>
-                        <th class="px-4 py-3 text-left text-base font-medium text-black">Time</th>
-                        <th class="px-4 py-3 text-left text-base font-medium text-black">Client Status</th>
-                        <th class="px-4 py-3 text-left text-base font-medium text-black">Action</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-300 ">
-                    @foreach ($attendances as $attendance)
-                        <tr class="border-b-2 border-gray-300">
-                            <td class="px-4 py-6 text-sm text-gray-900">{{ $attendance['id'] }}</td>
-                            <td class="px-4 py-6 text-sm text-gray-900">{{ $attendance['name'] }}</td>
-                            <td class="px-4 py-6 text-sm text-gray-900">{{ $attendance['service'] }}</td>
-                            <td class="flex px-4 py-6 text-sm text-gray-900 items-center gap-2">
-                                <svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
-                                    <path
-                                        d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" />
-                                </svg>
-                                {{ $attendance['location'] }}
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-900">{{ $attendance['date'] }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-900">{{ $attendance['time'] }}</td>
-                            <td class="px-6 py-4">
-                                <span
-                                    class="inline-flex px-2 py-1 text-xs rounded-full
-                                    @if ($attendance['status'] === 'Confirmed') bg-[#22C55E] text-black
-                                    @elseif($attendance['status'] === 'Pending') bg-yellow-400 text-black
-                                    @else bg-red-400 text-white @endif">
-                                    {{ $attendance['status'] }}
-                                </span>
-                            </td>
-                            <td class="px-6 py-4 text-sm text-gray-500">
-                                <button class="text-[#C7AE6A]">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
-                                        fill="currentColor">
-                                        <path fill-rule="evenodd"
-                                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm6 0a1 1 0 112 0v6a1 1 0 11-2 0V8z"
-                                            clip-rule="evenodd" />
-                                    </svg>
+<section>
+    <h2 class="font-medium text-3xl text-black mb-4">User Management</h2>
+    <div class="overflow-x-auto relative">
+        <table class="leading-normal table-auto w-full">
+            <thead class="bg-[#e7e7e7] text-black font-medium sticky top-0">
+                <tr>
+                    <th class="p-4 text-left font-medium text-base">SL</th>
+                    <th class="p-4 text-left font-medium text-base">Name</th>
+                    <th class="p-4 text-left font-medium text-base">Time</th>
+                    <th class="p-4 text-left font-medium text-base">Join Date</th>
+                    <th class="p-4 text-left font-medium text-base">Description</th>
+                    <th class="p-4 text-left font-medium text-base">Max Person</th>
+                    <th class="p-4 text-left font-medium text-base">Location</th>
+                    <th class="p-4 text-left font-normal text-base">Status</th>
+                    <th class="p-4 text-right font-medium text-base">Action</th>
+                </tr>
+            </thead>
+            <tbody class="text-black text-sm">
+                @forelse ($events as $index => $event)
+                    <tr wire:key="user-{{ $event['id'] }}" class="bg-white mb-4 rounded-lg shadow-sm border md:border-0 md:bg-transparent">
+                        <td class="p-4 text-left font-normal border-b md:border-b-0" data-label="SL">
+                            <span class="font-medium md:hidden text-gray-500">SL: </span>
+                            {{ ($pagination['page'] - 1) * $pagination['limit'] + $index + 1 }}
+                        </td>
+                        <td class="p-4 text-left font-normal text-base border-b md:border-b-0" data-label="Name">
+                            <span class="font-medium md:hidden text-gray-500">Name: </span>
+                            {{ $event['title'] }}
+                        </td>
+                        <td class="p-4 text-left font-normal text-base border-b md:border-b-0" data-label="Time">
+                            <span class="font-medium md:hidden text-gray-500">Time: </span>
+                            {{ $event['time'] }}
+                        </td>
+                        <td class="p-4 text-left font-normal text-base border-b md:border-b-0" data-label="Join Date">
+                            <span class="font-medium md:hidden text-gray-500">Join Date: </span>
+                            {{ \Carbon\Carbon::parse($event['createdAt'])->format('d/m/Y') }}
+                        </td>
+                        <td class="p-4 text-left font-normal text-base border-b md:border-b-0" data-label="Description">
+                            <span class="font-medium md:hidden text-gray-500">Description: </span>
+                            {{ $event['description'] }}
+                        </td>
+                        <td class="p-4 text-left font-normal text-base border-b md:border-b-0" data-label="Max Person">
+                            <span class="font-medium md:hidden text-gray-500">Max Person: </span>
+                            {{ $event['max_person'] }}
+                        </td>
+                        <td class="p-4 text-left font-normal text-base border-b md:border-b-0" data-label="Location">
+                            <span class="font-medium md:hidden text-gray-500">Location: </span>
+                            {{ $event['location'] }}
+                        </td>
+                        <td class="p-4 text-left font-normal text-base border-b md:border-b-0" data-label="Status">
+                            <span class="font-medium md:hidden text-gray-500">Status: </span>
+                            {{ $event['status'] ? 'Active' : 'Inactive' }}
+                        </td>
+                        <td class="py-3 px-6 text-right" data-label="Action">
+                            <span class="font-medium md:hidden text-gray-500">Action: </span>
+                            <div class="relative inline-block text-left" x-data="{ open: false }" x-on:click.outside="open = false">
+                                <button x-on:click="open = ! open" class="-mt-1 text-[#AD8945] rounded-full focus:outline-none" title="Settings">
+                                    <flux:icon name="cog-6-tooth" class="text-[#C7AE6A]" />
                                 </button>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-
-        <div class="md:hidden divide-y divide-gray-200 mt-4">
-            @foreach ($attendances as $attendance)
-                <div x-data="{ open: false }" class="p-4">
-                    <div class="flex justify-between items-center border-b pb-2">
-                        <div>
-                            <h3 class="text-sm font-medium text-gray-900">{{ $attendance['name'] }}</h3>
-                            <p class="text-xs text-gray-500">ID: {{ $attendance['id'] }}</p>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <span
-                                class="inline-flex px-2 py-1 text-xs font-semibold rounded-full
-                                @if ($attendance['status'] === 'Confirmed') bg-[#22C55E] text-black
-                                @elseif($attendance['status'] === 'Pending') bg-yellow-400 text-black
-                                @else bg-red-400 text-white @endif">
-                                {{ $attendance['status'] }}
-                            </span>
-                            <button @click="open = !open" class="text-gray-600">
-                                <svg x-show="!open" class="w-5 h-5" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 4v16m8-8H4" />
-                                </svg>
-                                <svg x-show="open" x-cloak class="w-5 h-5" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M20 12H4" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                    <div x-show="open" x-cloak class="mt-3 space-y-2 text-sm">
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">Service:</span>
-                            <span class="text-gray-900">{{ $attendance['service'] }}</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span class="text-gray-500">Location:</span>
-                            <span class="flex items-center gap-2 text-black">
-                                <svg class="w-5 h-5 text-[#231F20]" fill="currentColor" viewBox="0 0 24 24">
-                                    <path
-                                        d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z" />
-                                </svg>
-                                {{ $attendance['location'] }}
-                            </span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">Date:</span>
-                            <span class="text-gray-900">{{ $attendance['date'] }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">Time:</span>
-                            <span class="text-gray-900">{{ $attendance['time'] }}</span>
-                        </div>
-                        <div class="flex justify-end pt-2">
-                            <button class="text-[#C7AE6A]">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
-                                    fill="currentColor">
-                                    <path fill-rule="evenodd"
-                                        d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm6 0a1 1 0 112 0v6a1 1 0 11-2 0V8z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
-        </div>
+                                <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute right-3 -mt-1 p-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
+                                    <button wire:click="editEvent('{{ $event['id'] }}')" class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
+                                        <flux:icon name="pencil-square" class="text-[#6D6D6D] mr-2 h-4 w-4" />
+                                        Edit
+                                    </button>
+                                    <button wire:click="activateEvent('{{ $event['id'] }}')" class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
+                                        <flux:icon name="check" class="text-[#6D6D6D] mr-2 h-4 w-4" />
+                                        Active
+                                    </button>
+                                    <button wire:click="deactivateEvent('{{ encrypt($event['id']) }}')" class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
+                                        <flux:icon name="x-circle" class="text-[#6D6D6D] mr-2 h-4 w-4" />
+                                        Deactivate
+                                    </button>
+                                    <button wire:click="deleteEvent('{{ $event['id'] }}')" class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
+                                        <flux:icon name="trash" class="text-[#6D6D6D] mr-2 h-4 w-4" />
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td class="p-4 text-left whitespace-nowrap font-normal" colspan="9">No events found</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
+</section>
+    </div>
+    @if (!empty($pagination) && ($pagination['pages'] ?? 1) > 1)
+        <div class="flex items-center justify-center space-x-2 py-3 my-3 flex-wrap border-t border-slate-200">
+            <button wire:click="previousPage" @disabled(!$hasPrevious) @class([
+                'flex items-center justify-center w-8 h-8 rounded border border-slate-300',
+                'bg-slate-100 text-slate-400 cursor-not-allowed' => !$hasPrevious,
+                'bg-white text-slate-700 hover:bg-slate-50' => $hasPrevious,
+            ])>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                </svg>
+            </button>
+            @foreach ($pages as $page)
+                @if ($page === '...')
+                    <span class="flex items-center justify-center w-8 h-8 text-slate-500 text-sm">...</span>
+                @else
+                    <button wire:click="gotoPage({{ $page }})" @class([
+                        'flex items-center justify-center w-8 h-8 rounded border font-medium text-sm',
+                        'border-2 border-[#AD8945] text-[#AD8945]' => $page == $currentPage,
+                        'border-slate-300 bg-white text-slate-700 hover:bg-slate-50' => $page != $currentPage,
+                    ])>
+                        {{ $page }}
+                    </button>
+                @endif
+            @endforeach
+            <button wire:click="nextPage" @disabled(!$hasNext) @class([
+                'flex items-center justify-center w-8 h-8 rounded border border-slate-300',
+                'bg-slate-100 text-slate-400 cursor-not-allowed' => !$hasNext,
+                'bg-white text-slate-700 hover:bg-slate-50' => $hasNext,
+            ])>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+            </button>
+        </div>
+    @endif
 </section>

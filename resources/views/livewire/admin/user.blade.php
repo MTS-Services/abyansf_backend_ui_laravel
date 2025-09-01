@@ -12,7 +12,7 @@
                     <th class="p-4 text-left font-medium text-base">Password</th>
                     <th class="p-4 text-left font-normal text-base">Status</th>
                     <th class="p-4 text-left font-normal text-base">Payment Link</th>
-                    <th class="p-4 text-right font-medium text-base">Action</th>
+                    <th class="p-4 text- font-medium text-base">Action</th>
                 </tr>
             </thead>
             <tbody class="text-balck text-sm">

@@ -39,7 +39,7 @@ class Event extends Component
         ]);
         if ($response->successful()) {
             $data = $response->json();
-            $this->dispatch('sweetalert2', type: 'success', message: 'Events loaded successfully.');
+            // $this->dispatch('sweetalert2', type: 'success', message: 'Events loaded successfully.');
             $this->events = $data['data']['events'] ?? [];
             $this->pagination = $data['data']['pagination'] ?? [];
             $this->currentPage = $page;
@@ -78,7 +78,7 @@ class Event extends Component
      public function activateUser($eventId)
     {
         // Session::flash('info', "Activate action for user ID: {$userId}");
-        $this->dispatch('sweetalert2', type: 'info', message: "Activate action for user ID: {$eventId}");
+        // $this->dispatch('sweetalert2', type: 'info', message: "Activate action for user ID: {$eventId}");
         $this->fetchUsers($this->currentPage);
     }
 

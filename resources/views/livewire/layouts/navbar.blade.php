@@ -50,7 +50,7 @@
                         <a href="{{ route('admin.attendance') }}" wire:navigate
                             class="flex-1 py-3 text-center font-medium rounded-sm focus:outline-none transition-colors duration-200 ease-in-out
                            {{ request()->routeIs('admin.attendance') ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-700 hover:bg-gray-200' }}">
-                            Attendance
+                           Event Booking
                         </a>
                     </div>
                 </div>

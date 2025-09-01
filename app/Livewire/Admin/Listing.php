@@ -52,7 +52,7 @@ class Listing extends Component
 
         if ($response->successful()) {
             $data = $response->json();
-            $this->dispatch('sweetalert2', type: 'success', message: 'Listings loaded successfully.');
+            // $this->dispatch('sweetalert2', type: 'success', message: 'Listings loaded successfully.');
             $this->listings = $data['data']['listings'] ?? [];
             $this->pagination = $data['data']['pagination'] ?? [];
             $this->currentPage = $page;
@@ -82,7 +82,7 @@ class Listing extends Component
         $response = Http::withToken(api_token())->delete(api_base_url() . '/listings/' . decrypt($listingId));
 
         if ($response->successful()) {
-            $this->dispatch('sweetalert2', type: 'success', message: 'booking deleted successfully.');
+            // $this->dispatch('sweetalert2', type: 'success', message: 'booking deleted successfully.');
             $this->fetchUsers($this->currentPage);
         } else {
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to delete user.');

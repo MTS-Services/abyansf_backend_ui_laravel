@@ -75,7 +75,7 @@ public function deleteBooking($listingBookingId)
         $response = Http::withToken(api_token())->delete(api_base_url() . '/bookings/' . decrypt($listingBookingId));
 
         if ($response->successful()) {
-            $this->dispatch('sweetalert2', type: 'success', message: 'booking deleted successfully.');
+            // $this->dispatch('sweetalert2', type: 'success', message: 'booking deleted successfully.');
             $this->fetchUsers($this->currentPage);
         } else {
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to delete user.');
