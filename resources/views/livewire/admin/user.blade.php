@@ -12,7 +12,7 @@
                     <th class="p-4 text-left font-medium text-base">Password</th>
                     <th class="p-4 text-left font-normal text-base">Status</th>
                     <th class="p-4 text-left font-normal text-base">Payment Link</th>
-                    <th class="p-4 text-center font-medium text-base">Action</th>
+                    <th class="p-4 text-right font-medium text-base">Action</th>
                 </tr>
             </thead>
             <tbody class="text-balck text-sm">
@@ -37,7 +37,7 @@
                             <a href="#" wire:click.prevent="sendPaymentLink('{{ $user['id'] }}')"
                                 class="text-[#AD8945]">{{ $user['send_payment_link'] ? 'Sent' : 'Not Sent' }}</a>
                         </td>
-                        <td class="py-3 px-6 text-center">
+                        <td class="py-3 px-6 text-right">
                             <div class="relative inline-block text-left" x-data="{ open: false }"
                                 x-on:click.outside="open = false">
                                 <button x-on:click="open = ! open"

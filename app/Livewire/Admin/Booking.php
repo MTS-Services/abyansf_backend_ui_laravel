@@ -95,6 +95,13 @@ public function deleteBooking($listingBookingId)
         }
     }
 
+    public function statesBooking($listingBookingId)
+    {
+        $response = Http::withToken(api_token())->get(api_base_url() . '/bookings/' . decrypt($listingBookingId));
+        Session::flash('info', "Status action for booking ID: {$listingBookingId}");
+        $this->dispatch('sweetalert2', type: 'info', message: "Status action for booking ID: {$listingBookingId}");
+    }
+
     /**
      * Navigate to the previous page.
      */

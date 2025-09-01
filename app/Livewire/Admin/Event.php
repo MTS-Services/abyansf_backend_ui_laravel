@@ -68,7 +68,7 @@ class Event extends Component
         
         $response = Http::withToken(api_token())->delete(api_base_url() . '/events/' . decrypt($eventId));
         if ($response->successful()) {
-            $this->dispatch('sweetalert2', type: 'success', message: 'Event deleted successfully.');
+            // $this->dispatch('sweetalert2', type: 'success', message: 'Event deleted successfully.');
             $this->fetchUsers($this->currentPage);
         } else {
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to delete event.');

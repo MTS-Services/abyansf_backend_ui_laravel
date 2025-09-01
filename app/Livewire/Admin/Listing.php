@@ -15,6 +15,7 @@ class Listing extends Component
 
     public $listings = [];
     public $pagination = [];
+    public $listingData = []; // To hold the data of the listing being edited
     public $openActions = null;
 
     // Add this property to sync currentPage with the URL
@@ -88,29 +89,25 @@ class Listing extends Component
         }
     }
 
-    public function editListing($listingId)
-    {
-        $response = Http::withToken(api_token())->get(api_base_url() . '/listings/' . decrypt($listingId));
-        if ($response->successful()) {
-            $data = $response->json();
-            $this->dispatch('sweetalert2', type: 'success', message: 'Listing data fetched successfully.');
-            // You can set the fetched data to component properties here for editing
-        } else {
-            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch listing data.');
-        }
-        $this->editListingModal = true;
+    // public function editListing($listingId)
+    // {
+    //       try {
+    //     $response = Http::withToken(api_token())->get(api_base_url() . '/listings/' . decrypt($listingId));
 
+    //     if ($response->successful()) {
+    //         $this->listingData = $response->json(); // Store the data in a public property
+    //         $this->dispatch('sweetalert2', type: 'success', message: 'Listing data fetched successfully.');
+    //     } else {
+    //         $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch listing data.');
+    //     }
+    // } catch (\Exception $e) {
+    //     $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred while fetching listing data.');
+    // }
 
-        $this->dispatch('sweetalert2', type: 'info', message: "Edit action for listing ID: {$listingId}");
-        $this->fetchUsers($this->currentPage);
+    // $this->editListingModal = true;
+    // $this->dispatch('sweetalert2', type: 'info', message: "Edit action for listing ID: {$listingId}");
 
-    }
-    public function gotoPage($page)
-    {
-        if ($page >= 1 && $page <= ($this->pagination['pages'] ?? 1)) {
-            $this->fetchUsers($page);
-        }
-    }
+    // }
 
     /**
      * Navigate to the previous page.
@@ -187,8 +184,25 @@ class Listing extends Component
         $this->addListingModal = !$this->addListingModal;
     }
 
-    public function switchEditListingModel()
+    public function switchEditListingModel($listingId)
     {
+         try {
+        $response = Http::withToken(api_token())->get(api_base_url() . '/listings/' . decrypt($listingId));
+
+       
+        if ($response->successful()) {
+            $this->listingData = $response->json(); // Store the data in a public property
+            // $this->dispatch('sweetalert2', type: 'success', message: 'Listing data fetched successfully.');
+        } else {
+            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch listing data.');
+        }
+    } catch (\Exception $e) {
+        $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred while fetching listing data.');
+    }
+
+    $this->editListingModal = true;
+    $this->dispatch('sweetalert2', type: 'info', message: "Edit action for listing ID: {$listingId}");
+
         $this->editListingModal = !$this->editListingModal;
     }
 

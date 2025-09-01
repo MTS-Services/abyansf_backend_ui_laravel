@@ -91,16 +91,17 @@
             </div>
         </div> --}}
 
-    <div class=" overflow-x-auto">
+    <div class="overflow-x-auto md:overflow-x-visible">
         <table class="leading-normal table">
             <thead>
                 <tr class="bg-[#e7e7e7] text-black font-medium">
-                    <th class="p-4 text-left font-medium text-base">ID</th>
-                    <th class="p-4 text-left font-medium text-base">MEMBER</th>
-                    <th class="p-4 text-left font-medium text-base">SERVICE</th>
-                    <th class="p-4 text-left font-medium text-base">TIME & DATE</th>
-                    <th class="p-4 text-left font-medium text-base">STATUS</th>
-                    <th class="p-4 text-left font-medium text-base">ACTIONS</th>
+                    <th class="p-4 text-left font-medium text-base"> SL </th>
+                    <th class="p-4 text-left font-medium text-base">Name</th>
+                    <th class="p-4 text-left font-medium text-base">Mamber</th>
+                    <th class="p-4 text-left font-medium text-base">Service</th>
+                    <th class="p-4 text-left font-medium text-base">Date & Time</th>
+                   
+                    <th class="p-4 text-right font-medium text-base">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -129,7 +130,7 @@
                             Pending
                         </td>
 
-                        <td class="py-3 px-6 text-center">
+                        <td class="py-3 px-6 text-right">
                             <div class="relative inline-block text-left" x-data="{ open: false }"
                                 x-on:click.outside="open = false">
                                 <button x-on:click="open = ! open"
@@ -145,11 +146,11 @@
                                     x-transition:leave-end="transform opacity-0 scale-95"
                                     class="absolute right-3 -mt-1 p-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
 
-                                    <button ware:click="editBooking('{{ $booking['id'] }}')"
+                                    {{-- <button ware:click="editBooking('{{ $booking['id'] }}')"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
                                         <flux:icon name="pencil-square" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Edit
-                                    </button>
+                                    </button> --}}
 
                                     <button
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
