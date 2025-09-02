@@ -5,15 +5,25 @@ namespace App\Livewire\Admin;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
+use Livewire\Features\SupportFileUploads\WithFileUploads;
 
 class Event extends Component
 {
+    use WithFileUploads;
 
- 
     public $addEventModal = false;
-     public $editEventModal = false;
+    public $editEventModal = false;
 
-     public $events = [];
+    // Form data properties
+    public $title;
+    public $max_person;
+    public $description;
+    public $location;
+    public $time;
+    public $date;
+    public $images = [];
+
+    public $events = [];
     public $pagination = [];
     public $openActions = null;
 
@@ -23,6 +33,15 @@ class Event extends Component
         'currentPage' => ['as' => 'page', 'except' => 1]
     ];
 
+    public function switchAddEventModal()
+    {
+        $this->addEventModal = !$this->addEventModal;
+    }
+
+
+    /**
+     * Livewire's lifecycle hook that runs once on component initialization.
+     */
     public function mount()
     {
         $this->currentPage = request()->query('page', 1);
@@ -30,7 +49,7 @@ class Event extends Component
     }
     public function fetchUsers($page = 1)
     {
-        $token=session()->get('api_token');
+        $token = session()->get('api_token');
         if (!$token) {
             return $this->redirectRoute('login', navigate: true);
         }
@@ -49,12 +68,80 @@ class Event extends Component
             $this->pagination = [];
             Session::flash('error', 'Failed to load events from the API.');
         }
-
-    
-       
     }
 
-     public function toggleActions($userId)
+    //    create event
+    public function saveEvent()
+    {
+        // Validate
+        $data = $this->validate([
+            'title' => 'required|string|max:255',
+            'max_person' => 'required|integer|min:1',
+            'description' => 'required|string',
+            'location' => 'required|string|max:255',
+            'time' => 'required',
+            'date' => 'required|date',
+            'images.*' => 'nullable|image|max:1024',
+        ]);
+
+        // Token
+        $token = Session::get('api_token');
+        if (!$token) {
+            return $this->redirectRoute('login', navigate: true);
+        }
+
+        // Prepare request
+        $request = Http::withToken($token);
+
+        // Attach images
+        if (!empty($this->images)) {
+            foreach ($this->images as $image) {
+                $request->attach(
+                    'event_img',
+                    file_get_contents($image->getRealPath()),
+                    $image->getClientOriginalName()
+                );
+            }
+        }
+
+        // Send request (normal fields)
+        $response = $request->post(api_base_url() . '/events', [
+            'title' => $this->title,
+            'max_person' => $this->max_person,
+            'description' => $this->description,
+            'location' => $this->location,
+            'time' => $this->time,
+            'date' => $this->date,
+        ]);
+
+        // Response check
+        if ($response->successful()) {
+            $this->reset([
+                'title',
+                'max_person',
+                'description',
+                'location',
+                'time',
+                'date',
+                'images'
+            ]);
+
+            $this->switchAddEventModal();
+
+            $this->dispatch('sweetalert2', type: 'success', message: 'Event created successfully.');
+
+            $this->fetchUsers();
+        } else {
+
+
+
+            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to create event. Please try again.');
+        }
+    }
+
+
+
+    public function toggleActions($userId)
     {
         if ($this->openActions === $userId) {
             $this->openActions = null;
@@ -65,7 +152,7 @@ class Event extends Component
 
     public function deleteEvent($eventId)
     {
-        
+
         $response = Http::withToken(api_token())->delete(api_base_url() . '/events/' . decrypt($eventId));
         if ($response->successful()) {
             // $this->dispatch('sweetalert2', type: 'success', message: 'Event deleted successfully.');
@@ -75,7 +162,7 @@ class Event extends Component
         }
     }
 
-     public function activateUser($eventId)
+    public function activateUser($eventId)
     {
         // Session::flash('info', "Activate action for user ID: {$userId}");
         // $this->dispatch('sweetalert2', type: 'info', message: "Activate action for user ID: {$eventId}");
@@ -92,7 +179,7 @@ class Event extends Component
         $this->dispatch('sweetalert2', type: 'info', message: "Deactivate action for user ID: {$eventId}");
         $this->fetchUsers($this->currentPage);
     }
-      public function gotoPage($page)
+    public function gotoPage($page)
     {
         if ($page >= 1 && $page <= ($this->pagination['pages'] ?? 1)) {
             $this->fetchUsers($page);
@@ -169,10 +256,6 @@ class Event extends Component
         return $pages;
     }
 
-    public function switchAddEventModal()
-    {
-        $this->addEventModal = !$this->addEventModal;
-    }
 
     public function switchEditEventModel()
     {
@@ -184,7 +267,7 @@ class Event extends Component
 
     public function render()
     {
-       $pages = $this->getPaginationPages();
+        $pages = $this->getPaginationPages();
         $hasPrevious = $this->currentPage > 1;
         $hasNext = $this->currentPage < ($this->pagination['pages'] ?? 1);
         return view(

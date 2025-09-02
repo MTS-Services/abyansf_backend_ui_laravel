@@ -78,52 +78,26 @@ class User extends Component
         try {
             $user = User::findOrFail($userId);
 
-
             if (! $user->is_operational) {
-                $this->dispatch(
-                    'sweetalert2',
-                    type: 'error',
-                    message: 'This user is not operational. Payment link not available.'
-                );
+                $this->dispatch('sweetalert2', type: 'error', message: 'This user is not operational. Payment link not available.');
                 return;
             }
 
-            // API call
             $response = Http::withToken(config('services.payment.token'))
-                ->post(api_base_url() . '/send-payment-link', [
-                    'userId' => $user->id,
-                ]);
+                ->post(api_base_url() . '/send-payment-link', ['userId' => $user->id]);
 
             if ($response->successful()) {
-                $link = $response->json('data.link');
-
-                Session::put('payment_link_' . $user->id, $link);
-
+                Session::put('payment_link_' . $user->id, $response->json('data.link'));
                 $user->update(['send_payment_link' => true]);
-
-                $this->dispatch(
-                    'sweetalert2',
-                    type: 'success',
-                    message: 'Payment link sent successfully!'
-                );
-
+                $this->dispatch('sweetalert2', type: 'success', message: 'Payment link sent successfully!');
                 $this->dispatch('refreshComponent');
             } else {
-                $this->dispatch(
-                    'sweetalert2',
-                    type: 'error',
-                    message: 'Failed to send payment link. Please try again.'
-                );
+                $this->dispatch('sweetalert2', type: 'error', message: 'Failed to send payment link. Please try again.');
             }
         } catch (\Exception $e) {
-            $this->dispatch(
-                'sweetalert2',
-                type: 'error',
-                message: 'An error occurred: ' . $e->getMessage()
-            );
+            $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred: ' . $e->getMessage());
         }
     }
-
     /**
      * Handles the delete action.
      * @param int $userId The ID of the user to delete.

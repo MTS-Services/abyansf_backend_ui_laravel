@@ -17,7 +17,10 @@
             </thead>
             <tbody class="text-balck text-sm">
                 @forelse ($users as $index => $user)
-                    {{-- @if ($user['role'] == 'ADMIN')
+                    {{-- @if ($user['isVerified'] == 'ADMIN')
+                        @continue
+                    @endif
+                    @if ($user['isVerified'] == false)
                         @continue
                     @endif --}}
 
@@ -35,10 +38,9 @@
                             {{ $user['isActive'] ? 'Active' : 'Inactive' }}</td>
                         <td class="p-4 text-left font-normal text-base">
                             @if (!empty($user['is_operational']) && $user['is_operational'])
-                             
                                 <a href="#" wire:click.prevent="sendPaymentLink({{ $user['id'] }})"
                                     class="text-[#AD8945]">
-                                    {{ !empty($user['send_payment_link']) && $user['send_payment_link'] ?  'Send': 'Send' }}
+                                    {{ !empty($user['send_payment_link']) && $user['send_payment_link'] ? 'Send' : 'Send' }}
                                 </a>
                             @else
                                 <span class="text-gray-400 cursor-not-allowed">Not Available</span>

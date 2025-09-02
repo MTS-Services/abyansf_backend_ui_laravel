@@ -186,22 +186,22 @@ class Listing extends Component
 
     public function switchEditListingModel($listingId)
     {
-         try {
-        $response = Http::withToken(api_token())->get(api_base_url() . '/listings/' . decrypt($listingId));
+    //      try {
+    //     $response = Http::withToken(api_token())->get(api_base_url() . '/listings/' . decrypt($listingId));
 
        
-        if ($response->successful()) {
-            $this->listingData = $response->json(); // Store the data in a public property
-            // $this->dispatch('sweetalert2', type: 'success', message: 'Listing data fetched successfully.');
-        } else {
-            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch listing data.');
-        }
-    } catch (\Exception $e) {
-        $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred while fetching listing data.');
-    }
+    //     if ($response->successful()) {
+    //         $this->listingData = $response->json(); // Store the data in a public property
+    //         // $this->dispatch('sweetalert2', type: 'success', message: 'Listing data fetched successfully.');
+    //     } else {
+    //         $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch listing data.');
+    //     }
+    // } catch (\Exception $e) {
+    //     $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred while fetching listing data.');
+    // }
 
-    $this->editListingModal = true;
-    $this->dispatch('sweetalert2', type: 'info', message: "Edit action for listing ID: {$listingId}");
+    // $this->editListingModal = true;
+    // $this->dispatch('sweetalert2', type: 'info', message: "Edit action for listing ID: {$listingId}");
 
         $this->editListingModal = !$this->editListingModal;
     }

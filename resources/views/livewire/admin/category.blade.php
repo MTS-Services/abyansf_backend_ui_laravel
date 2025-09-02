@@ -1,4 +1,5 @@
 <section class="mx-auto max-w-[1200px]  font-playfair">
+     <h2 class="font-medium text-3xl text-black mb-4">Category Management</h2>
     <x-admin.searchbar page="Add" livewire_method="switchAddCategoryModal" />
 
     <!--Add Category Modal-->
