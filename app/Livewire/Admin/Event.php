@@ -133,8 +133,6 @@ class Event extends Component
             $this->fetchUsers();
         } else {
 
-
-
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to create event. Please try again.');
         }
     }

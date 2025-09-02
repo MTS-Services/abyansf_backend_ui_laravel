@@ -15,7 +15,7 @@ class Listing extends Component
 
     public $listings = [];
     public $pagination = [];
-    public $listingData = []; // To hold the data of the listing being edited
+    public $listingData = []; 
     public $openActions = null;
 
     // Add this property to sync currentPage with the URL
