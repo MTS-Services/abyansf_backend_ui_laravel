@@ -15,14 +15,20 @@ class Event extends Component
     public $editEventModal = false;
 
     // Form data properties
+    public $eventId;
     public $title;
     public $max_person;
     public $description;
     public $location;
     public $time;
-    public $date;
+    public $datetime;
+    public $status;
+    public $is_active; // Added these properties
+    public $is_disabled; // Added these properties
     public $images = [];
-
+    public $existing_images = [];
+     
+    public $event =[];
     public $events = [];
     public $pagination = [];
     public $openActions = null;
@@ -45,9 +51,9 @@ class Event extends Component
     public function mount()
     {
         $this->currentPage = request()->query('page', 1);
-        $this->fetchUsers($this->currentPage);
+        $this->fetchEvents($this->currentPage);
     }
-    public function fetchUsers($page = 1)
+    public function fetchEvents($page = 1)
     {
         $token = session()->get('api_token');
         if (!$token) {
@@ -58,7 +64,6 @@ class Event extends Component
         ]);
         if ($response->successful()) {
             $data = $response->json();
-            // $this->dispatch('sweetalert2', type: 'success', message: 'Events loaded successfully.');
             $this->events = $data['data']['events'] ?? [];
             $this->pagination = $data['data']['pagination'] ?? [];
             $this->currentPage = $page;
@@ -70,7 +75,7 @@ class Event extends Component
         }
     }
 
-    //    create event
+    //  create event
     public function saveEvent()
     {
         // Validate
@@ -130,14 +135,164 @@ class Event extends Component
 
             $this->dispatch('sweetalert2', type: 'success', message: 'Event created successfully.');
 
-            $this->fetchUsers();
+            $this->fetchEvents();
         } else {
-
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to create event. Please try again.');
         }
     }
+    //  edit event
+
+//    public function switchEditEventModal($eventId = null)
+// {
+//     $this->editEventModal = !$this->editEventModal;
+
+//     if ($this->editEventModal && $eventId) {
+//         $this->evene($eventId); // load event data
+//     }
+// }
+
+public function evene($eventId)
+{
+    $this->eventId = $eventId;
+      
+    $token = Session::get('api_token');
+    if (!$token) {
+        return $this->redirectRoute('login', navigate: true);
+    }
+
+    $response = Http::withToken($token)->get(api_base_url() . "/events/{$eventId}");
+
+    if ($response->successful()) {
+        $json = $response->json();
+
+        if (isset($json['data'])) {
+            $event = $json['data'];
+
+            $this->title       = $event['title'] ?? '';
+            $this->max_person  = $event['max_person'] ?? '';
+            $this->description = $event['description'] ?? '';
+            $this->location    = $event['location'] ?? '';
+
+            // Format datetime for input[type="datetime-local"]
+            $this->datetime = isset($event['date']) ? date('Y-m-d\TH:i', strtotime($event['date'])) : '';
+
+            // Convert single image string to array for AlpineJS
+            $this->images = $event['event_img'] ? [$event['event_img']] : [];
+        }
+    } else {
+        $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch event details.');
+    }
+}
+  public function loadEvent($eventId)
+{
+    $this->eventId = $eventId;
+      
+    $token = Session::get('api_token');
+    if (!$token) {
+        return $this->redirectRoute('login', navigate: true);
+    }
+
+    // API call
+    $response = Http::withToken($token)->get(api_base_url() . "/events/{$eventId}");
+
+    if ($response->successful()) {
+        $json = $response->json();
+
+        if (isset($json['data'])) {
+            $event = $json['data'];
+
+            $this->title       = $event['title'] ?? '';
+            $this->max_person  = $event['max_person'] ?? '';
+            $this->description = $event['description'] ?? '';
+            $this->location    = $event['location'] ?? '';
+
+            // date fix (extract only YYYY-MM-DD)
+            $this->datetime = $event['date'] ?? ''; // assign full datetime for datetime-local input
+
+            // image (convert string to array)
+            $this->images = $event['event_img'] ? [$event['event_img']] : [];
+        }
+    } else {
+        $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch event details.');
+    }
+}
 
 
+    public function switchEditEventModal($eventId = null)
+    {
+        // FIX: Removed the duplicate toggle line
+        $this->editEventModal = !$this->editEventModal;
+        if ($this->editEventModal && $eventId) {
+            $this->evene($eventId);
+            $this->loadEvent($eventId);
+        }
+    }
+      
+    // public function updateEvent()
+    // {
+    //     // Validate
+    //     $data = $this->validate([
+    //         'title' => 'required|string|max:255',
+    //         'max_person' => 'required|integer|min:1',
+    //         'description' => 'required|string',
+    //         'location' => 'required|string|max:255',
+    //         'time' => 'required',
+    //         'date' => 'required|date',
+    //         'images.*' => 'nullable|image|max:1024',
+    //     ]);
+
+    //     // Token
+    //     $token = Session::get('api_token');
+    //     if (!$token) {
+    //         return $this->redirectRoute('login', navigate: true);
+    //     }
+
+    //     // Prepare request
+    //     $request = Http::withToken($token);
+
+    //     // Attach images
+    //     if (!empty($this->images)) {
+    //         foreach ($this->images as $image) {
+    //             $request->attach(
+    //                 'event_img[]',
+    //                 file_get_contents($image->getRealPath()),
+    //                 $image->getClientOriginalName()
+    //             );
+    //         }
+    //     }
+
+    //     // Send request (normal fields)
+    //     $response = $request->post(api_base_url() . '/events/' . $this->eventId . '/update', [
+    //         'title' => $this->title,
+    //         'max_person' => $this->max_person,
+    //         'description' => $this->description,
+    //         'location' => $this->location,
+    //         'time' => $this->time,
+    //         'date' => $this->date,
+    //         '_method' => 'PUT',
+    //     ]);
+
+    //     // Response check
+    //     if ($response->successful()) {
+    //         $this->reset([
+    //             'title',
+    //             'max_person',
+    //             'description',
+    //             'location',
+    //             'time',
+    //             'date',
+    //             'images'
+    //         ]);
+
+    //         $this->switchEditEventModal();
+
+    //         $this->dispatch('sweetalert2', type: 'success', message: 'Event updated successfully.');
+
+    //         $this->fetchEvents();
+    //     } else {
+    //         $this->dispatch('sweetalert2', type: 'error', message: 'Failed to update event. Please try again.');
+    //     }
+    // }
 
     public function toggleActions($userId)
     {
@@ -150,11 +305,10 @@ class Event extends Component
 
     public function deleteEvent($eventId)
     {
-
         $response = Http::withToken(api_token())->delete(api_base_url() . '/events/' . decrypt($eventId));
         if ($response->successful()) {
-            // $this->dispatch('sweetalert2', type: 'success', message: 'Event deleted successfully.');
-            $this->fetchUsers($this->currentPage);
+            $this->dispatch('sweetalert2', type: 'success', message: 'Event deleted successfully.');
+            $this->fetchEvents($this->currentPage);
         } else {
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to delete event.');
         }
@@ -162,9 +316,8 @@ class Event extends Component
 
     public function activateUser($eventId)
     {
-        // Session::flash('info', "Activate action for user ID: {$userId}");
-        // $this->dispatch('sweetalert2', type: 'info', message: "Activate action for user ID: {$eventId}");
-        $this->fetchUsers($this->currentPage);
+        $this->dispatch('sweetalert2', type: 'info', message: "Activate action for user ID: {$eventId}");
+        $this->fetchEvents($this->currentPage);
     }
 
     /**
@@ -173,14 +326,13 @@ class Event extends Component
      */
     public function deactivateUser($eventId)
     {
-        // Session::flash('info', "Deactivate action for user ID: {$userId}");
         $this->dispatch('sweetalert2', type: 'info', message: "Deactivate action for user ID: {$eventId}");
-        $this->fetchUsers($this->currentPage);
+        $this->fetchEvents($this->currentPage);
     }
     public function gotoPage($page)
     {
         if ($page >= 1 && $page <= ($this->pagination['pages'] ?? 1)) {
-            $this->fetchUsers($page);
+            $this->fetchEvents($page);
         }
     }
 
@@ -190,7 +342,7 @@ class Event extends Component
     public function previousPage()
     {
         if ($this->currentPage > 1) {
-            $this->fetchUsers($this->currentPage - 1);
+            $this->fetchEvents($this->currentPage - 1);
         }
     }
 
@@ -200,7 +352,7 @@ class Event extends Component
     public function nextPage()
     {
         if ($this->currentPage < ($this->pagination['pages'] ?? 1)) {
-            $this->fetchUsers($this->currentPage + 1);
+            $this->fetchEvents($this->currentPage + 1);
         }
     }
 
@@ -253,14 +405,6 @@ class Event extends Component
 
         return $pages;
     }
-
-
-    public function switchEditEventModel()
-    {
-        // Toggle modal
-        $this->editEventModal = !$this->editEventModal;
-    }
-
 
 
     public function render()
