@@ -24,7 +24,7 @@
                         @drop.prevent="handleDrop($event)" @click="$refs.fileInput.click()"
                         :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
 
-                        <input type="file" x-ref="fileInput" multiple class="hidden" wire:model="images"
+                        <input type="file" x-ref="fileInput" multiple class="hidden" wire:model="image"
                             @change="handleFiles($event)">
 
                         <div class="text-center px-2">
@@ -44,9 +44,9 @@
                         </div>
                     </div>
 
-                    <div x-show="images.length" class="overflow-x-auto mt-3">
+                    <div x-show="image.length" class="overflow-x-auto mt-3">
                         <div class="flex gap-2 min-w-max">
-                            <template x-for="(img, index) in images" :key="index">
+                            <template x-for="(img, index) in image" :key="index">
                                 <div class="relative w-32 flex-shrink-0">
                                     <img :src="img" class="w-full h-32 object-cover rounded-md border"
                                         alt="Preview">
@@ -213,111 +213,113 @@
         </table>
     </div>
     </div>
-{{-- <!edit event modal--> --}}
+    {{-- <!edit event modal--> --}}
+
+
+
     <div x-data x-data x-init="$watch('$wire.editEventModal', value => document.body.classList.toggle('overflow-hidden', value))"
         class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 {{ $editEventModal ? '' : 'hidden' }}">
 
         <div class="bg-white w-full max-w-[1200px] mx-auto rounded-lg p-6 relative max-h-[90vh] overflow-y-auto">
+
             <button wire:click="switchEditEventModal"
                 class="absolute top-4 right-4 text-gray-600 cursor-pointer hover:text-gray-900 text-2xl font-bold">&times;</button>
 
             <div class="flex items-center justify-between border-gray-200 pb-4">
                 <h1 class="text-2xl font-semibold text-gray-900">Edit Event</h1>
             </div>
+            <form wire:submit.prevent="updateEvent" class="p-6 space-y-6">
+                <div class="p-6 space-y-6">
+                    <div x-data="fileUpload()" class="space-y-4">
+                        <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
+                            @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
+                            @drop.prevent="handleDrop($event)" @click="$refs.fileInput.click()"
+                            :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
 
-            <div class="p-6 space-y-6">
-                <div x-data="fileUpload()" class="space-y-4">
-                    <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
-                        @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
-                        @drop.prevent="handleDrop($event)" @click="$refs.fileInput.click()"
-                        :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
+                            <input wire:model.defer="image" type="file" x-ref="fileInput" multiple
+                                class="hidden" @change="handleFiles($event)">
 
-                        <input wire:model.defer="event_image" type="file" x-ref="fileInput" multiple class="hidden"
-                            @change="handleFiles($event)">
-
-                        <div class="text-center px-2">
-                            <div class="mb-4 flex items-center justify-center">
-                                <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                    viewBox="0 0 20 16">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-                                </svg>
-                            </div>
-
-                            <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop it here</p>
-                            <button type="button"
-                                class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                                Browse File
-                            </button>
-                        </div>
-                    </div>
-
-                    <div x-show="images.length" class="overflow-x-auto mt-3">
-                        <div class="flex gap-2 min-w-max">
-                            <template x-for="(img, index) in images" :key="index">
-                                <div class="relative w-32 flex-shrink-0">
-                                    <img :src="img" class="w-full h-32 object-cover rounded-md border"
-                                        alt="Preview">
-                                    <button type="button" @click="removeImage(index)"
-                                        class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">×</button>
+                            <div class="text-center px-2">
+                                <div class="mb-4 flex items-center justify-center">
+                                    <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 20 16">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                    </svg>
                                 </div>
-                            </template>
+
+                                <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop it here</p>
+                                <button type="button"
+                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                                    Browse File
+                                </button>
+                            </div>
+                        </div>
+
+                        <div x-show="image.length" class="overflow-x-auto mt-3">
+                            <div class="flex gap-2 min-w-max">
+                                <template x-for="(img, index) in image" :key="index">
+                                    <div class="relative w-32 flex-shrink-0">
+                                        <img  :src="img"
+                                            class="w-full h-32 object-cover rounded-md border" alt="Preview">
+                                        <button type="button" @click="removeImage(index)"
+                                            class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">×</button>
+                                    </div>
+                                </template>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
-                        <input wire:model.defer="title" type="text" placeholder="Title text"
-                            class="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Title</label>
+                            <input wire:model.defer="title" type="text" placeholder="Title text"
+                                class="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2 ">Max person</label>
+                            <input wire:model.defer="max_person" type="number" placeholder="Max person"
+                                class="w-full px-3 py-2 h-[50px] border border-gray-300 bg-[#F8F6EE] rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
+                        </div>
                     </div>
+
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2 ">Max person</label>
-                        <input wire:model.defer="max_person" type="number" placeholder="Max person"
-                            class="w-full px-3 py-2 h-[50px] border border-gray-300 bg-[#F8F6EE] rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                        <textarea wire:model.defer="description" rows="6" placeholder="Enter description"
+                            class="w-full px-3 py-2 h-[264px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] resize-none"></textarea>
                     </div>
-                </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                    <textarea wire:model.defer="description" rows="6" placeholder="Enter description"
-                        class="w-full px-3 py-2 h-[264px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] resize-none"></textarea>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
-                        <input wire:model.defer="location" type="text" placeholder="Location"
-                            class="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                            <input wire:model.defer="location" type="text" placeholder="Location"
+                                class="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Time </label>
+                            <input type="time" wire:model.defer="time" class="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
+                        </div>
+                         <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Date </label>
+                            <input type="date" wire:model.defer="date" class="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Time & Date</label>
-                        <input wire:model.defer="datetime" type="datetime-local" placeholder="Select time & date"
-                            class="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] appearance-none">
+                    <div class="flex justify-center md:justify-start mt-6">
+                        <button  type="submit"
+                            class="px-6 py-2 bg-[#C7AE6A] text-black rounded-md cursor-pointer hover:bg-opacity-90 transition-colors font-medium">
+                            Save
+                        </button>
                     </div>
-                </div>
-
-                
-
-                <div class="flex justify-center md:justify-start mt-6">
-                    <button
-                        class="px-6 py-2 bg-[#C7AE6A] text-black rounded-md cursor-pointer hover:bg-opacity-90 transition-colors font-medium">
-                        Save
-                    </button>
-                </div>
-            </div>
+            </form>
         </div>
+
     </div>
-
-
-
+    </div>
     <input type="file" id="photoUpload" accept="image/*" multiple class="hidden">
     </div>
 
-    <!-- Scripts -->
+
 
     <!-- Pagination -->
 
@@ -364,7 +366,7 @@
         function fileUpload() {
             return {
                 dragOver: false,
-                images: [],
+                image: [],
                 handleFiles(event) {
                     for (let file of event.target.files) {
                         this.preview(file);
@@ -378,11 +380,11 @@
                 },
                 preview(file) {
                     const reader = new FileReader();
-                    reader.onload = e => this.images.push(e.target.result);
+                    reader.onload = e => this.image.push(e.target.result);
                     reader.readAsDataURL(file);
                 },
                 removeImage(index) {
-                    this.images.splice(index, 1);
+                    this.image.splice(index, 1);
                 }
             }
         }
