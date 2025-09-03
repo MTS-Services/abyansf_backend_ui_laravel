@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Admin\AllNotification;
 use App\Livewire\Admin\Attendance;
 use App\Livewire\Admin\Booking;
 use App\Livewire\Admin\Category;
@@ -12,12 +13,11 @@ use App\Livewire\Admin\ListingManagement\Index as ListingIndex;
 use App\Livewire\Admin\ListingManagement\Create as ListingCreate;
 use App\Livewire\Admin\ListingManagement\Update as ListingUpdate;
 use App\Livewire\Admin\User;
-use App\Livewire\Admin\Notification;
 use Illuminate\Support\Facades\Route;
 
 Route::name('admin.')->middleware(['api.auth'])->group(function () {
     Route::get('users', User::class)->name('users');
-    Route::get('notifications', Notification::class)->name('all-notifications');
+    Route::get('notifications', AllNotification::class)->name('all-notifications');
     Route::get('bookings', Booking::class)->name('bookings');
     Route::get('category', Category::class)->name('category');
 
