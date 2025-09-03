@@ -64,8 +64,8 @@
     </div>
 
     @fluxScripts
-
     <script>
+        // Livewire navigation loader handling
         document.addEventListener('livewire:navigate', (event) => {
             document.getElementById('navigation-loader').classList.remove('hidden');
         });
@@ -77,7 +77,9 @@
         document.addEventListener('livewire:navigated', () => {
             document.getElementById('navigation-loader').classList.add('hidden');
         });
+
     </script>
+
     @stack('js')
 </body>
 

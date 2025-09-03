@@ -2,15 +2,22 @@
 
 namespace App\Livewire\Admin;
 
-use Livewire\Component;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
+use Livewire\Component;
 
-class Booking extends Component
+class Category extends Component
 {
-    public $bookings = [];
+    public $addCategoryModal = false;
+    public $editCategoryModal = false;
+
+    public $category ;
+    
+
+     public $mainCategories = [];
     public $pagination = [];
     public $openActions = null;
+     public $parentCategory = null;
 
     // Add this property to sync currentPage with the URL
     public $currentPage = 1;
@@ -40,19 +47,20 @@ class Booking extends Component
             return $this->redirectRoute('login', navigate: true);
         }
 
-        $response = Http::withToken($token)->get(api_base_url() . '/bookings', [
+        $response = Http::withToken($token)->get(api_base_url() . '/categories/main', [
             'page' => $page
         ]);
 
         if ($response->successful()) {
             $data = $response->json();
             // $this->dispatch('sweetalert2', type: 'success', message: 'Bookings loaded successfully.');
-            $this->bookings = $data['data']['bookings'] ?? [];
+            $this->mainCategories = $data['data']['mainCategories'] ?? [];
             $this->pagination = $data['data']['pagination'] ?? [];
             $this->currentPage = $page;
         } else {
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to load bookings from the API.');
-            $this->bookings = [];
+            $this->mainCategories
+             = [];
             $this->pagination = [];
             Session::flash('error', 'Failed to load bookings from the API.');
         }
@@ -70,9 +78,9 @@ class Booking extends Component
             $this->openActions = $userId;
         }
     }
-public function deleteBooking($listingBookingId)
+public function deleteCategory($categoryId)
     {
-        $response = Http::withToken(api_token())->delete(api_base_url() . '/bookings/' . decrypt($listingBookingId));
+        $response = Http::withToken(api_token())->delete(api_base_url() . '/categories/main/' . decrypt($categoryId));
 
         if ($response->successful()) {
             // $this->dispatch('sweetalert2', type: 'success', message: 'booking deleted successfully.');
@@ -81,26 +89,14 @@ public function deleteBooking($listingBookingId)
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to delete user.');
         }
     }
-
-    public function editBooking($listingBookingId)
-    {
-        Session::flash('info', "Edit action for user ID: {$listingBookingId}");
-        $this->dispatch('sweetalert2', type: 'info', message: "Edit action for user ID: {$listingBookingId}");
-    }
-
-    public function gotoPage($page)
+     public function gotoPage($page)
     {
         if ($page >= 1 && $page <= ($this->pagination['pages'] ?? 1)) {
             $this->fetchUsers($page);
         }
     }
 
-    public function statesBooking($listingBookingId)
-    {
-        $response = Http::withToken(api_token())->get(api_base_url() . '/bookings/' . decrypt($listingBookingId));
-        Session::flash('info', "Status action for booking ID: {$listingBookingId}");
-        $this->dispatch('sweetalert2', type: 'info', message: "Status action for booking ID: {$listingBookingId}");
-    }
+    
 
     /**
      * Navigate to the previous page.
@@ -172,13 +168,28 @@ public function deleteBooking($listingBookingId)
         return $pages;
     }
 
+    public function switchAddCategoryModal()
+    {
+        $this->addCategoryModal = !$this->addCategoryModal;
+    }
+
+   public function openEditCategoryModal()
+    {
+        $this->editCategoryModal = true;
+    }
+
+    // This method will close the modal (and can be used by the 'x' button)
+    public function switchEditCategoryModel()
+    {
+        $this->editCategoryModal = !$this->editCategoryModal;
+    }
+
     public function render()
     {
-        $pages = $this->getPaginationPages();
+          $pages = $this->getPaginationPages();
         $hasPrevious = $this->currentPage > 1;
         $hasNext = $this->currentPage < ($this->pagination['pages'] ?? 1);
-
-        return view('livewire.admin.booking', [
+        return view('livewire.admin.category', [
             'pages' => $pages,
             'hasPrevious' => $hasPrevious,
             'hasNext' => $hasNext,

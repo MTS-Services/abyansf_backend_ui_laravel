@@ -3,36 +3,28 @@
 namespace App\Livewire\Admin;
 
 use Livewire\Component;
+
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 
-class Booking extends Component
+class AllNotification extends Component
 {
-    public $bookings = [];
+    public $allNotifications = [];
     public $pagination = [];
-    public $openActions = null;
 
-    // Add this property to sync currentPage with the URL
     public $currentPage = 1;
 
     protected $queryString = [
         'currentPage' => ['as' => 'page', 'except' => 1]
     ];
 
-    /**
-     * Livewire's lifecycle hook that runs once on component initialization.
-     */
     public function mount()
     {
         $this->currentPage = request()->query('page', 1);
-        $this->fetchUsers($this->currentPage);
+        $this->fetchNotifications($this->currentPage);
     }
 
-    /**
-     * Fetches users from the API.
-     * @param int $page The page number to fetch.
-     */
-    public function fetchUsers($page = 1)
+    public function fetchNotifications($page = 1)
     {
         $token = Session::get('api_token');
 
@@ -40,67 +32,30 @@ class Booking extends Component
             return $this->redirectRoute('login', navigate: true);
         }
 
-        $response = Http::withToken($token)->get(api_base_url() . '/bookings', [
+        $response = Http::withToken($token)->get(api_base_url() . '/notifications/admin', [
             'page' => $page
         ]);
 
         if ($response->successful()) {
             $data = $response->json();
-            // $this->dispatch('sweetalert2', type: 'success', message: 'Bookings loaded successfully.');
-            $this->bookings = $data['data']['bookings'] ?? [];
+            $this->allNotifications = $data['data']['notifications'] ?? [];
             $this->pagination = $data['data']['pagination'] ?? [];
             $this->currentPage = $page;
         } else {
-            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to load bookings from the API.');
-            $this->bookings = [];
+            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to load Notifications from the API.');
+            $this->allNotifications = [];
             $this->pagination = [];
-            Session::flash('error', 'Failed to load bookings from the API.');
+            Session::flash('error', 'Failed to load Notifications from the API.');
         }
-    }
-
-    /**
-     * Toggles the action dropdown for a specific user.
-     * @param int $userId The ID of the user.
-     */
-    public function toggleActions($userId)
-    {
-        if ($this->openActions === $userId) {
-            $this->openActions = null;
-        } else {
-            $this->openActions = $userId;
-        }
-    }
-public function deleteBooking($listingBookingId)
-    {
-        $response = Http::withToken(api_token())->delete(api_base_url() . '/bookings/' . decrypt($listingBookingId));
-
-        if ($response->successful()) {
-            // $this->dispatch('sweetalert2', type: 'success', message: 'booking deleted successfully.');
-            $this->fetchUsers($this->currentPage);
-        } else {
-            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to delete user.');
-        }
-    }
-
-    public function editBooking($listingBookingId)
-    {
-        Session::flash('info', "Edit action for user ID: {$listingBookingId}");
-        $this->dispatch('sweetalert2', type: 'info', message: "Edit action for user ID: {$listingBookingId}");
     }
 
     public function gotoPage($page)
     {
         if ($page >= 1 && $page <= ($this->pagination['pages'] ?? 1)) {
-            $this->fetchUsers($page);
+            $this->fetchNotifications($page);
         }
     }
 
-    public function statesBooking($listingBookingId)
-    {
-        $response = Http::withToken(api_token())->get(api_base_url() . '/bookings/' . decrypt($listingBookingId));
-        Session::flash('info', "Status action for booking ID: {$listingBookingId}");
-        $this->dispatch('sweetalert2', type: 'info', message: "Status action for booking ID: {$listingBookingId}");
-    }
 
     /**
      * Navigate to the previous page.
@@ -108,7 +63,7 @@ public function deleteBooking($listingBookingId)
     public function previousPage()
     {
         if ($this->currentPage > 1) {
-            $this->fetchUsers($this->currentPage - 1);
+            $this->fetchNotifications($this->currentPage - 1);
         }
     }
 
@@ -118,7 +73,7 @@ public function deleteBooking($listingBookingId)
     public function nextPage()
     {
         if ($this->currentPage < ($this->pagination['pages'] ?? 1)) {
-            $this->fetchUsers($this->currentPage + 1);
+            $this->fetchNotifications($this->currentPage + 1);
         }
     }
 
@@ -177,8 +132,7 @@ public function deleteBooking($listingBookingId)
         $pages = $this->getPaginationPages();
         $hasPrevious = $this->currentPage > 1;
         $hasNext = $this->currentPage < ($this->pagination['pages'] ?? 1);
-
-        return view('livewire.admin.booking', [
+        return view('livewire.admin.all-notification', [
             'pages' => $pages,
             'hasPrevious' => $hasPrevious,
             'hasNext' => $hasNext,

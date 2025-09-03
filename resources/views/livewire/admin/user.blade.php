@@ -12,12 +12,15 @@
                     <th class="p-4 text-left font-medium text-base">Password</th>
                     <th class="p-4 text-left font-normal text-base">Status</th>
                     <th class="p-4 text-left font-normal text-base">Payment Link</th>
-                    <th class="p-4 text-center font-medium text-base">Action</th>
+                    <th class="p-4 text- font-medium text-base">Action</th>
                 </tr>
             </thead>
             <tbody class="text-balck text-sm">
                 @forelse ($users as $index => $user)
-                    {{-- @if ($user['role'] == 'ADMIN')
+                    {{-- @if ($user['isVerified'] == 'ADMIN')
+                        @continue
+                    @endif
+                    @if ($user['isVerified'] == false)
                         @continue
                     @endif --}}
 
@@ -34,10 +37,16 @@
                         <td class="p-4 text-left font-normal text-base">
                             {{ $user['isActive'] ? 'Active' : 'Inactive' }}</td>
                         <td class="p-4 text-left font-normal text-base">
-                            <a href="#" wire:click.prevent="sendPaymentLink('{{ $user['id'] }}')"
-                                class="text-[#AD8945]">{{ $user['send_payment_link'] ? 'Sent' : 'Not Sent' }}</a>
+                            @if (!empty($user['is_operational']) && $user['is_operational'])
+                                <a href="#" wire:click.prevent="sendPaymentLink({{ $user['id'] }})"
+                                    class="text-[#AD8945]">
+                                    {{ !empty($user['send_payment_link']) && $user['send_payment_link'] ? 'Send' : 'Send' }}
+                                </a>
+                            @else
+                                <span class="text-gray-400 cursor-not-allowed">Not Available</span>
+                            @endif
                         </td>
-                        <td class="py-3 px-6 text-center">
+                        <td class="py-3 px-6 text-right">
                             <div class="relative inline-block text-left" x-data="{ open: false }"
                                 x-on:click.outside="open = false">
                                 <button x-on:click="open = ! open"
@@ -58,19 +67,6 @@
                                         <flux:icon name="pencil-square" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Edit
                                     </button>
-
-                                    <button wire:click="activateUser('{{ $user['id'] }}')"
-                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
-                                        <flux:icon name="check" class="text-[#6D6D6D] mr-2 h-4 w-4" />
-                                        Active
-                                    </button>
-
-                                    <button wire:click="deactivateUser('{{ $user['id'] }}')"
-                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
-                                        <flux:icon name="x-circle" class="text-[#6D6D6D] mr-2 h-4 w-4" />
-                                        Deactivate
-                                    </button>
-
                                     <button wire:click="deleteUser('{{ $user['id'] }}')"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
                                         <flux:icon name="trash" class="text-[#6D6D6D] mr-2 h-4 w-4" />
