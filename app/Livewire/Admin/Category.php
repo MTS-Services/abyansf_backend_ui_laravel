@@ -11,6 +11,9 @@ class Category extends Component
     public $addCategoryModal = false;
     public $editCategoryModal = false;
 
+    public $category ;
+    
+
      public $mainCategories = [];
     public $pagination = [];
     public $openActions = null;
@@ -170,6 +173,12 @@ public function deleteCategory($categoryId)
         $this->addCategoryModal = !$this->addCategoryModal;
     }
 
+   public function openEditCategoryModal()
+    {
+        $this->editCategoryModal = true;
+    }
+
+    // This method will close the modal (and can be used by the 'x' button)
     public function switchEditCategoryModel()
     {
         $this->editCategoryModal = !$this->editCategoryModal;
