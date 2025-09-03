@@ -8,34 +8,11 @@
         </div>
 
         <div class="flex items-center space-x-4">
-            <div class="relative" x-data="{ open: false }" @click.away="open = false">
-                <button @click="open = ! open"
-                    class="relative p-2 rounded-full text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-orange-400">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M15 17h5l-1.405-1.405C18.79 15.21 18 14.11 18 13V9c0-3.314-2.686-6-6-6S6 5.686 6 9v4c0 1.11-.79 2.21-1.595 2.595L3 17h5m7 0a3 3 0 11-6 0h6z">
-                        </path>
-                    </svg>
-                    <span
-                        class="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center text-xs font-bold text-white bg-red-500 rounded-full">3</span>
-                </button>
-                <div x-show="open" x-transition:enter="transition ease-out duration-100"
-                    x-transition:enter-start="transform opacity-0 scale-95"
-                    x-transition:enter-end="transform opacity-100 scale-100"
-                    x-transition:leave="transition ease-in duration-75"
-                    x-transition:leave-start="transform opacity-100 scale-100"
-                    x-transition:leave-end="transform opacity-0 scale-95"
-                    class="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-lg z-50 hidden "
-                    :class="{ '!block': open }">
-                    <div class="p-4 border-b font-semibold text-gray-700">Notifications</div>
-                    <ul class="max-h-60 overflow-y-auto">
-                        <li class="p-3 hover:bg-gray-100 cursor-pointer">🔔 New user registered</li>
-                        <li class="p-3 hover:bg-gray-100 cursor-pointer">📦 Order #1234 shipped</li>
-                        <li class="p-3 hover:bg-gray-100 cursor-pointer">💬 New message received</li>
-                    </ul>
-                    <div class="p-2 text-center text-sm text-blue-600 hover:underline cursor-pointer">View All</div>
-                </div>
-            </div>
+
+            @if (api_is_authenticated())
+                @livewire('layouts.notification')
+            @endif
+
 
             <div class="relative" x-data="{ open: false }" @click.away="open = false">
                 <button @click="open = ! open"
@@ -67,30 +44,9 @@
         </div>
 
         <div class="flex items-center space-x-2">
-            <div class="relative">
-                <button @click="bellOpen = ! bellOpen"
-                    class="relative p-2 rounded-full text-gray-600 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#0f0f]">
-                    <flux:icon name="bell" class="w-6 h-6" />
-                    <span
-                        class="absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center text-xs font-bold text-white bg-red-500 rounded-full">3</span>
-                </button>
-                <div x-show="bellOpen" x-transition:enter="transition ease-out duration-100"
-                    x-transition:enter-start="transform opacity-0 scale-95"
-                    x-transition:enter-end="transform opacity-100 scale-100"
-                    x-transition:leave="transition ease-in duration-75"
-                    x-transition:leave-start="transform opacity-100 scale-100"
-                    x-transition:leave-end="transform opacity-0 scale-95"
-                    class="absolute right-0 mt-2 w-64 shadow-lg rounded-md z-50 hidden "
-                    :class="{ '!block': bellOpen }">
-                    <div class="p-4 border-b font-semibold text-gray-700">Notifications</div>
-                    <ul class="max-h-60 overflow-y-auto">
-                        <li class="p-3 hover:bg-gray-100 cursor-pointer">🔔 New user registered</li>
-                        <li class="p-3 hover:bg-gray-100 cursor-pointer">📦 Order #1234 shipped</li>
-                        <li class="p-3 hover:bg-gray-100 cursor-pointer">💬 New message received</li>
-                    </ul>
-                    <div class="p-2 text-center text-sm text-blue-600 hover:underline cursor-pointer">View All</div>
-                </div>
-            </div>
+              @if (api_is_authenticated())
+                @livewire('layouts.notification')
+            @endif
             <div class="relative">
                 <button @click="userOpen = ! userOpen"
                     class="flex items-center gap-2 p-2 rounded-full text-purple-500 hover:bg-purple-100 focus:outline-none focus:ring-2 focus:ring-purple-400">

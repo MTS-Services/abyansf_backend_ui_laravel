@@ -16,7 +16,7 @@
         <!-- Notifications List -->
         <div class="divide-y divide-gray-100">
             <!-- Example Notification -->
-            <div class="p-4 sm:p-6 hover:bg-gray-50 transition-colors">
+            <div class="p-4 sm:p-6 hover:bg-gray-100 transition-colors">
                 <div class="flex gap-3 sm:gap-4">
                     <img src="{{ asset('image/Avatar.svg') }}" alt="Brian Griffin"
                         class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover flex-shrink-0">
@@ -32,12 +32,12 @@
             </div>
 
             <!-- Repeat notifications -->
-            <div class="p-4 sm:p-6 hover:bg-gray-50 transition-colors">
+            <div class="p-4 sm:p-6 hover:bg-gray-100 transition-colors">
                 <div class="flex gap-3 sm:gap-4">
                     <img src="{{ asset('image/Avatar(1).svg') }}" alt="Adam"
                         class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover flex-shrink-0">
                     <div class="flex-1 min-w-0">
-                        <p class=" text-[#666C7E] font-normal leading-1 tracking-normal text-sm/6">
+                        <p class=" text-[#666C7E] font-normal leading-6 tracking-normal text-sm/6">
                             Hey Peter, we've got a new user research opportunity for you. Adam from <br> The Mayor's
                             Office
                             is looking for people like you.
@@ -48,12 +48,12 @@
             </div>
 
             <!-- Repeat notifications -->
-            <div class="p-4 sm:p-6 hover:bg-gray-50 transition-colors">
+            <div class="p-4 sm:p-6 hover:bg-gray-100 transition-colors">
                 <div class="flex gap-3 sm:gap-4">
                     <img src="{{ asset('image/image.svg') }}" alt="Adam"
                         class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover flex-shrink-0">
                     <div class="flex-1 min-w-0">
-                        <p class=" text-[#666C7E]  font-normal leading-1 tracking-normal text-sm/6">
+                        <p class=" text-[#666C7E]  font-normal leading-6 tracking-normal text-sm/6">
                             Hey Peter, we’ve got a new user research opportunity for you. Neil is looking for people
                             like
                             you.
@@ -64,12 +64,12 @@
             </div>
 
             <!-- Repeat notifications -->
-            <div class="p-4 sm:p-6 hover:bg-gray-50 transition-colors">
+            <div class="p-4 sm:p-6 hover:bg-gray-100 transition-colors">
                 <div class="flex gap-3 sm:gap-4">
                     <img src="{{ asset('image/image (1).svg') }}" alt="Adam"
                         class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover flex-shrink-0">
                     <div class="flex-1 min-w-0">
-                        <p class=" text-[#666C7E]  font-normal leading-1 tracking-normal text-sm/6">
+                        <p class=" text-[#666C7E]  font-normal leading-6 tracking-normal text-sm/6">
                             Hey Peter, we’ve got a new user research opportunity for you. Quagmire from Giggity Co. is
                             <br>
                             looking for people like you.
@@ -80,12 +80,12 @@
             </div>
 
             <!-- Repeat notifications -->
-            <div class="p-4 sm:p-6 hover:bg-gray-50 transition-colors">
+            <div class="p-4 sm:p-6 hover:bg-gray-100 transition-colors">
                 <div class="flex gap-3 sm:gap-4">
                     <img src="{{ asset('image/Image (2).svg') }}" alt="Adam"
                         class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover flex-shrink-0">
                     <div class="flex-1 min-w-0">
-                        <p class=" text-[#666C7E]  font-normal leading-1 tracking-normal text-sm/6">
+                        <p class=" text-[#666C7E]  font-normal leading-6 tracking-normal text-sm/6">
                             Hey Peter, we’ve got a new side project opportunity for <br> you. Herbert from Children’s
                             Program
                             is looking for people like you.
@@ -96,12 +96,12 @@
             </div>
 
             <!-- Repeat notifications -->
-            <div class="p-4 sm:p-6 hover:bg-gray-50 transition-colors">
+            <div class="p-4 sm:p-6 hover:bg-gray-100 transition-colors">
                 <div class="flex gap-3 sm:gap-4">
                     <img src="{{ asset('image/Image (3).svg') }}" alt="Adam"
                         class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover flex-shrink-0">
                     <div class="flex-1 min-w-0">
-                        <p class=" text-[#666C7E]  font-normal leading-1 tracking-normal text-sm/6">
+                        <p class=" text-[#666C7E]  font-normal leading-6 tracking-normal text-sm/6">
                             Hey Peter, we’ve got a new side project opportunity for you. Clevaland from The Post <br>
                             Office
                             is looking for people like you.
@@ -112,12 +112,12 @@
             </div>
 
             <!-- Repeat notifications -->
-            <div class="p-4 sm:p-6 hover:bg-gray-50 transition-colors">
+            <div class="p-4 sm:p-6 hover:bg-gray-100 transition-colors">
                 <div class="flex gap-3 sm:gap-4">
                     <img src="{{ asset('image/Avatar (2).svg') }}" alt="Adam"
                         class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover flex-shrink-0">
                     <div class="flex-1 min-w-0">
-                        <p class=" text-[#666C7E]  font-normal leading-1 tracking-normal text-sm/6">
+                        <p class=" text-[#666C7E]  font-normal leading-6 tracking-normal text-sm/6">
                             Hey Peter, we’ve got a new user research opportunity for you. Joe is <br> looking for people
                             like you.
                         </p>
@@ -127,12 +127,12 @@
             </div>
 
             <!-- Repeat notifications -->
-            <div class="p-4 sm:p-6 hover:bg-gray-50 transition-colors">
+            <div class="p-4 sm:p-6 hover:bg-gray-100 transition-colors">
                 <div class="flex gap-3 sm:gap-4">
                     <img src="{{ asset('image/Avatar (3).svg') }}" alt="Adam"
                         class="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover flex-shrink-0">
                     <div class="flex-1 min-w-0">
-                        <p class=" text-[#666C7E]  font-normal leading-1 tracking-normal text-sm/6">
+                        <p class=" text-[#666C7E]  font-normal leading-6 tracking-normal text-sm/6">
                             Hey Peter, we’ve got a new user research opportunity for you. Stewie from <br> World
                             Takeover is
                             looking for people like you.
