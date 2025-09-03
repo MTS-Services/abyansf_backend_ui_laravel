@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::name('admin.')->middleware(['api.auth'])->group(function () {
     Route::get('users', User::class)->name('users');
-    Route::get('notifications', Notification::class)->name('notifications');
+    Route::get('notifications', Notification::class)->name('all-notifications');
     Route::get('bookings', Booking::class)->name('bookings');
     Route::get('category', Category::class)->name('category');
 

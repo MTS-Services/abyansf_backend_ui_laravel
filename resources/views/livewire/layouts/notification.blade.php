@@ -143,7 +143,7 @@
                     <flux:icon name="check" class="h-4 w-4 mr-2" />
                     Mark All Read
                 </button>
-                <a href="#"
+                <a href="{{ route('admin.all-notifications') }}"
                     class="btn btn-outline border-gray-300 dark:border-gray-600 dark:text-gray-300 btn-sm flex-1 ml-2 ">
                     See All
                 </a>
