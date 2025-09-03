@@ -52,7 +52,7 @@ class AllNotification extends Component
     public function gotoPage($page)
     {
         if ($page >= 1 && $page <= ($this->pagination['pages'] ?? 1)) {
-            $this->fetchUsers($page);
+            $this->fetchNotifications($page);
         }
     }
 
@@ -69,7 +69,7 @@ class AllNotification extends Component
     public function previousPage()
     {
         if ($this->currentPage > 1) {
-            $this->fetchUsers($this->currentPage - 1);
+            $this->fetchNotifications($this->currentPage - 1);
         }
     }
 
@@ -79,7 +79,7 @@ class AllNotification extends Component
     public function nextPage()
     {
         if ($this->currentPage < ($this->pagination['pages'] ?? 1)) {
-            $this->fetchUsers($this->currentPage + 1);
+            $this->fetchNotifications($this->currentPage + 1);
         }
     }
 
