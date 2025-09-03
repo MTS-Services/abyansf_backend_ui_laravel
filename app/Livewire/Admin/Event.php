@@ -25,14 +25,15 @@ class Event extends Component
     public $status;
     public $is_active; // Added these properties
     public $is_disabled; // Added these properties
-    public $image = [];
-    public $existing_image = [];
+    public $image;
+    public $existing_image;
 
     public $event = [];
     public $updateEventModal = false;
     public $events = [];
     public $pagination = [];
     public $openActions = null;
+    public $testImage;
 
     public $currentPage = 1;
 
@@ -87,7 +88,7 @@ class Event extends Component
             'location' => 'required|string|max:255',
             'time' => 'required',
             'date' => 'required|date',
-            'image.*' => 'nullable|image|max:1024',
+            'image' => 'nullable|max:1024|mimetypes:image/jpeg,image/png',
         ]);
 
         // Token
@@ -179,39 +180,89 @@ class Event extends Component
                 $this->date        = $event['date'] ?? '';
 
                 // Convert single image string to array for AlpineJS
-                $this->image = $event['event_img'] ? [$event['event_img']] : [];
+                $this->image = $event['event_img'] ?? null;
+                // dd($event['event_img']);
             }
         } else {
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch event details.');
         }
     }
 
+    // public function updateEvent()
+    // {
+    //     // dd($this->image);
+
+    //     dd($this->testImage);
+
+    //     $data = [
+    //         'title' => $this->title,
+    //         'max_person' => $this->max_person,
+    //         'description' => $this->description,
+    //         'location' => $this->location,
+    //         'time' => $this->time,
+    //         'date' => $this->date,
+    //     ];
+
+    //     // if (isset($this->image) && !filter_var($this->image, FILTER_VALIDATE_URL)) {
+    //     //     $data['event_img'] = $this->image;
+    //     // }
+    //     $data['event_img'] = $this->testImage;
+    //     $response = Http::withToken(api_token())->put(api_base_url() . '/events/' . decrypt($this->eventId), $data);
+    //     dd($response->json());
+    //     // Response check
+    //     if ($response->successful()) {
+    //         $this->reset([
+    //             'title',
+    //             'max_person',
+    //             'description',
+    //             'location',
+    //             'date',
+    //             'time',
+    //             'image',
+    //             'eventId',
+    //         ]);
+
+    //         $this->switchEditEventModal();
+    //         $this->dispatch('sweetalert2', type: 'success', message: 'Event updated successfully.');
+    //         $this->fetchEvents();
+    //     } else {
+    //         $this->dispatch('sweetalert2', type: 'error', message: 'Failed to update event. Please try again.');
+    //     }
+    // }
+
     public function updateEvent()
     {
-        // Send the POST request to the API
-        $imageAttachment = null;
-        if (is_object($this->image)) {
-            $imageAttachment = [
-                'event_img' => [
-                    'contents' => file_get_contents($this->image->getRealPath()),
-                    'filename' => $this->image->getClientOriginalName(),
-                ],
-            ];
-        }
-        $response = Http::withToken(api_token())->put(api_base_url() . '/events/' . decrypt($this->eventId), [
+        // Validate the image if it's present
+        $this->validate([
+            'image' => 'nullable|image|max:1024',
+        ]);
+
+        $data = [
             'title' => $this->title,
             'max_person' => $this->max_person,
             'description' => $this->description,
             'location' => $this->location,
-
-            'date' => $this->date,
             'time' => $this->time,
+            'date' => $this->date,
+            // Since we're sending a PUT request, we need to spoof the HTTP method
+            // '_method' => 'PUT',
+        ];
 
+        $request = Http::withToken(api_token());
 
+        // You MUST re-add the attach part to send the image
+        if ($this->image) {
+            $request->attach(
+                'event_img',
+                file_get_contents($this->image->getRealPath()),
+                $this->image->getClientOriginalName()
+            );
+        }
 
-        ], $imageAttachment);
-        // dd($response->json());
-        // Response check
+        // Use post() with the _method field.
+        $response = $request->put(api_base_url() . '/events/' . decrypt($this->eventId), $data);
+
+        dd($response->json());
         if ($response->successful()) {
             $this->reset([
                 'title',
@@ -220,7 +271,7 @@ class Event extends Component
                 'location',
                 'date',
                 'time',
-                'image',
+                'image', // Reset the testImage property
                 'eventId',
             ]);
 
@@ -231,6 +282,7 @@ class Event extends Component
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to update event. Please try again.');
         }
     }
+
     public function toggleActions($userId)
     {
         if ($this->openActions === $userId) {
