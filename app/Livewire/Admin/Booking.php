@@ -40,16 +40,23 @@ class Booking extends Component
             return $this->redirectRoute('login', navigate: true);
         }
 
-        $response = Http::withToken($token)->get(api_base_url() . '/bookings', [
+        $response = Http::withToken($token)->get(api_base_url() . '/sub-category-bookings/admin/all-users/grouped', [
             'page' => $page
         ]);
+
+        // dd($response ['data']['bookings']['listing']['name']);
 
         if ($response->successful()) {
             $data = $response->json();
             // $this->dispatch('sweetalert2', type: 'success', message: 'Bookings loaded successfully.');
-            $this->bookings = $data['data']['bookings'] ?? [];
+            $booking = $data['data']['bookings'] ?? [];
             $this->pagination = $data['data']['pagination'] ?? [];
             $this->currentPage = $page;
+
+            $this->bookings = collect($booking)
+                ->whereIn('type', ['listing', 'subcategory'])
+                ->values()
+                ->toArray();
         } else {
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to load bookings from the API.');
             $this->bookings = [];
@@ -70,7 +77,7 @@ class Booking extends Component
             $this->openActions = $userId;
         }
     }
-public function deleteBooking($listingBookingId)
+    public function deleteBooking($listingBookingId)
     {
         $response = Http::withToken(api_token())->delete(api_base_url() . '/bookings/' . decrypt($listingBookingId));
 
