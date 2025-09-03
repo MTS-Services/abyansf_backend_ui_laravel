@@ -40,8 +40,7 @@
     @stack('css')
 </head>
 
-
-<body x-data @navigate.start="window.scrollTo({top: 0, behavior: 'smooth'})" overflow-x-hidden relative>
+<body x-data @navigate.start="setTimeout(() => window.scrollTo({top: 0, behavior: 'smooth'}), 0)">
 
     @livewire('layouts.header')
 

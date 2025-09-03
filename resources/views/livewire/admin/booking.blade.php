@@ -96,39 +96,96 @@
             <thead>
                 <tr class="bg-[#e7e7e7] text-black font-medium">
                     <th class="p-4 text-left font-medium text-base"> SL </th>
-                    <th class="p-4 text-left font-medium text-base">Name</th>
-                    <th class="p-4 text-left font-medium text-base">Mamber</th>
-                    <th class="p-4 text-left font-medium text-base">Service</th>
-                    <th class="p-4 text-left font-medium text-base">Date & Time</th>
+                    <th class="p-4 text-left font-medium text-base">MEMBER</th>
+                    <th class="p-4 text-left font-medium text-base">SERVICE</th>
+                    <th class="p-4 text-left font-medium text-base">TIME & DATE</th>
+                    <th class="p-4 text-left font-medium text-base">STATUS</th>
 
                     <th class="p-4 text-right font-medium text-base">Action</th>
                 </tr>
             </thead>
             <tbody>
+                {{-- @dd($bookings) --}}
                 @foreach ($bookings as $booking)
                     <tr wire:key="booking-{{ $booking['id'] }}" x-data="{ dropdownOpen: false }"
                         class="border-b border-gray-200">
                         <td class="p-4 text-left font-normal text-base">
-                            <p class="text-black whitespace-nowrap">{{ $booking['id'] }}</p>
-                        </td>
-                        <td class="p-4 text-left font-normal text-base">
-                            <p class="text-black whitespace-nowrap font-poppins font-normal">
-                                {{ $booking['user']['name'] }}</p>
-                        </td>
-                        <td class="p-4 text-left font-normal text-base">
-                            <p class="text-black whitespace-nowrap font-poppins font-normal">
-                                {{ $booking['listing']['name'] }}</p>
-                        </td>
-                        <td class="p-4 text-left font-normal text-base">
-                            <p class="text-black whitespace-nowrap font-poppins font-normal">
-                                {{ \Carbon\Carbon::parse($booking['bookingDate'])->format('d/m/Y') }}</p>
-                            <p class="font-poppins font-normal text-black whitespace-nowrap text-xs mt-1">
-                                {{ $booking['bookingTime'] }}
-                            </p>
+                            <p class="text-black whitespace-nowrap">{{ $loop->iteration }}</p>
                         </td>
 
-                        <td>
-                            Pending
+                        <td class="p-4 text-left font-normal text-base">
+                            <p class="text-black whitespace-nowrap font-poppins font-normal">
+                                {{ $booking['customerInfo']['name'] ?? 'N/A' }}</p>
+                        </td>
+                        <td class="p-4 text-left font-normal text-base">
+                            @if ($booking['type'] === 'listing' && !empty($booking['listing']['name']))
+                                <p class="text-black whitespace-nowrap font-poppins font-normal">
+                                    {{ $booking['listing']['name'] }}
+                                </p>
+                            @elseif($booking['type'] === 'subcategory')
+                                @if (!empty($booking['subCategory']['name']))
+                                    <p class="text-black whitespace-nowrap font-poppins font-normal">
+                                        {{ $booking['subCategory']['name'] }}
+                                    </p>
+                                @elseif(!empty($booking['miniSubCategory']['name']))
+                                    <p class="text-black whitespace-nowrap font-poppins font-normal">
+                                        {{ $booking['miniSubCategory']['name'] }}
+                                    </p>
+                                @endif
+                            @endif
+                        </td>
+
+
+                        <td class="p-4 text-left font-normal text-base">
+                            @if ($booking['type'] === 'listing')
+                                @if (!empty($booking['bookingDate']))
+                                    <p class="text-black whitespace-nowrap font-poppins font-normal">
+                                        Booking Date:
+                                        {{ \Carbon\Carbon::parse($booking['bookingDate'])->format('d/m/Y') }}
+                                    </p>
+                                @endif
+
+                                @if (!empty($booking['bookingTime']))
+                                    <p class="font-poppins font-normal text-black whitespace-nowrap text-xs mt-1">
+                                        Booking Time:
+                                        {{ $booking['bookingTime'] }}
+                                    </p>
+                                @endif
+                            @elseif($booking['type'] === 'subcategory')
+                                @if (!empty($booking['bookingInfo']['checkInDate']))
+                                    <p class="text-black whitespace-nowrap font-poppins font-normal">
+                                        Check-in:
+                                        {{ \Carbon\Carbon::parse($booking['bookingInfo']['checkInDate'])->format('d/m/Y') }}
+                                    </p>
+                                @endif
+
+                                @if (!empty($booking['bookingInfo']['checkOutDate']))
+                                    <p class="text-black whitespace-nowrap font-poppins font-normal text-xs mt-1">
+                                        Check-out:
+                                        {{ \Carbon\Carbon::parse($booking['bookingInfo']['checkOutDate'])->format('d/m/Y') }}
+                                    </p>
+                                @endif
+                            @endif
+                        </td>
+
+                        <td class="p-4 text-left font-normal text-base">
+                            @php
+                                $status = strtolower($booking['status']);
+                                $statusClasses = match ($status) {
+                                    'pending'
+                                        => 'bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-medium',
+                                    'confirmed'
+                                        => 'bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium',
+                                    'complete'
+                                        => 'bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium',
+                                    'cancelled' => 'bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-medium',
+                                    default => 'bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium',
+                                };
+                            @endphp
+
+                            <span class="{{ $statusClasses }}">
+                                {{ ucfirst($status) }}
+                            </span>
                         </td>
 
                         <td class="py-3 px-6 text-right">
@@ -146,25 +203,13 @@
                                     x-transition:leave-start="transform opacity-100 scale-100"
                                     x-transition:leave-end="transform opacity-0 scale-95"
                                     class="absolute right-0 md:right-3 -mt-1 p-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-20 md:origin-top-right">
+                                    
 
-                                    {{-- <button ware:click="editBooking('{{ $booking['id'] }}')"
-                class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
-                <flux:icon name="pencil-square" class="text-[#6D6D6D] mr-2 h-4 w-4" />
-                Edit
-            </button> --}}
-
-                                    <button
-                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
-                                        <flux:icon name="check" class="text-[#6D6D6D] mr-2 h-4 w-4" />
-                                        Active
+                                    <button wire:click="editBooking('{{ encrypt($booking['id']) }}')"
+                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
+                                        <flux:icon name="pencil-square" class="text-[#6D6D6D] mr-2 h-4 w-4" />
+                                        Edit
                                     </button>
-
-                                    <button
-                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
-                                        <flux:icon name="x-circle" class="text-[#6D6D6D] mr-2 h-4 w-4" />
-                                        Deactivate
-                                    </button>
-
                                     <button wire:click="deleteBooking('{{ encrypt($booking['id']) }}')"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
                                         <flux:icon name="trash" class="text-[#6D6D6D] mr-2 h-4 w-4" />
@@ -175,64 +220,6 @@
                         </td>
                     </tr>
                 @endforeach
-
-                {{-- <tr x-data="{ dropdownOpen: false, status: '{{ $booking['status'] }}' }">
-                        <td class="px-5 py-5 border-b bg-white text-sm">
-                            <p class="text-black whitespace-nowrap">{{ $booking['id'] }}</p>
-                        </td>
-                        <td class="px-5 py-5 border-b bg-white text-sm">
-                            <p class="text-black whitespace-nowrap font-poppins font-normal">
-                                {{ $booking['member'] }}</p>
-                        </td>
-                        <td class="px-5 py-5 border-b bg-white text-sm">
-                            <p class="text-black whitespace-nowrap font-poppins font-normal">
-                                {{ $booking['service'] }}</p>
-                        </td>
-                        <td class="px-5 py-5 border-b bg-white text-sm">
-                            <p class="text-black whitespace-nowrap font-poppins font-normal">
-                                {{ $booking['date'] }}</p>
-                            <p class="font-poppins font-normal text-black whitespace-nowrap text-xs mt-1">
-                                {{ $booking['time'] }}</p>
-                        </td>
-                        <td class="px-5 py-5 border-b bg-white text-sm font-poppins">
-                            <div class="relative inline-block text-left" @click.outside="dropdownOpen = false">
-                                <button type="button" @click="dropdownOpen = !dropdownOpen"
-                                    class="bg-[#E7E7E7] text-black py-1 font-poppins pl-4 pr-10 rounded-full appearance-none leading-tight focus:outline-none focus:ring-2 focus:ring-black focus:border-black cursor-pointer shadow-sm w-32">
-                                    <span x-text="status"></span>
-                                    <div
-                                        class="pointer-events-none absolute -top-1.5 right-0 flex items-center px-2 text-black font-bold">
-                                        <svg class="fill-current h-7 w-7" xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 20 20">
-                                            <path
-                                                d="M9.293 12.95l-.707.707L12 16.207l3.707-3.707-.707-.707L12 14.793z" />
-                                        </svg>
-                                    </div>
-                                </button>
-                                <ul x-show="dropdownOpen" x-transition
-                                    class="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-sm ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none">
-                                    @php
-                                        $statuses = ['Confirmed', 'Pending', 'Cancelled'];
-                                    @endphp
-                                    @foreach ($statuses as $status)
-                                        <li @click="status = '{{ $status }}'; dropdownOpen = false"
-                                            class="text-gray-900 cursor-default select-none relative py-2 pl-3 pr-9 hover:bg-gray-100 font-poppins">
-                                            {{ $status }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        </td>
-                        <td class="px-5 py-5 border-b bg-white text-sm text-center">
-                            <button class="text-[#C7AE6A] hover:text-red-500 transition-colors duration-200"
-                                title="Delete Booking">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20"
-                                    fill="currentColor">
-                                    <path fill-rule="evenodd"
-                                        d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm6 0a1 1 0 112 0v6a1 1 0 11-2 0V8z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                            </button>
-                        </td>
-                    </tr> --}}
             </tbody>
         </table>
     </div>
