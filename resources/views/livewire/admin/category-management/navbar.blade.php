@@ -17,7 +17,7 @@
                  Sub Category
              </a>
              <!-- Tab Item for category -->
-             <a href="" wire:navigate
+             <a href="{{ route('admin.mini-category') }}" wire:navigate
                  class=" flex-1 py-3 text-center font-medium  {{ request()->routeIs('admin.category') ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-700 hover:bg-gray-200' }} rounded-lg focus:outline-none transition-colors duration-200 ease-in-out">
                  Mini Category
              </a>

@@ -4,6 +4,7 @@ use App\Livewire\Admin\AllNotification;
 use App\Livewire\Admin\Attendance;
 use App\Livewire\Admin\Booking;
 use App\Livewire\Admin\Category;
+use App\Livewire\Admin\CategoryManagement\MiniCategory;
 use App\Livewire\Admin\Event;
 use App\Livewire\Admin\EventManagement\Index as EventIndex;
 use App\Livewire\Admin\EventManagement\Create as EventCreate;
@@ -24,6 +25,7 @@ Route::name('admin.')->middleware(['api.auth'])->group(function () {
 
     Route::get('category', Category::class)->name('category');
     Route::get('sub-category', SubCategory::class)->name('sub-category');
+    Route::get('mini-category', MiniCategory::class)->name('mini-category');
    
 
 
