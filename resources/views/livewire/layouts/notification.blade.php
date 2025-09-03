@@ -1,6 +1,7 @@
 <div class="relative">
     {{-- Notification Button --}}
-    <button wire:click="togglePanel" class="btn btn-ghost btn-circle relative hover:bg-gray-200 dark:hover:bg-gray-700">
+    <button wire:click="togglePanel"
+        class="btn btn-ghost btn-circle relative hover:bg-gray-200 dark:hover:bg-gray-700">
         <flux:icon name="bell" class="h-6 w-6 text-gray-800 dark:text-gray-200" />
         @if ($this->unreadCount > 0)
             <span
@@ -12,19 +13,28 @@
 
     {{-- Panel Overlay --}}
     @if ($showPanel)
-        <div class="fixed inset-0 bg-black/20 backdrop-blur-sm z-40" wire:click="closePanel"
-            x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
-            x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
-            x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
+        <div class="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 transition-opacity duration-500"
+            wire:click="closePanel"
+            x-transition:enter="transition-opacity duration-500"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition-opacity duration-500"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0">
         </div>
     @endif
 
     {{-- Notification Panel --}}
     @if ($showPanel)
-        <div class="fixed right-0 top-0 h-full w-96 bg-white/50 dark:bg-gray-800/90  notification-panel z-50 flex flex-col shadow-lg rounded-l-lg"
-            x-transition:enter="transition ease-out duration-300" x-transition:enter-start="transform translate-x-full"
-            x-transition:enter-end="transform translate-x-0" x-transition:leave="transition ease-in duration-200"
-            x-transition:leave-start="transform translate-x-0" x-transition:leave-end="transform translate-x-full">
+        <div
+            class="fixed right-0 top-0 h-full w-96 bg-white/50 dark:bg-gray-800/90 notification-panel z-50 flex flex-col shadow-lg rounded-l-lg"
+            x-data="{ show: @entangle('showPanel') }" x-show="show"
+            x-transition:enter="transition-all duration-500 ease-out"
+            x-transition:enter-start="translate-x-full opacity-0"
+            x-transition:enter-end="translate-x-0 opacity-100"
+            x-transition:leave="transition-all duration-500 ease-in"
+            x-transition:leave-start="translate-x-0 opacity-100"
+            x-transition:leave-end="translate-x-full opacity-0">
 
             {{-- Panel Header --}}
             <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
@@ -151,12 +161,9 @@
         }
 
         @keyframes pulse-glow {
-
-            0%,
-            100 {
+            0%, 100% {
                 box-shadow: 0 0 2px rgba(59, 130, 246, 0.6);
             }
-
             50% {
                 box-shadow: 0 0 10px rgba(59, 130, 246, 0.9);
             }
@@ -165,6 +172,5 @@
         .pulse-glow {
             animation: pulse-glow 2s infinite ease-in-out;
         }
-
     </style>
 </div>
