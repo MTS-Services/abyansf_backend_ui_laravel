@@ -5,20 +5,23 @@ namespace App\Livewire\Admin;
 use Livewire\Component;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
+use Livewire\WithPagination;
 
 class User extends Component
 {
+    // Livewire properties
     public $users = [];
     public $pagination = [];
     public $openActions = null;
-
-    // Add this property to sync currentPage with the URL
     public $currentPage = 1;
+
+    public $userEditModal = false;
 
     // Properties for the new modal
     public $showConfirmationModal = false;
     public $userId;
     public $paymentType;
+    public $selectedUser;
 
     protected $queryString = [
         'currentPage' => ['as' => 'page', 'except' => 1]
@@ -26,20 +29,12 @@ class User extends Component
 
     protected $listeners = ['refreshComponent' => '$refresh'];
 
-
-    /**
-     * Livewire's lifecycle hook that runs once on component initialization.
-     */
     public function mount()
     {
         $this->currentPage = request()->query('page', 1);
         $this->fetchUsers($this->currentPage);
     }
 
-    /**
-     * Fetches users from the API.
-     * @param int $page The page number to fetch.
-     */
     public function fetchUsers($page = 1)
     {
         $token = Session::get('api_token');
@@ -56,7 +51,6 @@ class User extends Component
             $data = $response->json();
             $this->users = $data['data']['users'] ?? [];
             $this->pagination = $data['data']['pagination'] ?? [];
-            // Update the property after a successful fetch to avoid URL issues on failure
             $this->currentPage = $page;
         } else {
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to load users from the API.');
@@ -66,10 +60,6 @@ class User extends Component
         }
     }
 
-    /**
-     * Toggles the action dropdown for a specific user.
-     * @param int $userId The ID of the user.
-     */
     public function toggleActions($userId)
     {
         if ($this->openActions === $userId) {
@@ -79,30 +69,31 @@ class User extends Component
         }
     }
 
-    // --- New Modal and SweetAlert methods ---
-    /**
-     * Opens the confirmation modal.
-     * @param int $userId The ID of the user.
-     */
+    public function editUser($userId)
+    {
+        $this->userEditModal = true;
+        $user = collect($this->users)->firstWhere('id', $userId);
+        if ($user) {
+            // Dispatch an event to a dedicated modal component
+            $this->dispatch('open-edit-modal', user: $user);
+        }
+    }
+
+
     public function confirmUserPaid($userId)
     {
         $this->userId = $userId;
-        $this->paymentType = null; // Reset the payment type
+        $this->paymentType = null;
         $this->showConfirmationModal = true;
     }
 
-    /**
-     * Closes the confirmation modal.
-     */
     public function closeModal()
     {
+        $this->userEditModal = false;
         $this->showConfirmationModal = false;
-        $this->reset(['userId', 'paymentType']);
+        $this->reset(['userId', 'paymentType',]);
     }
 
-    /**
-     * Handles the payment confirmation and dispatches SweetAlert events.
-     */
     public function processConfirmation()
     {
         if (!$this->paymentType) {
@@ -135,27 +126,25 @@ class User extends Component
         $this->closeModal();
     }
 
-    // --- End of new methods ---
-
-
     public function sendPaymentLink($userId)
     {
         try {
-            $user = User::findOrFail($userId);
-
-            if (! $user->is_operational) {
+            // Find the user from the current fetched users array
+            $user = collect($this->users)->firstWhere('id', $userId);
+    
+            if (! $user || ! ($user['is_operational'] ?? false)) {
                 $this->dispatch('sweetalert2', type: 'error', message: 'This user is not operational. Payment link not available.');
                 return;
             }
-
+    
             $response = Http::withToken(config('services.payment.token'))
-                ->post(api_base_url() . '/send-payment-link', ['userId' => $user->id]);
-
+                ->post(api_base_url() . '/send-payment-link', ['userId' => $user['id']]);
+    
             if ($response->successful()) {
-                Session::put('payment_link_' . $user->id, $response->json('data.link'));
-                $user->update(['send_payment_link' => true]);
+                // Assuming you have a way to update the local state without a full reload
+                // For a more robust solution, you could refetch the single user or the whole list
+                $this->fetchUsers($this->currentPage);
                 $this->dispatch('sweetalert2', type: 'success', message: 'Payment link sent successfully!');
-                $this->dispatch('refreshComponent');
             } else {
                 $this->dispatch('sweetalert2', type: 'error', message: 'Failed to send payment link. Please try again.');
             }
@@ -163,10 +152,7 @@ class User extends Component
             $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred: ' . $e->getMessage());
         }
     }
-    /**
-     * Handles the delete action.
-     * @param int $userId The ID of the user to delete.
-     */
+
     public function deleteUser($userId)
     {
         $token = Session::get('api_token');
@@ -184,39 +170,18 @@ class User extends Component
         }
     }
 
-    /**
-     * Handles the edit action.
-     * @param int $userId The ID of the user to edit.
-     */
-    public function editUser($userId)
-    {
-        $this->dispatch('sweetalert2', type: 'info', message: "Edit action for user ID: {$userId}");
-    }
-
-    /**
-     * Handles the activate action.
-     * @param int $userId The ID of the user to activate.
-     */
     public function activateUser($userId)
     {
         $this->dispatch('sweetalert2', type: 'info', message: "Activate action for user ID: {$userId}");
         $this->fetchUsers($this->currentPage);
     }
 
-    /**
-     * Handles the deactivate action.
-     * @param int $userId The ID of the user to deactivate.
-     */
     public function deactivateUser($userId)
     {
         $this->dispatch('sweetalert2', type: 'info', message: "Deactivate action for user ID: {$userId}");
         $this->fetchUsers($this->currentPage);
     }
 
-    /**
-     * Navigate to a specific page.
-     * @param int $page The page number to go to.
-     */
     public function gotoPage($page)
     {
         if ($page >= 1 && $page <= ($this->pagination['pages'] ?? 1)) {
@@ -224,9 +189,6 @@ class User extends Component
         }
     }
 
-    /**
-     * Navigate to the previous page.
-     */
     public function previousPage()
     {
         if ($this->currentPage > 1) {
@@ -234,9 +196,6 @@ class User extends Component
         }
     }
 
-    /**
-     * Navigate to the next page.
-     */
     public function nextPage()
     {
         if ($this->currentPage < ($this->pagination['pages'] ?? 1)) {
@@ -244,22 +203,16 @@ class User extends Component
         }
     }
 
-    /**
-     * Get the pagination pages to display based on your custom logic.
-     * This matches the design pattern shown in your image.
-     */
     public function getPaginationPages()
     {
         $pages = [];
         $current = $this->currentPage;
         $total = $this->pagination['pages'] ?? 1;
 
-        // If only 1 page, show just that page
         if ($total == 1) {
             return [1];
         }
 
-        // If 2-4 pages, show all pages
         if ($total <= 4) {
             for ($i = 1; $i <= $total; $i++) {
                 $pages[] = $i;
@@ -267,27 +220,19 @@ class User extends Component
             return $pages;
         }
 
-        // For 5+ pages, implement the custom logic from your design
         if ($current == 1) {
-            // Current page is 1: show [1, 2, ..., last]
             $pages = [1, 2, '...', $total];
         } elseif ($current == 2) {
-            // Current page is 2: show [1, 2, 3, ..., last]
             $pages = [1, 2, 3, '...', $total];
         } elseif ($current == 3) {
-            // Current page is 3: show [1, 2, 3, 4, ..., last]
             $pages = [1, 2, 3, 4, '...', $total];
         } elseif ($current == $total) {
-            // Current page is last: show [1, ..., last-1, last]
             $pages = [1, '...', $total - 1, $total];
         } elseif ($current == $total - 1) {
-            // Current page is second to last: show [1, ..., last-2, last-1, last]
             $pages = [1, '...', $total - 2, $total - 1, $total];
         } elseif ($current == $total - 2) {
-            // Current page is third from last: show [1, ..., total-3, total-2, total-1, total]
             $pages = [1, '...', $total - 3, $total - 2, $total - 1, $total];
         } else {
-            // Middle pages: show [1, ..., current-1, current, current+1, ..., last]
             $pages = [1, '...', $current - 1, $current, $current + 1, '...', $total];
         }
 
