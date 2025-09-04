@@ -6,22 +6,20 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
             <div>
                 <label class="block text-base lg:text-base font-semibold text-[#5D5D5D] mb-2">User</label>
-                <select
+                <input type="text" placeholder="Users/Email"
                     class="w-full border-b border-gray-400 text-[#5D5D5D] text-base font-normal font-poppins bg-transparent focus:outline-none focus:border-blue-500">
-                    <option>All Users</option>
-                </select>
             </div>
 
             <div>
                 <label class="block text-base lg:text-base font-semibold text-[#5D5D5D] mb-2">Services</label>
-                <select
+                <input type="text" placeholder="All Services"
                     class="w-full border-b border-gray-400 text-[#5D5D5D] text-base font-normal font-poppins bg-transparent focus:outline-none focus:border-blue-500">
-                    <option>All Services</option>
-                </select>
             </div>
 
+
             <div>
-                <label class="block text-base lg:text-base font-semibold text-[#5D5D5D] mb-2 text-[#5D5D5D]">Date</label>
+                <label
+                    class="block text-base lg:text-base font-semibold text-[#5D5D5D] mb-2 text-[#5D5D5D]">Date</label>
                 <input type="date"
                     class="w-full border-b border-gray-400 text-[#5D5D5D] text-base font-normal font-poppins bg-transparent focus:outline-none focus:border-blue-500"
                     placeholder="dd/mm/yyyy">
