@@ -129,12 +129,10 @@ class MainCategory extends Component
 public function openEditCategory($mainCategoryId)
 {
     
-
  $this->mainCategoryId = $mainCategoryId;
 
         $decryptedId = decrypt($mainCategoryId);
         $response = Http::withToken(api_token())->get(api_base_url() . "/categories/main/{$decryptedId}");
-
         if ($response->successful()) {
             $json = $response->json();
 
@@ -147,6 +145,24 @@ public function openEditCategory($mainCategoryId)
         } else {
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch main category details.');
         }
+}
+
+public function updateMainCategory()
+
+
+{
+    $response = Http::withToken(api_token())
+        ->put(api_base_url() . '/categories/main/' . decrypt($this->mainCategoryId), [
+            'name' => $this->name,
+        ]);
+
+    if ($response->successful()) {
+        $this->switchEditCategoryModel();
+        $this->fetchMainCategory($this->currentPage);
+        $this->dispatch('sweetalert2', type: 'success', message: 'Main category updated successfully.');
+    } else {
+        $this->dispatch('sweetalert2', type: 'error', message: 'Failed to update main category.');
+    }
 }
 
     public function gotoPage($page)
