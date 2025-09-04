@@ -1,4 +1,4 @@
-<section class="flex items-center justify-center ">
+<section class="flex items-center justify-center mt-30 ">
 
     <div class="w-full max-w-sm text-center ">
         <form wire:submit.prevent="login" class="w-full">
@@ -22,12 +22,24 @@
             @error('password')
                 <span class="text-red-500 text-sm">{{ $message }}</span>
             @enderror
-            <div class="relative mb-4">
-                <input type="password" wire:model.live="password" placeholder="Password"
+            <div x-data="{ show: false }" class="relative mb-4">
+                <input :type="show ? 'text' : 'password'" wire:model.live="password" placeholder="Password"
                     class="w-full px-4 p-4 bg-[#F8F6EE] border border-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c5a86a]">
-                <span class="absolute right-3 top-2.5 cursor-pointer"><img
-                        src="{{ asset('image/PasswordProjection.png') }}" alt="" class="pt-2"></span>
+
+                <!-- Icon -->
+                <span @click="show = !show" class="absolute right-3 top-3 cursor-pointer">
+                    <template x-if="!show">
+                        <!-- Eye icon -->
+                        <flux:icon name="eye" class="h-6 w-6 !text-gray-400" />
+                    </template>
+                    <template x-if="show">
+                        <!-- Eye slash icon -->
+                        <flux:icon name="eye-slash" class="h-6 w-6 text-gray-400" />
+                    </template>
+                </span>
             </div>
+
+
 
             <div class="flex items-center mb-4 float-left">
                 <input type="checkbox" wire:model.live="rememberMe" id="rememberMe"

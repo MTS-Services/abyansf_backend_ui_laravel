@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 // Don't need to import ValidationException if you're not throwing it for this case
 
@@ -32,12 +33,13 @@ class Login extends Component
         $this->reset('errorMessage');
 
         try {
+            // dd($this->email, $this->password, $this->rememberMe);
             $response = Http::post('https://backend-ab.mtscorporate.com/api/users/login', [
                 'email' => $this->email,
                 'password' => $this->password,
                 'rememberMe' => $this->rememberMe,
             ]);
-
+            // dd($response->json());
             if ($response->successful()) {
                 $accessToken = $response->json('token');
                 Session::put('api_token', $accessToken);
@@ -47,6 +49,7 @@ class Login extends Component
                 $this->errorMessage = $response->json('message') ?? 'Login failed. Please check your credentials.';
             }
         } catch (\Exception $e) {
+            Log::error('Login error: ' . $e->getMessage());
             $this->errorMessage = 'An unexpected error occurred. Please try again later.';
         }
     }
