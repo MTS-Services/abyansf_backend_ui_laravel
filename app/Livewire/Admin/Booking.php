@@ -54,14 +54,14 @@ class Booking extends Component
     public function mount()
     {
         $this->currentPage = request()->query('page', 1);
-        $this->fetchBookinss($this->currentPage);
+        $this->fetchBookings($this->currentPage);
     }
 
     /**
      * Fetches users from the API.
      * @param int $page The page number to fetch.
      */
-    public function fetchBookinss($page = 1)
+    public function fetchBookings($page = 1)
     {
         $token = Session::get('api_token');
 
@@ -114,7 +114,7 @@ class Booking extends Component
         // dd($response->json());
         if ($response->successful()) {
             $this->dispatch('sweetalert2', type: 'success', message: 'booking deleted successfully.');
-            $this->fetchBookinss($this->currentPage);
+            $this->fetchBookings($this->currentPage);
         } else {
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to delete user.');
         }
@@ -126,7 +126,7 @@ class Booking extends Component
         // dd($response->json());
         if ($response->successful()) {
             $this->dispatch('sweetalert2', type: 'success', message: 'booking deleted successfully.');
-            $this->fetchBookinss($this->currentPage);
+            $this->fetchBookings($this->currentPage);
         } else {
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to delete user.');
         }
@@ -229,7 +229,7 @@ class Booking extends Component
 
             $this->subBookingEditModal = false;
             $this->dispatch('sweetalert2', type: 'success', message: 'Sub Booking updated successfully.');
-            $this->fetchBookinss();
+            $this->fetchBookings();
         } else {
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to update sub booking. Please try again.');
         }
@@ -256,7 +256,6 @@ class Booking extends Component
             $json = $response->json();
             if (isset($json['data'])) {
                 $booking = $json['data'];
-                dd($booking);
 
                 // Assign fetched data to public properties
                 $this->listingId = $booking['listingId'] ?? '';
@@ -269,8 +268,8 @@ class Booking extends Component
                 // Format and assign date and time
                 if (isset($booking['bookingDate'])) {
                     try {
-                        // Carbon is used to ensure the date is in the YYYY-MM-DD format
-                        $this->bookingDate = Carbon::parse($booking['bookingDate'])->format('Y-m-d');
+                        // Full ISO 8601 date format: 2025-09-04T00:00:00+00:00
+                        $this->bookingDate = Carbon::parse($booking['bookingDate'])->toIso8601String();
                     } catch (\Exception $e) {
                         $this->bookingDate = null;
                     }
@@ -278,8 +277,9 @@ class Booking extends Component
 
                 if (isset($booking['bookingTime'])) {
                     try {
-                        // Carbon is used to ensure the time is in the H:i:s format (or similar)
-                        $this->bookingTime = Carbon::parse($booking['bookingTime'])->format('H:i');
+                        // Convert time into ISO 8601 duration or datetime
+                        // Example: 14:30 -> 1970-01-01T14:30:00+00:00
+                        $this->bookingTime = Carbon::parse($booking['bookingTime'])->toIso8601String();
                     } catch (\Exception $e) {
                         $this->bookingTime = null;
                     }
@@ -307,10 +307,8 @@ class Booking extends Component
 
         // 🔹 Assuming bookingId is already set (encrypted like userId)
         $response = Http::withToken(api_token())->put(api_base_url() . '/bookings/' . decrypt($this->listingBookingId), $data);
-
+        
         if ($response->successful()) {
-
-            dd($response->json());
             $this->reset([
                 'listingId',
                 'bookingDate',
@@ -335,7 +333,7 @@ class Booking extends Component
     public function gotoPage($page)
     {
         if ($page >= 1 && $page <= ($this->pagination['pages'] ?? 1)) {
-            $this->fetchBookinss($page);
+            $this->fetchBookings($page);
         }
     }
 
@@ -352,7 +350,7 @@ class Booking extends Component
     public function previousPage()
     {
         if ($this->currentPage > 1) {
-            $this->fetchBookinss($this->currentPage - 1);
+            $this->fetchBookings($this->currentPage - 1);
         }
     }
 
@@ -362,7 +360,7 @@ class Booking extends Component
     public function nextPage()
     {
         if ($this->currentPage < ($this->pagination['pages'] ?? 1)) {
-            $this->fetchBookinss($this->currentPage + 1);
+            $this->fetchBookings($this->currentPage + 1);
         }
     }
 
