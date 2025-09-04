@@ -62,7 +62,7 @@
                                     x-transition:leave-end="transform opacity-0 scale-95"
                                     class="absolute right-3 -mt-1 p-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
 
-                                    <button wire:click="editUser('{{ $user['id'] }}')"
+                                    <button wire:click="userEditModall('{{ encrypt($user['id']) }}')"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
                                         <flux:icon name="pencil-square" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Edit
@@ -120,50 +120,79 @@
                         <flux:icon name="x-circle" class="h-6 w-6" />
                     </button>
 
-                    <form wire:submit.prevent="processConfirmation" class="mt-4">
-                        <div class="mb-6">
-                            <label class="block text-gray-700 text-sm font-medium mb-2">User Image</label>
-                            <label
-                                class="flex justify-center items-center w-full h-56 border-2 border-dashed border-[#C7AE6A] rounded-lg cursor-pointer bg-gray-100 hover:bg-gray-100 transition">
-                                <input type="file" name="user_image" class="hidden">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-400" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                            </label>
+                    <form wire:submit.prevent="updateUser" class="mt-4">
+                        <div x-data="{ dragOver: false, imagePreview: @entangle('image') }" class="space-y-4">
+                            <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
+                                @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
+                                @drop.prevent="dragOver = false; $wire.upload('image', event.dataTransfer.files[0])"
+                                @click="$refs.fileInput.click()" :class="{ 'border-blue-500': dragOver }">
+                                <input wire:model="image" type="file" x-ref="fileInput" class="hidden"
+                                    accept="image/*">
+
+                                <template
+                                    x-if="imagePreview && (imagePreview.previewUrl || (typeof imagePreview === 'string' && imagePreview.length > 0))">
+                                    <div class="relative w-full h-full">
+                                        <img :src="imagePreview.previewUrl || imagePreview"
+                                            class="w-full h-full object-cover rounded-md" alt="Preview">
+
+                                        <button type="button"
+                                            @click.stop="$wire.set('image', null); $refs.fileInput.value = '';"
+                                            class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">
+                                            &times;
+                                        </button>
+                                    </div>
+                                </template>
+
+                                <div x-show="!imagePreview || (typeof imagePreview === 'string' && imagePreview.length === 0)"
+                                    class="text-center px-2">
+                                    <div class="mb-4 flex items-center justify-center">
+                                        <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg"
+                                            fill="none" viewBox="0 0 20 16">
+                                            <path stroke="currentColor" stroke-linecap="round"
+                                                stroke-linejoin="round" stroke-width="2"
+                                                d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                        </svg>
+                                    </div>
+                                    <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop it here</p>
+                                    <button type="button"
+                                        class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                                        Browse File
+                                    </button>
+                                </div>
+                            </div>
                         </div>
+                        <input type="file" wire:model="image" accept="image/*">
                         <div class="mb-5">
                             <label for="name" class="block text-gray-700 text-sm font-medium mb-2">Name</label>
-                            <input type="text" wire:model="selectedUser.name" id="name"
+                            <input type="text" wire:model="name" id="name"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#C7AE6A] focus:border-gray-300">
                         </div>
 
                         <div class="mb-5">
                             <label for="email" class="block text-gray-700 text-sm font-medium mb-2">Email</label>
-                            <input type="email" wire:model="selectedUser.email" id="email"
+                            <input type="email" wire:model="email" id="email"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#C7AE6A] focus:border-gray-300">
                         </div>
 
                         <div class="mb-5">
-                            <label for="number" class="block text-gray-700 text-sm font-medium mb-2">Number</label>
-                            <input type="tel" wire:model="selectedUser.number" id="number"
+                            <label for="whatsapp"
+                                class="block text-gray-700 text-sm font-medium mb-2">Whatsapp</label>
+                            <input type="tel" wire:model="whatsapp" id="whatsapp"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#C7AE6A] focus:border-gray-300">
                         </div>
 
                         <div class="mb-5">
                             <label for="password"
                                 class="block text-gray-700 text-sm font-medium mb-2">Password</label>
-                            <input type="password" wire:model="selectedUser.password" id="password"
+                            <input type="password" wire:model="password" id="password"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#C7AE6A] focus:border-gray-300">
                         </div>
 
-
-
                         <div class="flex justify-center md:justify-start pt-6">
                             <button type="submit"
-                                class="px-8 py-2 bg-[#C7AE6A] text-black rounded-md hover:bg-opacity-90 transition-colors font-medium">
-                                Save
+                                class="px-8 py-2 bg-[#C7AE6A] text-black rounded-md hover:bg-opacity-90 transition-colors font-medium hover:bg-[#eec44f] cursor-pointer">
+                                <span wire:loading.remove wire:target="save">Save</span>
+                                <span wire:loading wire:target="save">Saving...</span>
                             </button>
                         </div>
                     </form>

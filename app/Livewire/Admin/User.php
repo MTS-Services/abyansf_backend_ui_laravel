@@ -5,15 +5,23 @@ namespace App\Livewire\Admin;
 use Livewire\Component;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
+use Livewire\Features\SupportFileUploads\WithFileUploads;
 use Livewire\WithPagination;
 
 class User extends Component
 {
+    use WithFileUploads;
     // Livewire properties
     public $users = [];
     public $pagination = [];
     public $openActions = null;
     public $currentPage = 1;
+
+    public $name;
+    public $email;
+    public $whatsapp;
+    public $password;
+    public $image;
 
     public $userEditModal = false;
 
@@ -69,16 +77,77 @@ class User extends Component
         }
     }
 
-    public function editUser($userId)
+
+    public function userEditModall($userId = null)
     {
         $this->userEditModal = true;
-        $user = collect($this->users)->firstWhere('id', $userId);
-        if ($user) {
-            // Dispatch an event to a dedicated modal component
-            $this->dispatch('open-edit-modal', user: $user);
+        if ($this->userEditModal && $userId) {
+            $this->user($userId); // load event data
         }
     }
+    public function user($userId)
+    {
+        $this->userId = $userId;
 
+        $decryptedId = decrypt($userId);
+        $response = Http::withToken(api_token())->get(api_base_url() . "/users/search/{$decryptedId}");
+
+        if ($response->successful()) {
+            $json = $response->json();
+
+            if (isset($json['data'])) {
+                $user = $json['data'];
+
+                $this->name       = $user['name'] ?? '';
+                $this->email     = $user['email'] ?? '';
+                $this->whatsapp  = $user['whatsapp'] ?? '';
+                $this->password  = $user['password'] ?? '';
+                $this->image = $user['profile_pic'] ?? null;
+            }
+        } else {
+            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch event details.');
+        }
+    }
+    public function updateUser()
+    {
+        $data = [
+            'name' => $this->name,
+            'email' => $this->email,
+            'whatsapp' => $this->whatsapp,
+            'password' => $this->password,
+        ];
+        $request = Http::withToken(api_token());
+
+        // You MUST re-add the attach part to send the image
+        if ($this->image && !filter_var($this->image, FILTER_VALIDATE_URL)) {
+            $request->attach(
+                'profile_pic',
+                file_get_contents($this->image->getRealPath()),
+                $this->image->getClientOriginalName()
+            );
+        }
+
+
+        // Use post() with the _method field.
+        $response = $request->put(api_base_url() . '/users/' . decrypt($this->userId), $data);
+
+        
+        if ($response->successful()) {
+            $this->reset([
+                'name',
+                'email',
+                'whatsapp',
+                'password',
+                'profile_pic',
+            ]);
+
+            $this->userEditModal = false; // Close the modal();
+            $this->dispatch('sweetalert2', type: 'success', message: 'User updated successfully.');
+            $this->fetchUsers();
+        } else {
+            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to update user. Please try again.');
+        }
+    }
 
     public function confirmUserPaid($userId)
     {
@@ -131,15 +200,15 @@ class User extends Component
         try {
             // Find the user from the current fetched users array
             $user = collect($this->users)->firstWhere('id', $userId);
-    
+
             if (! $user || ! ($user['is_operational'] ?? false)) {
                 $this->dispatch('sweetalert2', type: 'error', message: 'This user is not operational. Payment link not available.');
                 return;
             }
-    
+
             $response = Http::withToken(config('services.payment.token'))
                 ->post(api_base_url() . '/send-payment-link', ['userId' => $user['id']]);
-    
+
             if ($response->successful()) {
                 // Assuming you have a way to update the local state without a full reload
                 // For a more robust solution, you could refetch the single user or the whole list
