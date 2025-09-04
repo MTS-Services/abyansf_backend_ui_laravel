@@ -268,7 +268,6 @@ class Booking extends Component
                 // Format and assign date and time
                 if (isset($booking['bookingDate'])) {
                     try {
-                        // Full ISO 8601 date format: 2025-09-04T00:00:00+00:00
                         $this->bookingDate = Carbon::parse($booking['bookingDate'])->toIso8601String();
                     } catch (\Exception $e) {
                         $this->bookingDate = null;
@@ -277,8 +276,6 @@ class Booking extends Component
 
                 if (isset($booking['bookingTime'])) {
                     try {
-                        // Convert time into ISO 8601 duration or datetime
-                        // Example: 14:30 -> 1970-01-01T14:30:00+00:00
                         $this->bookingTime = Carbon::parse($booking['bookingTime'])->toIso8601String();
                     } catch (\Exception $e) {
                         $this->bookingTime = null;
