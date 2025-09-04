@@ -25,14 +25,14 @@ class Booking extends Component
     public function mount()
     {
         $this->currentPage = request()->query('page', 1);
-        $this->fetchUsers($this->currentPage);
+        $this->fetchBookinss($this->currentPage);
     }
 
     /**
      * Fetches users from the API.
      * @param int $page The page number to fetch.
      */
-    public function fetchUsers($page = 1)
+    public function fetchBookinss($page = 1)
     {
         $token = Session::get('api_token');
 
@@ -43,6 +43,7 @@ class Booking extends Component
         $response = Http::withToken($token)->get(api_base_url() . '/sub-category-bookings/admin/all-users/grouped', [
             'page' => $page
         ]);
+        // dd($response->json());
 
         // dd($response ['data']['bookings']['listing']['name']);
 
@@ -77,13 +78,26 @@ class Booking extends Component
             $this->openActions = $userId;
         }
     }
-    public function deleteBooking($listingBookingId)
+    public function deleteListingBooking($listingBookingId)
     {
+        // dd($listingBookingId);
         $response = Http::withToken(api_token())->delete(api_base_url() . '/bookings/' . decrypt($listingBookingId));
-
+        // dd($response->json());
         if ($response->successful()) {
-            // $this->dispatch('sweetalert2', type: 'success', message: 'booking deleted successfully.');
-            $this->fetchUsers($this->currentPage);
+            $this->dispatch('sweetalert2', type: 'success', message: 'booking deleted successfully.');
+            $this->fetchBookinss($this->currentPage);
+        } else {
+            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to delete user.');
+        }
+    }
+    public function deleteSubcategoryBooking($listingBookingId)
+    {
+        // dd($listingBookingId);
+        $response = Http::withToken(api_token())->delete(api_base_url() . '/sub-category-bookings/' . decrypt($listingBookingId));
+        // dd($response->json());
+        if ($response->successful()) {
+            $this->dispatch('sweetalert2', type: 'success', message: 'booking deleted successfully.');
+            $this->fetchBookinss($this->currentPage);
         } else {
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to delete user.');
         }
@@ -98,7 +112,7 @@ class Booking extends Component
     public function gotoPage($page)
     {
         if ($page >= 1 && $page <= ($this->pagination['pages'] ?? 1)) {
-            $this->fetchUsers($page);
+            $this->fetchBookinss($page);
         }
     }
 
@@ -115,7 +129,7 @@ class Booking extends Component
     public function previousPage()
     {
         if ($this->currentPage > 1) {
-            $this->fetchUsers($this->currentPage - 1);
+            $this->fetchBookinss($this->currentPage - 1);
         }
     }
 
@@ -125,7 +139,7 @@ class Booking extends Component
     public function nextPage()
     {
         if ($this->currentPage < ($this->pagination['pages'] ?? 1)) {
-            $this->fetchUsers($this->currentPage + 1);
+            $this->fetchBookinss($this->currentPage + 1);
         }
     }
 

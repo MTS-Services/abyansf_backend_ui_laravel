@@ -203,18 +203,26 @@
                                     x-transition:leave-start="transform opacity-100 scale-100"
                                     x-transition:leave-end="transform opacity-0 scale-95"
                                     class="absolute right-0 md:right-3 -mt-1 p-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-20 md:origin-top-right">
-                                    
+
 
                                     <button wire:click="editBooking('{{ encrypt($booking['id']) }}')"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
                                         <flux:icon name="pencil-square" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Edit
                                     </button>
-                                    <button wire:click="deleteBooking('{{ encrypt($booking['id']) }}')"
-                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
-                                        <flux:icon name="trash" class="text-[#6D6D6D] mr-2 h-4 w-4" />
-                                        Delete
-                                    </button>
+                                    @if ($booking['type'] === 'listing')
+                                        <button wire:click="deleteListingBooking('{{ encrypt($booking['id']) }}')"
+                                            class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
+                                            <flux:icon name="trash" class="text-[#6D6D6D] mr-2 h-4 w-4" />
+                                            Delete
+                                        </button>
+                                    @elseif ($booking['type'] === 'subcategory')
+                                        <button wire:click="deleteSubcategoryBooking('{{ encrypt($booking['id']) }}')"
+                                            class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
+                                            <flux:icon name="trash" class="text-[#6D6D6D] mr-2 h-4 w-4" />
+                                            Delete
+                                        </button>
+                                    @endif
                                 </div>
                             </div>
                         </td>
