@@ -25,49 +25,49 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <label class="block text-sm font-medium mb-1">Specific Category</label>
+                        <label class="block text-sm font-medium mb-1 font-playfair">Specific Category</label>
                         <select wire:model="specificCategoryId"
                             class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
                             <option value="">Select a category</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-1">Name</label>
+                        <label class="block text-sm font-medium mb-1 font-playfair">Name</label>
                         <input wire:model="name" type="text" placeholder="Name"
                             class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-1">Location</label>
+                        <label class="block text-sm font-medium mb-1 font-playfair">Location</label>
                         <input wire:model="location" type="text" placeholder="Location"
                             class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium mb-1">Member Privileges Description</label>
+                    <label class="block text-sm font-medium mb-1 font-playfair">Member Privileges Description</label>
                     <textarea wire:model="member_privileges_description" placeholder="Enter member privileges description"
                         class="w-full border border-[#C7AE6A] rounded p-2 focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] h-[100px]"></textarea>
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium mb-1">Description</label>
+                    <label class="block text-sm font-medium mb-1 font-playfair">Description</label>
                     <textarea wire:model="description" placeholder="Enter description"
                         class="w-full border border-[#C7AE6A] rounded p-2 h-[264px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]"></textarea>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <label class="block text-sm font-medium mb-1">Hours</label>
+                        <label class="block text-sm font-medium mb-1 font-playfair">Hours</label>
                         <input wire:model="hours" type="time" placeholder="e.g., Mon-Fri: 9am-5pm"
                             class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-1">Form Name</label>
+                        <label class="block text-sm font-medium mb-1 font-playfair">Form Name</label>
                         <input wire:model="formName" type="text" placeholder="Form Name"
                             class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-1">Venue Name</label>
+                        <label class="block text-sm font-medium mb-1 font-playfair">Venue Name</label>
                         <input wire:model="venueName" type="text" placeholder="Venue Name"
                             class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
                     </div>
@@ -75,12 +75,12 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium mb-1">Type of Service</label>
+                        <label class="block text-sm font-medium mb-1 font-playfair">Type of Service</label>
                         <input wire:model="typeofservice" type="text" placeholder="Type of Service"
                             class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-1">Contract Whatsapp</label>
+                        <label class="block text-sm font-medium mb-1 font-playfair">Contract Whatsapp</label>
                         <input wire:model="contractWhatsapp" type="number" placeholder="Whatsapp number"
                             class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
                     </div>

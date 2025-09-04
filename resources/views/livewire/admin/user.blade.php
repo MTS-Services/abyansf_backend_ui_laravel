@@ -1,4 +1,4 @@
-<section>
+<section class="font-playfair">
     <h2 class="font-medium text-3xl text-black mb-4">User Management</h2>
     <div class="overflow-x-auto">
         <table class="leading-normal table">
@@ -25,18 +25,18 @@
                     @endif --}}
 
                     <tr wire:key="user-{{ $user['id'] }}">
-                        <td class="p-4 text-left whitespace-nowrap font-normal">
+                        <td class="p-4 text-left whitespace-nowrap font-playfair">
                             {{ ($pagination['page'] - 1) * $pagination['limit'] + $index + 1 }}</td>
-                        <td class="p-4 text-left font-normal text-base">{{ $user['name'] }}</td>
-                        <td class="p-4 text-left font-normal text-base">{{ $user['email'] }}</td>
-                        <td class="p-4 text-left font-normal text-base">{{ $user['whatsapp'] }}</td>
-                        <td class="p-4 text-left font-normal text-base">
+                        <td class="p-4 text-left font-playfair text-base">{{ $user['name'] }}</td>
+                        <td class="p-4 text-left font-playfair text-base">{{ $user['email'] }}</td>
+                        <td class="p-4 text-left font-playfair text-base">{{ $user['whatsapp'] }}</td>
+                        <td class="p-4 text-left font-playfair text-base">
                             {{ \Carbon\Carbon::parse($user['createdAt'])->format('d/m/Y') }}</td>
-                        <td class="p-4 text-left font-normal text-base">
+                        <td class="p-4 text-left font-playfair text-base">
                             {{ $user['password'] == null ? 'N/A' : '********' }}</td>
-                        <td class="p-4 text-left font-normal text-base">
+                        <td class="p-4 text-left font-playfair text-base">
                             {{ $user['isActive'] ? 'Active' : 'Inactive' }}</td>
-                        <td class="p-4 text-left font-normal text-base">
+                        <td class="p-4 text-left font-playfair text-base">
                             @if (!empty($user['is_operational']) && $user['is_operational'])
                                 <a href="#" wire:click.prevent="sendPaymentLink({{ $user['id'] }})"
                                     class="text-[#AD8945]">

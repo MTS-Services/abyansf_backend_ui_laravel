@@ -154,7 +154,7 @@
                             </div>
 
                         </td>
-                        <td class="p-4 text-left font-normal text-base">
+                        <td class="p-4 text-left font-playfair text-base">
                             @if ($event['status'])
                                 <span
                                     class="inline-block px-3 py-1 text-sm font-semibold text-green-800 bg-green-200 rounded-full">Active</span>

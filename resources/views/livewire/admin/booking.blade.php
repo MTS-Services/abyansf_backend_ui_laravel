@@ -1,6 +1,6 @@
-<section class="font-poppins">
+<section class="font-playfair">
 
-    <h2 class="font-medium mt-6 mb-6 font-poppins text-black text-2xl sm:text-2xl">Booking Management</h2>
+    <h2 class="font-medium mt-6 mb-6 font-playfair text-black text-2xl sm:text-3xl">Booking Management</h2>
 
     <div class="mb-5">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
@@ -109,26 +109,26 @@
                 @foreach ($bookings as $booking)
                     <tr wire:key="booking-{{ $booking['id'] }}" x-data="{ dropdownOpen: false }"
                         class="border-b border-gray-200">
-                        <td class="p-4 text-left font-normal text-base">
+                        <td class="p-4 text-left font-normal font-playfair text-base">
                             <p class="text-black whitespace-nowrap">{{ $loop->iteration }}</p>
                         </td>
 
-                        <td class="p-4 text-left font-normal text-base">
-                            <p class="text-black whitespace-nowrap font-poppins font-normal">
+                        <td class="p-4 text-left font-normal font-playfair text-base">
+                            <p class="text-black whitespace-nowrap font-playfair font-normal ">
                                 {{ $booking['customerInfo']['name'] ?? 'N/A' }}</p>
                         </td>
-                        <td class="p-4 text-left font-normal text-base">
+                        <td class="p-4 text-left font-normal font-playfair text-base">
                             @if ($booking['type'] === 'listing' && !empty($booking['listing']['name']))
-                                <p class="text-black whitespace-nowrap font-poppins font-normal">
+                                <p class="text-black whitespace-nowrap font-playfair font-normal ">
                                     {{ $booking['listing']['name'] }}
                                 </p>
                             @elseif($booking['type'] === 'subcategory')
                                 @if (!empty($booking['subCategory']['name']))
-                                    <p class="text-black whitespace-nowrap font-poppins font-normal">
+                                    <p class="text-black whitespace-nowrap font-playfair font-normal ">
                                         {{ $booking['subCategory']['name'] }}
                                     </p>
                                 @elseif(!empty($booking['miniSubCategory']['name']))
-                                    <p class="text-black whitespace-nowrap font-poppins font-normal">
+                                    <p class="text-black whitespace-nowrap font-playfair font-normal ">
                                         {{ $booking['miniSubCategory']['name'] }}
                                     </p>
                                 @endif
@@ -136,31 +136,31 @@
                         </td>
 
 
-                        <td class="p-4 text-left font-normal text-base">
+                        <td class="p-4 text-left font-normal font-playfair text-base">
                             @if ($booking['type'] === 'listing')
                                 @if (!empty($booking['bookingDate']))
-                                    <p class="text-black whitespace-nowrap font-poppins font-normal">
+                                    <p class="text-black whitespace-nowrap font-playfair font-normal ">
                                         Booking Date:
                                         {{ \Carbon\Carbon::parse($booking['bookingDate'])->format('d/m/Y') }}
                                     </p>
                                 @endif
 
                                 @if (!empty($booking['bookingTime']))
-                                    <p class="font-poppins font-normal text-black whitespace-nowrap text-xs mt-1">
+                                    <p class="font-playfair font-normal text-black whitespace-nowrap text-xs mt-1">
                                         Booking Time:
                                         {{ $booking['bookingTime'] }}
                                     </p>
                                 @endif
                             @elseif($booking['type'] === 'subcategory')
                                 @if (!empty($booking['bookingInfo']['checkInDate']))
-                                    <p class="text-black whitespace-nowrap font-poppins font-normal">
+                                    <p class="text-black whitespace-nowrap font-playfair font-normal">
                                         Check-in:
                                         {{ \Carbon\Carbon::parse($booking['bookingInfo']['checkInDate'])->format('d/m/Y') }}
                                     </p>
                                 @endif
 
                                 @if (!empty($booking['bookingInfo']['checkOutDate']))
-                                    <p class="text-black whitespace-nowrap font-poppins font-normal text-xs mt-1">
+                                    <p class="text-black whitespace-nowrap font-playfair font-normal text-xs mt-1">
                                         Check-out:
                                         {{ \Carbon\Carbon::parse($booking['bookingInfo']['checkOutDate'])->format('d/m/Y') }}
                                     </p>
