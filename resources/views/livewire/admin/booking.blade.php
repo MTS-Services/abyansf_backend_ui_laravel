@@ -239,7 +239,7 @@
             </tbody>
         </table>
     </div>
-    <div class="flex flex-col min-h-screen bg-gray-100 p-4">
+
 
         <div x-data="{ show: @entangle('listingbookingEditModal') }" x-show="show" x-cloak class="fixed inset-0 overflow-y-auto z-50">
             <div class="flex items-center justify-center min-h-screen px-4 py-8">
@@ -262,7 +262,7 @@
                         <flux:icon name="x-circle" class="h-6 w-6" />
                     </button>
 
-                    <form wire:submit.prevent="updateBooking" class="mt-4 space-y-5">
+                    <form wire:submit.prevent="updateListingBooking" class="mt-4 space-y-5">
 
                         <!-- Listing ID -->
                         <div>
@@ -320,6 +320,7 @@
                                 class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C7AE6A] focus:border-gray-300">
                                 <option value="Confirmed">Confirmed</option>
                                 <option value="Cancelled">Cancelled</option>
+                                <option value="Pending">Pending</option>
                             </select>
                         </div>
 
@@ -334,7 +335,7 @@
                 </div>
             </div>
         </div>
-    </div>
+  
 
 
 </section>

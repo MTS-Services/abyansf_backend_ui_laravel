@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin;
 
+use Carbon\Carbon;
 use Livewire\Component;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
@@ -130,33 +131,54 @@ class Booking extends Component
 
     public function listingBooking($listingBookingId)
     {
-        
         $this->listingBookingId = $listingBookingId;
 
+        // Decrypt the ID and make the API call
         $decryptedId = decrypt($listingBookingId);
         $response = Http::withToken(api_token())->get(api_base_url() . "/bookings/{$decryptedId}");
-        // dd($response->json());
+
+
         if ($response->successful()) {
             $json = $response->json();
             if (isset($json['data'])) {
                 $booking = $json['data'];
-                // dd($booking);
-                $this->listingId            = $booking['listingId'] ?? '';
-                $this->bookingDate          = $booking['bookingDate'] ?? '';
-                $this->bookingTime          = $booking['bookingTime'] ?? '';
-                $this->typeofservice        = $booking['typeofservice'] ?? '';
-                $this->venueName            = $booking['venueName'] ?? '';
-                $this->numberofguest_adult  = $booking['numberofguest_adult'] ?? 0;
-                $this->numberofguest_child  = $booking['numberofguest_child'] ?? 0;
-                $this->status               = $booking['status'] ?? '';
+
+                // Assign fetched data to public properties
+                $this->listingId = $booking['listingId'] ?? '';
+                $this->typeofservice = $booking['typeofservice'] ?? '';
+                $this->venueName = $booking['venueName'] ?? '';
+                $this->numberofguest_adult = $booking['numberofguest_adult'] ?? 0;
+                $this->numberofguest_child = $booking['numberofguest_child'] ?? 0;
+                $this->status = $booking['status'] ?? '';
+
+                // Format and assign date and time
+                if (isset($booking['bookingDate'])) {
+                    try {
+                        // Carbon is used to ensure the date is in the YYYY-MM-DD format
+                        $this->bookingDate = Carbon::parse($booking['bookingDate'])->format('Y-m-d');
+                    } catch (\Exception $e) {
+                        $this->bookingDate = null;
+                    }
+                }
+
+                if (isset($booking['bookingTime'])) {
+                    try {
+                        // Carbon is used to ensure the time is in the H:i:s format (or similar)
+                        $this->bookingTime = Carbon::parse($booking['bookingTime'])->format('H:i');
+                    } catch (\Exception $e) {
+                        $this->bookingTime = null;
+                    }
+                }
             }
         } else {
+            // Dispatch a sweet alert error if the API call fails
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch event details.');
         }
     }
-    public function updateBooking()
+    public function updateListingBooking()
     {
         $data = [
+            'listingId'            => $this->listingId,
             'bookingDate'          => $this->bookingDate,
             'bookingTime'          => $this->bookingTime,
             'typeofservice'        => $this->typeofservice,
@@ -166,14 +188,14 @@ class Booking extends Component
             'status'               => $this->status,
         ];
 
-        $request = Http::withToken(api_token());
+        // dd($data);
 
-     
-        
         // 🔹 Assuming bookingId is already set (encrypted like userId)
-        $response = $request->put(api_base_url() . '/bookings/' . decrypt($this->bookingId), $data);
-
+        $response = Http::withToken(api_token())->put(api_base_url() . '/bookings/' . decrypt($this->listingBookingId), $data);
+        
         if ($response->successful()) {
+
+            dd($response->json());
             $this->reset([
                 'listingId',
                 'bookingDate',
