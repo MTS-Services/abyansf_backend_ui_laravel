@@ -229,7 +229,7 @@
         </form>
     </div>
     </div>
-    <div class="bg-white rounded-lg overflow-hidden mt-14 mb-5 ">
+    <div class="bg-white rounded-lg overflow-y-visible mt-14 mb-5 ">
         <table class="min-w-full table-fixed border-collapse">
             <thead>
                 <tr class="hidden md:table-row bg-[#E7E7E7]">
