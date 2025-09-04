@@ -11,6 +11,19 @@ class Booking extends Component
     public $bookings = [];
     public $pagination = [];
     public $openActions = null;
+    public $listingBookingId = null;
+
+    public $listingId;
+    public $bookingDate;
+    public $bookingTime;
+    public $typeofservice;
+    public $venueName;
+    public $numberofguest_adult;
+    public $numberofguest_child;
+    public $status;
+
+
+    public $listingbookingEditModal = false;
 
     // Add this property to sync currentPage with the URL
     public $currentPage = 1;
@@ -68,7 +81,7 @@ class Booking extends Component
 
     /**
      * Toggles the action dropdown for a specific user.
-     * @param int $userId The ID of the user.
+     * @param int $bookingId The ID of the user.
      */
     public function toggleActions($userId)
     {
@@ -102,12 +115,85 @@ class Booking extends Component
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to delete user.');
         }
     }
-
-    public function editBooking($listingBookingId)
+    public function closeModal()
     {
-        Session::flash('info', "Edit action for user ID: {$listingBookingId}");
-        $this->dispatch('sweetalert2', type: 'info', message: "Edit action for user ID: {$listingBookingId}");
+        $this->listingbookingEditModal = false;
+        reset($this->bookings);
     }
+    public function editListingBooking($listingBookingId)
+    {
+        $this->listingbookingEditModal = true;
+        if ($this->listingbookingEditModal && $listingBookingId) {
+            $this->listingBooking($listingBookingId); // load event data
+        }
+    }
+
+    public function listingBooking($listingBookingId)
+    {
+        
+        $this->listingBookingId = $listingBookingId;
+
+        $decryptedId = decrypt($listingBookingId);
+        $response = Http::withToken(api_token())->get(api_base_url() . "/bookings/{$decryptedId}");
+        // dd($response->json());
+        if ($response->successful()) {
+            $json = $response->json();
+            if (isset($json['data'])) {
+                $booking = $json['data'];
+                // dd($booking);
+                $this->listingId            = $booking['listingId'] ?? '';
+                $this->bookingDate          = $booking['bookingDate'] ?? '';
+                $this->bookingTime          = $booking['bookingTime'] ?? '';
+                $this->typeofservice        = $booking['typeofservice'] ?? '';
+                $this->venueName            = $booking['venueName'] ?? '';
+                $this->numberofguest_adult  = $booking['numberofguest_adult'] ?? 0;
+                $this->numberofguest_child  = $booking['numberofguest_child'] ?? 0;
+                $this->status               = $booking['status'] ?? '';
+            }
+        } else {
+            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch event details.');
+        }
+    }
+    public function updateBooking()
+    {
+        $data = [
+            'bookingDate'          => $this->bookingDate,
+            'bookingTime'          => $this->bookingTime,
+            'typeofservice'        => $this->typeofservice,
+            'venueName'            => $this->venueName,
+            'numberofguest_adult'  => $this->numberofguest_adult,
+            'numberofguest_child'  => $this->numberofguest_child,
+            'status'               => $this->status,
+        ];
+
+        $request = Http::withToken(api_token());
+
+     
+        
+        // 🔹 Assuming bookingId is already set (encrypted like userId)
+        $response = $request->put(api_base_url() . '/bookings/' . decrypt($this->bookingId), $data);
+
+        if ($response->successful()) {
+            $this->reset([
+                'listingId',
+                'bookingDate',
+                'bookingTime',
+                'typeofservice',
+                'venueName',
+                'numberofguest_adult',
+                'numberofguest_child',
+                'status',
+            ]);
+
+            $this->listingbookingEditModal = false; // Close modal
+            $this->dispatch('sweetalert2', type: 'success', message: 'Booking updated successfully.');
+            $this->fetchBookings();
+        } else {
+            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to update booking. Please try again.');
+        }
+    }
+
+
 
     public function gotoPage($page)
     {

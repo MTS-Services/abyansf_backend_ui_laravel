@@ -98,8 +98,7 @@
             </tbody>
         </table>
     </div>
-    <section class="flex flex-col min-h-screen bg-gray-100 p-4">
-
+ 
         <div x-data="{ show: @entangle('userEditModal') }" x-show="show" x-cloak class="fixed inset-0 overflow-y-auto z-50">
             <div class="flex items-center justify-center min-h-screen px-4 py-8">
                 <div x-show="show" x-cloak x-effect="document.body.classList.toggle('overflow-hidden', show)"
@@ -199,7 +198,7 @@
                 </div>
             </div>
         </div>
-    </section>
+   
     <div x-data="{ show: @entangle('showConfirmationModal') }" x-show="show" x-cloak class="fixed inset-0 overflow-y-auto z-50">
         <div class="flex items-center justify-center min-h-screen px-4 py-8">
             <div x-show="show" x-cloak x-effect="document.body.classList.toggle('overflow-hidden', show)"
