@@ -176,9 +176,9 @@
                                         => 'bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-medium',
                                     'confirmed'
                                         => 'bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium',
+                                    'cancelled' => 'bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-medium',
                                     'complete'
                                         => 'bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium',
-                                    'cancelled' => 'bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-medium',
                                     default => 'bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium',
                                 };
                             @endphp
@@ -240,102 +240,221 @@
         </table>
     </div>
 
+    {{-- listing modal --}}
+    <div x-data="{ show: @entangle('listingBookingEditModal') }" x-show="show" x-cloak class="fixed inset-0 overflow-y-auto z-50">
+        <div class="flex items-center justify-center min-h-screen px-4 py-8">
+            <div x-show="show" x-cloak x-effect="document.body.classList.toggle('overflow-hidden', show)"
+                x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                class="fixed inset-0 bg-gray-900/40 bg-opacity-50" wire:click="closeModal"></div>
 
-        <div x-data="{ show: @entangle('listingbookingEditModal') }" x-show="show" x-cloak class="fixed inset-0 overflow-y-auto z-50">
-            <div class="flex items-center justify-center min-h-screen px-4 py-8">
-                <div x-show="show" x-cloak x-effect="document.body.classList.toggle('overflow-hidden', show)"
-                    x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
-                    x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
-                    x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-                    class="fixed inset-0 bg-gray-900/40 bg-opacity-50" wire:click="closeModal"></div>
+            <div x-show="show" x-transition:enter="ease-out duration-300"
+                x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                class="relative bg-white rounded-xl shadow-lg max-w-5xl px-10 w-full p-6" wire:click.stop>
 
-                <div x-show="show" x-transition:enter="ease-out duration-300"
-                    x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                    x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
-                    x-transition:leave="ease-in duration-200"
-                    x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-                    x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                    class="relative bg-white rounded-xl shadow-lg max-w-4xl px-10 w-full p-6" wire:click.stop>
+                <button wire:click="closeModal"
+                    class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 rounded-full focus:outline-none">
+                    <flux:icon name="x-circle" class="h-6 w-6" />
+                </button>
 
-                    <button wire:click="closeModal"
-                        class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 rounded-full focus:outline-none">
-                        <flux:icon name="x-circle" class="h-6 w-6" />
-                    </button>
+                <form wire:submit.prevent="updateListingBooking" class="mt-4 space-y-5">
 
-                    <form wire:submit.prevent="updateListingBooking" class="mt-4 space-y-5">
+                    <!-- Listing ID -->
+                    <div>
+                        <label for="listingId" class="block text-gray-700 text-sm font-medium mb-2">Listing
+                            ID</label>
+                        <input type="text" wire:model="listingId" id="listingId"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#C7AE6A]">
+                    </div>
 
-                        <!-- Listing ID -->
-                        <div>
-                            <label for="listingId" class="block text-gray-700 text-sm font-medium mb-2">Listing
-                                ID</label>
-                            <input type="text" wire:model="listingId" id="listingId"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#C7AE6A]">
-                        </div>
+                    <div>
+                        <label for="bookingDate" class="block text-gray-700 text-sm font-medium mb-2">Booking
+                            Date</label>
+                        <input type="date" wire:model="bookingDate" id="bookingDate"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C7AE6A] focus:border-gray-300">
+                    </div>
 
-                        <div>
-                            <label for="bookingDate" class="block text-gray-700 text-sm font-medium mb-2">Booking
-                                Date</label>
-                            <input type="date" wire:model="bookingDate" id="bookingDate"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C7AE6A] focus:border-gray-300">
-                        </div>
+                    <div>
+                        <label for="bookingTime" class="block text-gray-700 text-sm font-medium mb-2">Booking
+                            Time</label>
+                        <input type="time" wire:model="bookingTime" id="bookingTime"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C7AE6A] focus:border-gray-300">
+                    </div>
 
-                        <div>
-                            <label for="bookingTime" class="block text-gray-700 text-sm font-medium mb-2">Booking
-                                Time</label>
-                            <input type="time" wire:model="bookingTime" id="bookingTime"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C7AE6A] focus:border-gray-300">
-                        </div>
+                    <div>
+                        <label for="typeofservice" class="block text-gray-700 text-sm font-medium mb-2">Type of
+                            Service</label>
+                        <input type="text" wire:model="typeofservice" id="typeofservice"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C7AE6A] focus:border-gray-300">
+                    </div>
 
-                        <div>
-                            <label for="typeofservice" class="block text-gray-700 text-sm font-medium mb-2">Type of
-                                Service</label>
-                            <input type="text" wire:model="typeofservice" id="typeofservice"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C7AE6A] focus:border-gray-300">
-                        </div>
+                    <div>
+                        <label for="venueName" class="block text-gray-700 text-sm font-medium mb-2">Venue
+                            Name</label>
+                        <input type="text" wire:model="venueName" id="venueName"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C7AE6A] focus:border-gray-300">
+                    </div>
 
-                        <div>
-                            <label for="venueName" class="block text-gray-700 text-sm font-medium mb-2">Venue
-                                Name</label>
-                            <input type="text" wire:model="venueName" id="venueName"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C7AE6A] focus:border-gray-300">
-                        </div>
+                    <div>
+                        <label for="numberofguest_adult" class="block text-gray-700 text-sm font-medium mb-2">Number
+                            of Adult Guests</label>
+                        <input type="number" wire:model="numberofguest_adult" id="numberofguest_adult"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C7AE6A] focus:border-gray-300">
+                    </div>
 
-                        <div>
-                            <label for="numberofguest_adult"
-                                class="block text-gray-700 text-sm font-medium mb-2">Number of Adult Guests</label>
-                            <input type="number" wire:model="numberofguest_adult" id="numberofguest_adult"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C7AE6A] focus:border-gray-300">
-                        </div>
+                    <div>
+                        <label for="numberofguest_child" class="block text-gray-700 text-sm font-medium mb-2">Number
+                            of Child Guests</label>
+                        <input type="number" wire:model="numberofguest_child" id="numberofguest_child"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C7AE6A] focus:border-gray-300">
+                    </div>
 
-                        <div>
-                            <label for="numberofguest_child"
-                                class="block text-gray-700 text-sm font-medium mb-2">Number of Child Guests</label>
-                            <input type="number" wire:model="numberofguest_child" id="numberofguest_child"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C7AE6A] focus:border-gray-300">
-                        </div>
+                    <div>
+                        <label for="status" class="block text-gray-700 text-sm font-medium mb-2">Status</label>
+                        <select wire:model="status" id="status"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C7AE6A] focus:border-gray-300">
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Cancelled">Cancelled</option>
+                            <option value="Complete">Complete</option>
+                            <option value="Pending">Pending</option>
+                        </select>
+                    </div>
 
-                        <div>
-                            <label for="status" class="block text-gray-700 text-sm font-medium mb-2">Status</label>
-                            <select wire:model="status" id="status"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C7AE6A] focus:border-gray-300">
-                                <option value="Confirmed">Confirmed</option>
-                                <option value="Cancelled">Cancelled</option>
-                                <option value="Pending">Pending</option>
-                            </select>
-                        </div>
-
-                        <div class="flex justify-center md:justify-start pt-6">
-                            <button type="submit"
-                                class="px-8 py-2 bg-[#C7AE6A] text-black rounded-md hover:bg-[#eec44f] transition-colors font-medium cursor-pointer">
-                                <span wire:loading.remove wire:target="updateBooking">Save</span>
-                                <span wire:loading wire:target="updateBooking">Saving...</span>
-                            </button>
-                        </div>
-                    </form>
-                </div>
+                    <div class="flex justify-center md:justify-start pt-6">
+                        <button type="submit"
+                            class="px-8 py-2 bg-[#C7AE6A] text-black rounded-md hover:bg-[#eec44f] transition-colors font-medium cursor-pointer">
+                            <span wire:loading.remove wire:target="updateBooking">Save</span>
+                            <span wire:loading wire:target="updateBooking">Saving...</span>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
-  
+    </div>
+    {{-- sub category modal --}}
+    <div x-data="{ show: @entangle('subBookingEditModal') }" x-show="show" x-cloak class="fixed inset-0 overflow-y-auto z-50">
+        <div class="flex items-center justify-center min-h-screen px-4 py-8">
+            <div x-show="show" x-cloak x-effect="document.body.classList.toggle('overflow-hidden', show)"
+                x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                class="fixed inset-0 bg-gray-900/40 bg-opacity-50" wire:click="closeModal"></div>
+
+            <div x-show="show" x-transition:enter="ease-out duration-300"
+                x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                class="relative bg-white rounded-xl shadow-lg max-w-5xl px-10 w-full p-6" wire:click.stop>
+
+                <button wire:click="closeModal"
+                    class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 rounded-full focus:outline-none">
+                    <flux:icon name="x-circle" class="h-6 w-6" />
+                </button>
+
+                <form wire:submit.prevent="updateSubBooking" class="mt-4 space-y-5">
+
+                    <!-- Sub Category -->
+                    <div>
+                        <label for="subCategoryId" class="block text-gray-700 text-sm font-medium mb-2">Sub
+                            Category</label>
+                        <input type="text" wire:model="subCategoryId" id="subCategoryId"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:ring-[#C7AE6A] focus:border-gray-300">
+                    </div>
+
+                    <!-- Type of Accommodation -->
+                    <div>
+                        <label for="typeOfAccommodation" class="block text-gray-700 text-sm font-medium mb-2">Type of
+                            Accommodation</label>
+                        <input type="text" wire:model="typeOfAccommodation" id="typeOfAccommodation"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C7AE6A] focus:border-gray-300">
+                    </div>
+
+                    <!-- Location -->
+                    <div>
+                        <label for="location" class="block text-gray-700 text-sm font-medium mb-2">Location</label>
+                        <input type="text" wire:model="location" id="location"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C7AE6A] focus:border-gray-300">
+                    </div>
+
+                    <!-- Name of Hotel -->
+                    <div>
+                        <label for="nameOfHotel" class="block text-gray-700 text-sm font-medium mb-2">Name of
+                            Hotel</label>
+                        <input type="text" wire:model="nameOfHotel" id="nameOfHotel"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C7AE6A] focus:border-gray-300">
+                    </div>
+
+                    <!-- Check In Date -->
+                    <div>
+                        <label for="checkInDate" class="block text-gray-700 text-sm font-medium mb-2">Check-In
+                            Date</label>
+                        <input type="date" wire:model="checkInDate" id="checkInDate"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C7AE6A] focus:border-gray-300">
+                    </div>
+
+                    <!-- Check Out Date -->
+                    <div>
+                        <label for="checkOutDate" class="block text-gray-700 text-sm font-medium mb-2">Check-Out
+                            Date</label>
+                        <input type="date" wire:model="checkOutDate" id="checkOutDate"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C7AE6A] focus:border-gray-300">
+                    </div>
+
+                    <!-- Guests: Adults -->
+                    <div>
+                        <label for="guests_adults" class="block text-gray-700 text-sm font-medium mb-2">Number of
+                            Adults</label>
+                        <input type="number" wire:model="guests_adults" id="guests_adults"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C7AE6A] focus:border-gray-300">
+                    </div>
+
+                    <!-- Guests: Children -->
+                    <div>
+                        <label for="guests_children" class="block text-gray-700 text-sm font-medium mb-2">Number of
+                            Children</label>
+                        <input type="number" wire:model="guests_children" id="guests_children"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C7AE6A] focus:border-gray-300">
+                    </div>
+
+                    <!-- Status -->
+                    <div>
+                        <label for="status" class="block text-gray-700 text-sm font-medium mb-2">Status</label>
+                        <select wire:model="status" id="status"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C7AE6A] focus:border-gray-300">
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="Complete">Complete</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+
+                    <!-- Contact -->
+                    <div>
+                        <label for="contact" class="block text-gray-700 text-sm font-medium mb-2">Contact</label>
+                        <input type="text" wire:model="contact" id="contact"
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-[#C7AE6A] focus:border-gray-300">
+                    </div>
+
+                    <!-- Submit -->
+                    <div class="flex justify-center md:justify-start pt-6">
+                        <button type="submit"
+                            class="px-8 py-2 bg-[#C7AE6A] text-black rounded-md hover:bg-[#eec44f] transition-colors font-medium cursor-pointer">
+                            <span wire:loading.remove wire:target="updateListingBooking">Save</span>
+                            <span wire:loading wire:target="updateListingBooking">Saving...</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
 
 </section>
