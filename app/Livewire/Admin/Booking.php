@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin;
 
+use Carbon\Carbon;
 use Livewire\Component;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
@@ -11,6 +12,34 @@ class Booking extends Component
     public $bookings = [];
     public $pagination = [];
     public $openActions = null;
+    public $listingBookingId = null;
+
+    // ListingBooking
+    public $listingId;
+    public $bookingDate;
+    public $bookingTime;
+    public $typeofservice;
+    public $venueName;
+    public $numberofguest_adult;
+    public $numberofguest_child;
+    public $status;
+
+    // SubBooking
+    public $subBookingId;
+    public $subCategoryId;
+    public $typeOfAccommodation;
+    public $location;
+    public $nameOfHotel;
+    public $checkInDate;
+    public $checkOutDate;
+    public $guests_adults;
+    public $guests_children;
+    public $contact;
+
+
+    public $listingBookingEditModal = false;
+
+    public $subBookingEditModal = false;
 
     // Add this property to sync currentPage with the URL
     public $currentPage = 1;
@@ -25,14 +54,14 @@ class Booking extends Component
     public function mount()
     {
         $this->currentPage = request()->query('page', 1);
-        $this->fetchUsers($this->currentPage);
+        $this->fetchBookings($this->currentPage);
     }
 
     /**
      * Fetches users from the API.
      * @param int $page The page number to fetch.
      */
-    public function fetchUsers($page = 1)
+    public function fetchBookings($page = 1)
     {
         $token = Session::get('api_token');
 
@@ -43,6 +72,7 @@ class Booking extends Component
         $response = Http::withToken($token)->get(api_base_url() . '/sub-category-bookings/admin/all-users/grouped', [
             'page' => $page
         ]);
+        // dd($response->json());
 
         // dd($response ['data']['bookings']['listing']['name']);
 
@@ -67,7 +97,7 @@ class Booking extends Component
 
     /**
      * Toggles the action dropdown for a specific user.
-     * @param int $userId The ID of the user.
+     * @param int $bookingId The ID of the user.
      */
     public function toggleActions($userId)
     {
@@ -77,28 +107,230 @@ class Booking extends Component
             $this->openActions = $userId;
         }
     }
-    public function deleteBooking($listingBookingId)
+    public function deleteListingBooking($listingBookingId)
     {
+        // dd($listingBookingId);
         $response = Http::withToken(api_token())->delete(api_base_url() . '/bookings/' . decrypt($listingBookingId));
-
+        // dd($response->json());
         if ($response->successful()) {
-            // $this->dispatch('sweetalert2', type: 'success', message: 'booking deleted successfully.');
-            $this->fetchUsers($this->currentPage);
+            $this->dispatch('sweetalert2', type: 'success', message: 'booking deleted successfully.');
+            $this->fetchBookings($this->currentPage);
         } else {
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to delete user.');
         }
     }
-
-    public function editBooking($listingBookingId)
+    public function deleteSubcategoryBooking($listingBookingId)
     {
-        Session::flash('info', "Edit action for user ID: {$listingBookingId}");
-        $this->dispatch('sweetalert2', type: 'info', message: "Edit action for user ID: {$listingBookingId}");
+        // dd($listingBookingId);
+        $response = Http::withToken(api_token())->delete(api_base_url() . '/sub-category-bookings/' . decrypt($listingBookingId));
+        // dd($response->json());
+        if ($response->successful()) {
+            $this->dispatch('sweetalert2', type: 'success', message: 'booking deleted successfully.');
+            $this->fetchBookings($this->currentPage);
+        } else {
+            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to delete user.');
+        }
     }
+    public function closeModal()
+    {
+        $this->listingBookingEditModal = false;
+        $this->subBookingEditModal = false;
+        reset($this->bookings);
+    }
+    public function editSubcategoryBooking($subBookingId)
+    {
+        $this->subBookingEditModal = true;
+        if ($this->subBookingEditModal && $subBookingId) {
+            $this->subBooking($subBookingId); // load event data
+        }
+    }
+
+    // ---------------------- Fetch SubBooking ----------------------
+    public function subBooking($subBookingId)
+    {
+        $this->subBookingId = $subBookingId;
+
+        // Decrypt and call API
+        $decryptedId = decrypt($subBookingId);
+        $response = Http::withToken(api_token())->get(api_base_url() . "/sub-category-bookings/{$decryptedId}");
+
+        if ($response->successful()) {
+            $json = $response->json();
+            if (isset($json['data'])) {
+                $booking = $json['data'];
+                // Assign values
+                $this->subCategoryId       = $booking['subCategoryId'] ?? '';
+                $this->typeOfAccommodation = $booking['bookingInfo']['typeOfAccommodation'] ?? '';
+                $this->location            = $booking['bookingInfo']['location']['from'] ?? '';
+                $this->nameOfHotel         = $booking['bookingInfo']['nameOfHotel'] ?? '';
+                $this->status              = $booking['status'] ?? '';
+                $this->contact             = $booking['bookingInfo']['contact'] ?? '';
+
+                // Guests mapping
+                $this->guests_adults   = $booking['bookingInfo']['guests']['adults'] ?? 0;
+                $this->guests_children = $booking['bookingInfo']['guests']['children'] ?? 0;
+
+                // Format dates
+                if (isset($booking['bookingInfo']['checkInDate'])) {
+                    try {
+                        $this->checkInDate = Carbon::parse($booking['bookingInfo']['checkInDate'])->format('Y-m-d');
+                    } catch (\Exception $e) {
+                        $this->checkInDate = null;
+                    }
+                }
+
+                if (isset($booking['bookingInfo']['checkOutDate'])) {
+                    try {
+                        $this->checkOutDate = Carbon::parse($booking['bookingInfo']['checkOutDate'])->format('Y-m-d');
+                    } catch (\Exception $e) {
+                        $this->checkOutDate = null;
+                    }
+                }
+            }
+        } else {
+            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch sub booking details.');
+        }
+    }
+
+    // ---------------------- Update SubBooking ----------------------
+    public function updateSubBooking()
+    {
+        $data = [
+            'subCategoryId'       => $this->subCategoryId,
+            'typeOfAccommodation' => $this->typeOfAccommodation,
+            'location'            => $this->location,
+            'nameOfHotel'         => $this->nameOfHotel,
+            'checkInDate'         => $this->checkInDate,
+            'checkOutDate'        => $this->checkOutDate,
+            'guests' => [
+                'adults'   => $this->guests_adults,
+                'children' => $this->guests_children,
+            ],
+            'status'  => $this->status,
+            'contact' => $this->contact,
+        ];
+        $response = Http::withToken(api_token())->put(
+            api_base_url() . '/sub-category-bookings/update/' . decrypt($this->subBookingId),
+            $data
+        );
+        if ($response->successful()) {
+            $this->reset([
+                'subCategoryId',
+                'typeOfAccommodation',
+                'location',
+                'nameOfHotel',
+                'checkInDate',
+                'checkOutDate',
+                'guests_adults',
+                'guests_children',
+                'status',
+                'contact',
+            ]);
+
+            $this->subBookingEditModal = false;
+            $this->dispatch('sweetalert2', type: 'success', message: 'Sub Booking updated successfully.');
+            $this->fetchBookings();
+        } else {
+            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to update sub booking. Please try again.');
+        }
+    }
+
+    public function editListingBooking($listingBookingId)
+    {
+        $this->listingBookingEditModal = true;
+        if ($this->listingBookingEditModal && $listingBookingId) {
+            $this->listingBooking($listingBookingId); // load event data
+        }
+    }
+
+    public function listingBooking($listingBookingId)
+    {
+        $this->listingBookingId = $listingBookingId;
+
+        // Decrypt the ID and make the API call
+        $decryptedId = decrypt($listingBookingId);
+        $response = Http::withToken(api_token())->get(api_base_url() . "/bookings/{$decryptedId}");
+
+
+        if ($response->successful()) {
+            $json = $response->json();
+            if (isset($json['data'])) {
+                $booking = $json['data'];
+
+                // Assign fetched data to public properties
+                $this->listingId = $booking['listingId'] ?? '';
+                $this->typeofservice = $booking['typeofservice'] ?? '';
+                $this->venueName = $booking['venueName'] ?? '';
+                $this->numberofguest_adult = $booking['numberofguest_adult'] ?? 0;
+                $this->numberofguest_child = $booking['numberofguest_child'] ?? 0;
+                $this->status = $booking['status'] ?? '';
+
+                // Format and assign date and time
+                if (isset($booking['bookingDate'])) {
+                    try {
+                        $this->bookingDate = Carbon::parse($booking['bookingDate'])->toIso8601String();
+                    } catch (\Exception $e) {
+                        $this->bookingDate = null;
+                    }
+                }
+
+                if (isset($booking['bookingTime'])) {
+                    try {
+                        $this->bookingTime = Carbon::parse($booking['bookingTime'])->toIso8601String();
+                    } catch (\Exception $e) {
+                        $this->bookingTime = null;
+                    }
+                }
+            }
+        } else {
+            // Dispatch a sweet alert error if the API call fails
+            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch event details.');
+        }
+    }
+    public function updateListingBooking()
+    {
+        $data = [
+            'listingId'            => $this->listingId,
+            'bookingDate'          => $this->bookingDate,
+            'bookingTime'          => $this->bookingTime,
+            'typeofservice'        => $this->typeofservice,
+            'venueName'            => $this->venueName,
+            'numberofguest_adult'   => $this->numberofguest_adult,
+            'numberofguest_child' => $this->numberofguest_child,
+            'status'               => $this->status,
+        ];
+
+        // dd($data);
+
+        // 🔹 Assuming bookingId is already set (encrypted like userId)
+        $response = Http::withToken(api_token())->put(api_base_url() . '/bookings/' . decrypt($this->listingBookingId), $data);
+        
+        if ($response->successful()) {
+            $this->reset([
+                'listingId',
+                'bookingDate',
+                'bookingTime',
+                'typeofservice',
+                'venueName',
+                'numberofguest_adult',
+                'numberofguest_child',
+                'status',
+            ]);
+
+            $this->listingBookingEditModal = false; // Close modal
+            $this->dispatch('sweetalert2', type: 'success', message: 'Booking updated successfully.');
+            $this->fetchBookings();
+        } else {
+            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to update booking. Please try again.');
+        }
+    }
+
+
 
     public function gotoPage($page)
     {
         if ($page >= 1 && $page <= ($this->pagination['pages'] ?? 1)) {
-            $this->fetchUsers($page);
+            $this->fetchBookings($page);
         }
     }
 
@@ -115,7 +347,7 @@ class Booking extends Component
     public function previousPage()
     {
         if ($this->currentPage > 1) {
-            $this->fetchUsers($this->currentPage - 1);
+            $this->fetchBookings($this->currentPage - 1);
         }
     }
 
@@ -125,7 +357,7 @@ class Booking extends Component
     public function nextPage()
     {
         if ($this->currentPage < ($this->pagination['pages'] ?? 1)) {
-            $this->fetchUsers($this->currentPage + 1);
+            $this->fetchBookings($this->currentPage + 1);
         }
     }
 

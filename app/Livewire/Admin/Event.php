@@ -188,47 +188,6 @@ class Event extends Component
         }
     }
 
-    // public function updateEvent()
-    // {
-    //     // dd($this->image);
-
-    //     dd($this->testImage);
-
-    //     $data = [
-    //         'title' => $this->title,
-    //         'max_person' => $this->max_person,
-    //         'description' => $this->description,
-    //         'location' => $this->location,
-    //         'time' => $this->time,
-    //         'date' => $this->date,
-    //     ];
-
-    //     // if (isset($this->image) && !filter_var($this->image, FILTER_VALIDATE_URL)) {
-    //     //     $data['event_img'] = $this->image;
-    //     // }
-    //     $data['event_img'] = $this->testImage;
-    //     $response = Http::withToken(api_token())->put(api_base_url() . '/events/' . decrypt($this->eventId), $data);
-    //     dd($response->json());
-    //     // Response check
-    //     if ($response->successful()) {
-    //         $this->reset([
-    //             'title',
-    //             'max_person',
-    //             'description',
-    //             'location',
-    //             'date',
-    //             'time',
-    //             'image',
-    //             'eventId',
-    //         ]);
-
-    //         $this->switchEditEventModal();
-    //         $this->dispatch('sweetalert2', type: 'success', message: 'Event updated successfully.');
-    //         $this->fetchEvents();
-    //     } else {
-    //         $this->dispatch('sweetalert2', type: 'error', message: 'Failed to update event. Please try again.');
-    //     }
-    // }
 
     public function updateEvent()
     {
