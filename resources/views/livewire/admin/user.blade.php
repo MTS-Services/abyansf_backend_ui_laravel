@@ -114,64 +114,55 @@
                     x-transition:leave="ease-in duration-200"
                     x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
                     x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                    class="relative bg-white rounded-lg shadow-lg max-w-6xl px-20 w-full p-6" wire:click.stop>
+                    class="relative bg-white rounded-xl shadow-lg max-w-6xl px-20 w-full p-6" wire:click.stop>
                     <button wire:click="closeModal"
                         class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 rounded-full focus:outline-none">
                         <flux:icon name="x-circle" class="h-6 w-6" />
                     </button>
 
                     <form wire:submit.prevent="processConfirmation" class="mt-4">
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-medium mb-2">User Image</label>
+                            <label
+                                class="flex justify-center items-center w-full h-56 border-2 border-dashed border-[#C7AE6A] rounded-lg cursor-pointer bg-gray-100 hover:bg-gray-100 transition">
+                                <input type="file" name="user_image" class="hidden">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-400" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </label>
+                        </div>
                         <div class="mb-5">
                             <label for="name" class="block text-gray-700 text-sm font-medium mb-2">Name</label>
                             <input type="text" wire:model="selectedUser.name" id="name"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300">
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#C7AE6A] focus:border-gray-300">
                         </div>
 
                         <div class="mb-5">
                             <label for="email" class="block text-gray-700 text-sm font-medium mb-2">Email</label>
                             <input type="email" wire:model="selectedUser.email" id="email"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300">
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#C7AE6A] focus:border-gray-300">
                         </div>
 
                         <div class="mb-5">
                             <label for="number" class="block text-gray-700 text-sm font-medium mb-2">Number</label>
                             <input type="tel" wire:model="selectedUser.number" id="number"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300">
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#C7AE6A] focus:border-gray-300">
                         </div>
 
                         <div class="mb-5">
                             <label for="password"
                                 class="block text-gray-700 text-sm font-medium mb-2">Password</label>
                             <input type="password" wire:model="selectedUser.password" id="password"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300">
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 focus:outline-none focus:ring-1 focus:ring-[#C7AE6A] focus:border-gray-300">
                         </div>
 
-                        <div class="mb-5">
-                            <label for="status" class="block text-gray-700 text-sm font-medium mb-2">Status</label>
-                            <select wire:model="selectedUser.status" id="status"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-gray-300 focus:border-gray-300">
-                                <option value="pending">Pending</option>
-                                <option value="approved">Approved</option>
-                                <option value="rejected">Rejected</option>
-                            </select>
-                        </div>
 
-                        <div class="mb-6">
-                            <label class="block text-gray-700 text-sm font-medium mb-2">User Image</label>
-                            <label
-                                class="flex justify-center items-center w-24 h-24 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition">
-                                <input type="file" name="user_image" class="hidden">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-gray-400"
-                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                            </label>
-                        </div>
 
-                        <div class="pt-4 mt-6 border-t border-gray-200">
+                        <div class="flex justify-center md:justify-start pt-6">
                             <button type="submit"
-                                class="w-full bg-[#bfa15c] hover:bg-[#a3894f] text-white font-medium py-3 rounded-lg transition">
+                                class="px-8 py-2 bg-[#C7AE6A] text-black rounded-md hover:bg-opacity-90 transition-colors font-medium">
                                 Save
                             </button>
                         </div>
