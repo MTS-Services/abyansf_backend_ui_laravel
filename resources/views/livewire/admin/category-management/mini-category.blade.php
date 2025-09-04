@@ -6,6 +6,9 @@
         <!-- Navigation links container -->
         @include('livewire.admin.category-management.navbar')
     </nav>
+
+      <h1 class="text-7xl">Mini Category hala</h1>
+
     <x-admin.searchbar page="Add " livewire_method="switchAddMiniCategoryModal" />
 
     <div x-show="addMiniCategoryModal" x-transition.opacity>

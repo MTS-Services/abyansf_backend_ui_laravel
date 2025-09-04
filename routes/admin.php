@@ -3,7 +3,7 @@
 use App\Livewire\Admin\AllNotification;
 use App\Livewire\Admin\Attendance;
 use App\Livewire\Admin\Booking;
-use App\Livewire\Admin\Category;
+use App\Livewire\Admin\CategoryManagement\MainCategory;
 use App\Livewire\Admin\CategoryManagement\MiniCategory;
 use App\Livewire\Admin\CategoryManagement\SpecificCategory;
 use App\Livewire\Admin\Event;
@@ -24,11 +24,11 @@ Route::name('admin.')->middleware(['api.auth'])->group(function () {
     Route::get('notifications', AllNotification::class)->name('all-notifications');
     Route::get('bookings', Booking::class)->name('bookings');
 
-    Route::get('category', Category::class)->name('category');
+    Route::get('category', MainCategory::class)->name('category');
     Route::get('sub-category', SubCategory::class)->name('sub-category');
     Route::get('mini-category', MiniCategory::class)->name('mini-category');
     Route::get('spacific-category', SpecificCategory::class)->name('spacific-category');
-   
+
 
 
 

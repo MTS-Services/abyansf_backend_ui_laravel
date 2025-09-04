@@ -6,6 +6,9 @@
         <!-- Navigation links container -->
         @include('livewire.admin.category-management.navbar')
     </nav>
+
+    <h1 class="text-7xl">Specific Category hala</h1>
+
     <x-admin.searchbar page="Add " livewire_method="switchAddSpacificCategoryModal" />
 
     <div x-show="addSpacificCategoryModal" x-transition.opacity>
