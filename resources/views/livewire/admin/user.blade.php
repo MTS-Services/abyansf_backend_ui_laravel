@@ -67,11 +67,25 @@
                                         <flux:icon name="pencil-square" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Edit
                                     </button>
+                                    @if ($user['paid'] === false)
+                                        <button wire:click="confirmUserPaid('{{ $user['id'] }}')"
+                                            class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
+                                            <flux:icon name="check-circle" class="text-green-600 mr-2 h-4 w-4" />
+                                            Confirm
+                                        </button>
+                                        <button wire:click="rejectUserPaid('{{ $user['id'] }}')"
+                                            class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
+                                            <flux:icon name="x-circle" class="text-red-600 mr-2 h-4 w-4" />
+                                            Reject
+                                        </button>
+                                    @endif
+
                                     <button wire:click="deleteUser('{{ $user['id'] }}')"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
                                         <flux:icon name="trash" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Delete
                                     </button>
+
                                 </div>
                             </div>
                         </td>
@@ -84,6 +98,58 @@
             </tbody>
         </table>
     </div>
+
+    <div x-data="{ show: @entangle('showConfirmationModal') }" x-show="show" x-cloak class="fixed inset-0 overflow-y-auto z-50">
+        <div class="flex items-center justify-center min-h-screen px-4 py-8">
+            <div x-show="show" x-cloak x-effect="document.body.classList.toggle('overflow-hidden', show)"
+                x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                class="fixed inset-0 bg-gray-900/40 bg-opacity-50" wire:click="closeModal"></div>
+
+            <div x-show="show" x-transition:enter="ease-out duration-300"
+                x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                class="relative bg-white rounded-lg shadow-lg max-w-lg w-full p-6" wire:click.stop>
+                <button wire:click="closeModal"
+                    class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 rounded-full focus:outline-none">
+                    <flux:icon name="x-circle" class="h-6 w-6" />
+                </button>
+                <h3 class="text-lg font-medium text-gray-900 mb-4">Confirm Payment</h3>
+                <p class="text-sm text-gray-500 mb-6">Select the payment type for this user.</p>
+
+                <div class="space-y-4">
+                    <label class="flex items-center">
+                        <input type="radio" wire:model.live="paymentType" value="Private"
+                            class="form-radio text-indigo-600">
+                        <span class="ml-2 text-sm text-gray-700">Private</span>
+                    </label>
+
+                    <label class="flex items-center">
+                        <input type="radio" wire:model.live="paymentType" value="Corporate"
+                            class="form-radio text-indigo-600">
+                        <span class="ml-2 text-sm text-gray-700">Corporate</span>
+                    </label>
+                </div>
+
+                <div class="mt-6 flex justify-end">
+                    <button wire:click="closeModal" type="button"
+                        class="mr-2 px-4 py-2 text-sm font-medium text-gray-700 rounded-md border border-gray-300 hover:bg-gray-100">
+                        Cancel
+                    </button>
+                    <button wire:click="processConfirmation" type="button"
+                        class="px-4 py-2 text-sm font-medium text-white rounded-md bg-[#AD8945] hover:bg-[#8d6e35] disabled:opacity-50"
+                        {{ $paymentType ? '' : 'disabled' }}>
+                        Confirm
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     @if (!empty($pagination) && ($pagination['pages'] ?? 1) > 1)
         <div class="flex items-center justify-center space-x-2 py-3 my-3 flex-wrap border-t border-slate-200">

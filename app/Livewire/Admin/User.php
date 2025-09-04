@@ -15,9 +15,17 @@ class User extends Component
     // Add this property to sync currentPage with the URL
     public $currentPage = 1;
 
+    // Properties for the new modal
+    public $showConfirmationModal = false;
+    public $userId;
+    public $paymentType;
+
     protected $queryString = [
         'currentPage' => ['as' => 'page', 'except' => 1]
     ];
+
+    protected $listeners = ['refreshComponent' => '$refresh'];
+
 
     /**
      * Livewire's lifecycle hook that runs once on component initialization.
@@ -71,6 +79,63 @@ class User extends Component
         }
     }
 
+    // --- New Modal and SweetAlert methods ---
+    /**
+     * Opens the confirmation modal.
+     * @param int $userId The ID of the user.
+     */
+    public function confirmUserPaid($userId)
+    {
+        $this->userId = $userId;
+        $this->paymentType = null; // Reset the payment type
+        $this->showConfirmationModal = true;
+    }
+
+    /**
+     * Closes the confirmation modal.
+     */
+    public function closeModal()
+    {
+        $this->showConfirmationModal = false;
+        $this->reset(['userId', 'paymentType']);
+    }
+
+    /**
+     * Handles the payment confirmation and dispatches SweetAlert events.
+     */
+    public function processConfirmation()
+    {
+        if (!$this->paymentType) {
+            $this->dispatch('sweetalert2', type: 'warning', message: 'Please select a payment type.');
+            return;
+        }
+        try {
+            $response = Http::withToken(api_token())->post(
+                api_base_url() . "/users/{$this->userId}/confirm-payment",
+                [
+                    'packageInfo' => $this->paymentType,
+                ]
+            );
+            if ($response->successful()) {
+                $this->reset([
+                    'showConfirmationModal',
+                    'userId',
+                    'paymentType',
+                ]);
+                $this->fetchUsers($this->currentPage);
+                $this->dispatch('sweetalert2', type: 'success', message: 'Payment confirmed successfully!');
+            } else {
+                $errorMessage = $response->json('message') ?? 'Failed to confirm payment.';
+                $this->dispatch('sweetalert2', type: 'error', message: $errorMessage);
+            }
+        } catch (\Exception $e) {
+            $this->dispatch('sweetalert2', type: 'error', message: 'An unexpected error occurred: ' . $e->getMessage());
+        }
+
+        $this->closeModal();
+    }
+
+    // --- End of new methods ---
 
 
     public function sendPaymentLink($userId)
@@ -125,7 +190,6 @@ class User extends Component
      */
     public function editUser($userId)
     {
-        // Session::flash('info', "Edit action for user ID: {$userId}");
         $this->dispatch('sweetalert2', type: 'info', message: "Edit action for user ID: {$userId}");
     }
 
@@ -135,7 +199,6 @@ class User extends Component
      */
     public function activateUser($userId)
     {
-        // Session::flash('info', "Activate action for user ID: {$userId}");
         $this->dispatch('sweetalert2', type: 'info', message: "Activate action for user ID: {$userId}");
         $this->fetchUsers($this->currentPage);
     }
@@ -146,15 +209,11 @@ class User extends Component
      */
     public function deactivateUser($userId)
     {
-        // Session::flash('info', "Deactivate action for user ID: {$userId}");
         $this->dispatch('sweetalert2', type: 'info', message: "Deactivate action for user ID: {$userId}");
         $this->fetchUsers($this->currentPage);
     }
 
     /**
-     * Handles sending the payment link.
-     * @param int $userId The ID of the user to send the link to.
-    
      * Navigate to a specific page.
      * @param int $page The page number to go to.
      */
