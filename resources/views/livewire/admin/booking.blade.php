@@ -274,25 +274,13 @@
                         </p>
                     </div>
                     <div class="mt-6 flex flex-wrap gap-3">
-                        
                         @php $statusLower = strtolower($status ?? '') @endphp
-
                         <span
-                            class="inline-flex items-center rounded-full px-4 py-2 text-sm font-medium
-    {{ $statusLower === 'pending'
-        ? 'bg-yellow-50 text-yellow-700 ring-1 ring-yellow-600/20'
-        : ($statusLower === 'confirmed'
-            ? 'bg-green-50 text-green-700 ring-1 ring-green-600/20'
-            : ($statusLower === 'cancelled'
-                ? 'bg-red-50 text-red-700 ring-1 ring-red-600/20'
-                : ($statusLower === 'complete'
-                    ? 'bg-blue-50 text-blue-700 ring-1 ring-blue-600/20'
-                    : 'bg-gray-50 text-gray-600 ring-1 ring-gray-500/10'))) }}">
+                            class="inline-flex items-center rounded-full px-4 py-2 text-sm font-medium {{ $statusLower === 'pending' ? 'bg-yellow-50 text-yellow-700 ring-1 ring-yellow-600/20' : ($statusLower === 'confirmed' ? 'bg-green-50 text-green-700 ring-1 ring-green-600/20' : ($statusLower === 'cancelled' ? 'bg-red-50 text-red-700 ring-1 ring-red-600/20' : ($statusLower === 'complete' ? 'bg-blue-50 text-blue-700 ring-1 ring-blue-600/20' : 'bg-gray-50 text-gray-600 ring-1 ring-gray-500/10'))) }}">
                             {{ ucfirst($status) }}
                         </span>
-
-
                     </div>
+
                 </div>
 
 
