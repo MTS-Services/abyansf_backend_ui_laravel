@@ -178,6 +178,7 @@ class Event extends Component
                 $this->location    = $event['location'] ?? '';
                 $this->time        = $event['time'] ?? '';
                 $this->date        = $event['date'] ?? '';
+                $this->status      = $event['status'] ?? '';
 
                 // Convert single image string to array for AlpineJS
                 $this->image = $event['event_img'] ?? null;
@@ -192,15 +193,16 @@ class Event extends Component
     public function updateEvent()
     {
         // Validate the image if it's present
-        $this->validate([
-            'image' => 'nullable|image|max:1024',
-        ]);
+        // $this->validate([
+        //     'image' => 'nullable|image|max:1024',
+        // ]);
 
         $data = [
             'title' => $this->title,
             'max_person' => $this->max_person,
             'description' => $this->description,
             'location' => $this->location,
+            'status' => $this->status,
             'time' => $this->time,
             'date' => $this->date,
             // Since we're sending a PUT request, we need to spoof the HTTP method
@@ -210,7 +212,7 @@ class Event extends Component
         $request = Http::withToken(api_token());
 
         // You MUST re-add the attach part to send the image
-        if ($this->image) {
+        if ($this->image && !filter_var($this->image, FILTER_VALIDATE_URL)) {
             $request->attach(
                 'event_img',
                 file_get_contents($this->image->getRealPath()),
@@ -221,7 +223,7 @@ class Event extends Component
         // Use post() with the _method field.
         $response = $request->put(api_base_url() . '/events/' . decrypt($this->eventId), $data);
 
-        dd($response->json());
+        // dd($response->json());
         if ($response->successful()) {
             $this->reset([
                 'title',
@@ -229,6 +231,7 @@ class Event extends Component
                 'description',
                 'location',
                 'date',
+                'status',
                 'time',
                 'image', // Reset the testImage property
                 'eventId',

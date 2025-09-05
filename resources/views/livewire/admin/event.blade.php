@@ -155,13 +155,11 @@
 
                         </td>
                         <td class="p-4 text-left font-playfair text-base">
-                            @if ($event['status'])
-                                <span
-                                    class="inline-block px-3 py-1 text-sm font-semibold text-green-800 bg-green-200 rounded-full">Active</span>
-                            @else
-                                <span
-                                    class="inline-block px-3 py-1 text-sm font-semibold text-red-800 bg-red-200 rounded-full">Inactive</span>
-                            @endif
+                            <span
+                                class="inline-block px-3 py-1 text-sm font-semibold rounded-full  
+                                  {{ $event['status'] == 'Active' ? 'text-green-800 bg-green-200' : 'text-red-800 bg-red-200' }}">
+                                {{ $event['status'] == 'Active' ? 'Active' : 'Inactive' }}
+                            </span>
                         </td>
 
 
@@ -187,7 +185,7 @@
                                         Edit
                                     </button>
 
-                                    <button
+                                    {{-- <button
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
                                         <flux:icon name="check" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Active
@@ -197,7 +195,7 @@
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
                                         <flux:icon name="x-circle" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Deactivate
-                                    </button>
+                                    </button> --}}
 
                                     <button wire:click="deleteEvent('{{ encrypt($event['id']) }}')"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
@@ -306,10 +304,19 @@
                             <input type="date" wire:model.defer="date"
                                 class="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
                         </div>
+
+                        <div>
+                            <label for="status" class="block text-gray-700 text-sm font-medium mb-2">Status</label>
+                            <select wire:model="status" id="status"
+                                class="w-full px-4 py-2 border h-[50px] border-gray-300 bg-[#F8F6EE] rounded-lg focus:ring-[#C7AE6A] focus:border-gray-300">
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="flex justify-center md:justify-start mt-6">
                         <button type="submit"
-                            class="px-6 py-2 bg-[#C7AE6A] text-black rounded-md cursor-pointer hover:bg-opacity-90 transition-colors font-medium">
+                            class="px-6 py-2  bg-[#C7AE6A] text-black rounded-md cursor-pointer hover:bg-opacity-90 transition-colors font-medium">
                             Save
                         </button>
                     </div>

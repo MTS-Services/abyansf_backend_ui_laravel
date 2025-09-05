@@ -1,6 +1,6 @@
 <section>
     <h2 class="font-medium text-3xl text-black mb-4">Event Booking Management</h2>
-    <div class="overflow-x-auto relative">
+    <div class="overflow-y-visible relative">
         <table class="leading-normal table-auto w-full">
             <thead class="bg-[#e7e7e7] text-black font-medium sticky top-0">
                 <tr>
