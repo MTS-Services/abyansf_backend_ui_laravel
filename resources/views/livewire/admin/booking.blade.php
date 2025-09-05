@@ -35,60 +35,6 @@
     </div>
 
 
-    {{-- <div class="block md:hidden">
-            <div class="divide-y divide-gray-200">
-
-                <div class="p-4 space-y-3" x-data="{ open: false, status: '{{ $booking['status'] }}' }">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-sm font-semibold text-black">ID: {{ $booking['id'] }}</p>
-                            <p class="text-base font-poppins font-normal text-black">
-                                {{ $booking['member'] }}</p>
-                        </div>
-                        <button @click="open = !open" class="text-[#AD8945] transition-transform duration-200">
-                            <svg x-show="!open" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                            </svg>
-                            <svg x-show="open" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4" />
-                            </svg>
-                        </button>
-                    </div>
-
-                    <div x-show="open" class="space-y-3 pt-2" x-transition>
-                        <div>
-                            <p class="text-sm text-gray-600">Service</p>
-                            <p class="text-sm font-medium text-black">{{ $booking['service'] }}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600">Date & Time</p>
-                            <p class="text-sm font-medium text-black">{{ $booking['date'] }}</p>
-                            <p class="text-xs text-gray-600">{{ $booking['time'] }}</p>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600 mb-1">Status</p>
-                            <select x-model="status"
-                                class="bg-gray-200 px-2 py-1 w-full text-sm border font-poppins border-gray-300 focus:outline-none focus:ring-2 focus:ring-black focus:border-black rounded-lg shadow-sm">
-                                <option value="Confirmed">Confirmed</option>
-                                <option value="Pending">Pending</option>
-                                <option value="Cancelled">Cancelled</option>
-                            </select>
-                        </div>
-                        <div class="pt-2">
-                            <button
-                                class="w-full bg-[#C7AE6A] text-black py-2 rounded-md font-playfair hover:bg-[#b49a5e] transition-colors duration-200">
-                                View Details
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div> --}}
-
     <div class="overflow-x-auto md:overflow-x-visible">
         <table class="leading-normal table">
             <thead>
@@ -167,24 +113,17 @@
                         </td>
 
                         <td class="p-4 text-left font-normal text-base">
-                            @php
-                                $status = strtolower($booking['status']);
-                                $statusClasses = match ($status) {
-                                    'pending'
-                                        => 'bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-medium',
-                                    'confirmed'
-                                        => 'bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium',
+                            <span
+                                class="{{ [
+                                    'pending' => 'bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-sm font-medium',
+                                    'confirmed' => 'bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-medium',
                                     'cancelled' => 'bg-red-100 text-red-700 px-3 py-1 rounded-full text-sm font-medium',
-                                    'complete'
-                                        => 'bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium',
-                                    default => 'bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium',
-                                };
-                            @endphp
-
-                            <span class="{{ $statusClasses }}">
-                                {{ ucfirst($status) }}
+                                    'complete' => 'bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium',
+                                ][strtolower($booking['status'] ?? '')] ?? 'bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-sm font-medium' }}">
+                                {{ ucfirst($booking['status'] ?? '') }}
                             </span>
                         </td>
+
 
                         <td class="py-3 px-6 text-right">
                             <div class="relative inline-block text-left" x-data="{ open: false }"
@@ -203,6 +142,19 @@
                                     class="absolute right-0 md:right-3 -mt-1 p-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-20 md:origin-top-right">
 
 
+                                    @if ($booking['type'] === 'listing')
+                                        <button wire:click="listingBookingDtls('{{ encrypt($booking['id']) }}')"
+                                            class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
+                                            <flux:icon name="eye" class="text-[#6D6D6D] mr-2 h-4 w-4" />
+                                            Details
+                                        </button>
+                                    @elseif($booking['type'] === 'subcategory')
+                                        <button wire:click="editSubcategoryBooking('{{ encrypt($booking['id']) }}')"
+                                            class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
+                                            <flux:icon name="eye" class="text-[#6D6D6D] mr-2 h-4 w-4" />
+                                            Details
+                                        </button>
+                                    @endif
                                     @if ($booking['type'] === 'listing')
                                         <button wire:click="editListingBooking('{{ encrypt($booking['id']) }}')"
                                             class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
@@ -237,6 +189,113 @@
             </tbody>
         </table>
     </div>
+    {{-- listing booking details modal --}}
+    <div x-data="{ show: @entangle('listingDetailsModal') }" x-show="show" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
+
+        <div class="flex items-center justify-center min-h-screen px-4 py-8">
+
+            <!-- Backdrop -->
+            <div x-show="show" x-cloak x-effect="document.body.classList.toggle('overflow-hidden', show)"
+                x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" wire:click="closeModal">
+            </div>
+
+            <!-- Modal Content -->
+            <div x-show="show" x-cloak x-transition:enter="ease-out duration-300"
+                x-transition:enter-start="opacity-0 translate-y-6 scale-95"
+                x-transition:enter-end="opacity-100 translate-y-0 scale-100" x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                x-transition:leave-end="opacity-0 translate-y-6 scale-95"
+                class="relative bg-white rounded-xl shadow-2xl max-w-4xl w-full p-8 sm:p-10" wire:click.stop>
+
+                <!-- Close Button -->
+                <button wire:click="closeModal"
+                    class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
+                    <flux:icon name="x-circle" class="h-6 w-6" />
+                </button>
+
+                <!-- Header -->
+                <div class="flex items-center gap-4 border-b border-gray-100 pb-6">
+                    <img src="{{ $listingImage ?? 'https://via.placeholder.com/150' }}" alt="Listing Image"
+                        class="w-20 h-20 rounded-lg object-cover shadow">
+                    <div>
+                        <h2 class="text-2xl font-semibold text-gray-800">{{ $listingName ?? 'Unknown Listing' }}</h2>
+                        <p class="text-sm text-[#AD8945]">{{ $mainCategoryName ?? '' }}</p>
+                    </div>
+                </div>
+
+                <!-- User & Booking Details -->
+                <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                    <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                        <label class="text-xs text-gray-500 font-medium mb-1">Customer Name</label>
+                        <p class="text-gray-800 font-semibold">{{ $name ?? '' }}</p>
+                    </div>
+
+                    <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                        <label class="text-xs text-gray-500 font-medium mb-1">Email</label>
+                        <p class="text-gray-800">{{ $email ?? '' }}</p>
+                    </div>
+
+                    <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                        <label class="text-xs text-gray-500 font-medium mb-1">WhatsApp</label>
+                        <p class="text-gray-800">{{ $whatsapp ?? '' }}</p>
+                    </div>
+
+                    <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                        <label class="text-xs text-gray-500 font-medium mb-1">Venue</label>
+                        <p class="text-gray-800">{{ $venueName ?? '' }}</p>
+                    </div>
+
+                    <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                        <label class="text-xs text-gray-500 font-medium mb-1">Service Type</label>
+                        <p class="text-gray-800">{{ $typeofservice ?? '' }}</p>
+                    </div>
+
+                    <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                        <label class="text-xs text-gray-500 font-medium mb-1">Guests</label>
+                        <p class="text-gray-800">{{ $numberofguest_adult ?? 0 }} Adults,
+                            {{ $numberofguest_child ?? 0 }} Children</p>
+                    </div>
+
+                    <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                        <label class="text-xs text-gray-500 font-medium mb-1">Booking Date</label>
+                        <p class="text-gray-800">
+                            {{ $bookingDate ? \Carbon\Carbon::parse($bookingDate)->format('d M Y') : '' }}
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                        <label class="text-xs text-gray-500 font-medium mb-1">Booking Time</label>
+                        <p class="text-gray-800">
+                            {{ $bookingTime ? \Carbon\Carbon::parse($bookingTime)->format('h:i A') : '' }}
+                        </p>
+                    </div>
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        @php $statusLower = strtolower($status ?? '') @endphp
+                        <span
+                            class="inline-flex items-center rounded-full px-4 py-2 text-sm font-medium {{ $statusLower === 'pending' ? 'bg-yellow-50 text-yellow-700 ring-1 ring-yellow-600/20' : ($statusLower === 'confirmed' ? 'bg-green-50 text-green-700 ring-1 ring-green-600/20' : ($statusLower === 'cancelled' ? 'bg-red-50 text-red-700 ring-1 ring-red-600/20' : ($statusLower === 'complete' ? 'bg-blue-50 text-blue-700 ring-1 ring-blue-600/20' : 'bg-gray-50 text-gray-600 ring-1 ring-gray-500/10'))) }}">
+                            {{ ucfirst($status) }}
+                        </span>
+                    </div>
+
+                </div>
+
+
+                <!-- Footer -->
+                <div class="mt-8 pt-5 border-t border-gray-100 flex justify-end">
+                    <button wire:click="closeModal"
+                        class="px-5 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#AD8945] to-amber-600 hover:from-[#9c7a3d] hover:to-amber-700 rounded-lg shadow transition transform hover:scale-[1.02]">
+                        Close
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
 
     {{-- listing modal --}}
     <div x-data="{ show: @entangle('listingBookingEditModal') }" x-show="show" x-cloak class="fixed inset-0 overflow-y-auto z-50">
@@ -452,7 +511,5 @@
             </div>
         </div>
     </div>
-
-
 
 </section>

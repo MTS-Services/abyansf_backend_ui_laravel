@@ -36,7 +36,20 @@ class Booking extends Component
     public $guests_children;
     public $contact;
 
+    public $bookingId;
+    public $userId;
+    public $name;
+    public $email;
+    public $whatsapp;
 
+    // Listing / nested properties
+    public $listingName;
+    public $listingImage;
+    public $listingCategory;
+    public $listingSubCategory;
+    public $mainCategoryName;
+
+    public $listingDetailsModal = false;
     public $listingBookingEditModal = false;
 
     public $subBookingEditModal = false;
@@ -134,6 +147,7 @@ class Booking extends Component
     public function closeModal()
     {
         $this->listingBookingEditModal = false;
+        $this->listingDetailsModal = false;
         $this->subBookingEditModal = false;
         reset($this->bookings);
     }
@@ -234,7 +248,80 @@ class Booking extends Component
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to update sub booking. Please try again.');
         }
     }
+    public function listingBookingDtls($bookingId = null)
+    {
+        $this->listingDetailsModal = true;
+        if ($this->listingDetailsModal && $bookingId) {
+            $this->listingDetails($bookingId);
+        }
+    }
 
+    public function listingDetails($bookingId = null)
+    {
+        try {
+            $decryptedId = decrypt($bookingId);
+
+            // Fetch API response
+            $response = Http::withToken(api_token())->get(api_base_url() . "/bookings/{$decryptedId}");
+            if ($response->successful()) {
+                $json = $response->json();
+
+                if (isset($json['data'])) {
+                    $booking = $json['data'];
+                    // Assign booking info
+                    $this->bookingId = $booking['id'] ?? '';
+                    $this->userId = $booking['userId'] ?? '';
+                    $this->listingId = $booking['listingId'] ?? '';
+                    $this->name = $booking['name'] ?? '';
+                    $this->email = $booking['email'] ?? '';
+                    $this->whatsapp = $booking['whatsapp'] ?? '';
+                    $this->venueName = $booking['venueName'] ?? '';
+                    $this->typeofservice = $booking['typeofservice'] ?? '';
+                    $this->numberofguest_adult = $booking['numberofguest_adult'] ?? 0;
+                    $this->numberofguest_child = $booking['numberofguest_child'] ?? 0;
+                    $this->status = $booking['status'] ?? '';
+
+
+
+                    // Dates
+                    $this->bookingDate = isset($booking['bookingDate'])
+                        ? Carbon::parse($booking['bookingDate'])->toIso8601String()
+                        : null;
+
+                    $this->bookingTime = isset($booking['bookingTime'])
+                        ? Carbon::parse($booking['bookingTime'])->toIso8601String()
+                        : null;
+
+                    // Listing info
+                    $listing = $booking['listing'] ?? [];
+                    $this->listingName = $listing['name'] ?? '';
+                    $this->listingImage = $listing['main_image'] ?? '';
+                    $this->listingCategory = $listing['specificCategory']['subCategory']['name'] ?? '';
+                    $this->listingSubCategory = $listing['specificCategory']['name'] ?? '';
+                    $this->mainCategoryName = $listing['specificCategory']['subCategory']['mainCategory']['name'] ?? '';
+
+                    // Open modal
+
+
+                } else {
+                    $this->dispatch('sweetalert2', [
+                        'type' => 'error',
+                        'message' => 'Booking data not found.'
+                    ]);
+                }
+            } else {
+                $this->dispatch('sweetalert2', [
+                    'type' => 'error',
+                    'message' => 'Failed to fetch booking details.'
+                ]);
+            }
+        } catch (\Exception $e) {
+            $this->dispatch('sweetalert2', [
+                'type' => 'error',
+                'message' => 'Something went wrong: ' . $e->getMessage()
+            ]);
+        }
+    }
     public function editListingBooking($listingBookingId)
     {
         $this->listingBookingEditModal = true;
@@ -304,7 +391,7 @@ class Booking extends Component
 
         // 🔹 Assuming bookingId is already set (encrypted like userId)
         $response = Http::withToken(api_token())->put(api_base_url() . '/bookings/' . decrypt($this->listingBookingId), $data);
-        
+
         if ($response->successful()) {
             $this->reset([
                 'listingId',
@@ -416,6 +503,7 @@ class Booking extends Component
         $pages = $this->getPaginationPages();
         $hasPrevious = $this->currentPage > 1;
         $hasNext = $this->currentPage < ($this->pagination['pages'] ?? 1);
+
 
         return view('livewire.admin.booking', [
             'pages' => $pages,

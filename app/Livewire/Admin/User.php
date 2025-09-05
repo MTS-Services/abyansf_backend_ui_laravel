@@ -22,7 +22,16 @@ class User extends Component
     public $whatsapp;
     public $password;
     public $image;
+    
+    public $profileImg;
+    public $role;
+    public $package;
+    public $status;
+    public $isActive = false;
+    public $isVerified = false;
+    public $uid;
 
+    public $detailsModal = false;
     public $userEditModal = false;
 
     // Properties for the new modal
@@ -76,7 +85,41 @@ class User extends Component
             $this->openActions = $userId;
         }
     }
+    public function userDetailsModal($userId = null)
+    {
+        $this->detailsModal = true;
+        if ($this->detailsModal && $userId) {
+            $this->details($userId);
+        }
+    }
 
+    public function details($userId = null)
+    {
+        $decryptedId = decrypt($userId);
+        $response = Http::withToken(api_token())->get(api_base_url() . "/users/search/{$decryptedId}");
+        // dd($response->json());
+        if ($response->successful()) {
+            $json = $response->json();
+
+            if (isset($json['data'])) {
+                $user = $json['data'];
+
+                $this->name       = $user['name'] ?? '';
+                $this->email      = $user['email'] ?? '';
+                $this->whatsapp   = $user['whatsapp'] ?? '';
+                $this->password   = $user['password'] ?? '';
+                $this->profileImg = $user['profile_pic'] ?? null;
+                $this->role       = $user['role'] ?? ''; // optional
+                $this->package    = $user['package'] ?? '';
+                $this->status     = $user['status'] ?? '';
+                $this->isActive   = $user['is_active'] ?? false;
+                $this->isVerified = $user['is_verified'] ?? false;
+                $this->uid        = $user['id'] ?? '';
+            }
+        } else {
+            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch user details.');
+        }
+    }
 
     public function userEditModall($userId = null)
     {
@@ -131,7 +174,7 @@ class User extends Component
         // Use post() with the _method field.
         $response = $request->put(api_base_url() . '/users/' . decrypt($this->userId), $data);
 
-        
+
         if ($response->successful()) {
             $this->reset([
                 'name',
@@ -159,6 +202,7 @@ class User extends Component
     public function closeModal()
     {
         $this->userEditModal = false;
+        $this->detailsModal = false;
         $this->showConfirmationModal = false;
         $this->reset(['userId', 'paymentType',]);
     }
