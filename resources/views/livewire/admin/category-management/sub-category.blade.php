@@ -441,7 +441,7 @@
                                     Mini-Category</span>
                                 <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]" wire:model="hasMiniSubCategory"
                                     x-data="{ on: true }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
-                                    <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200" wire:model="hasMiniSubCategory"
+                                    <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200" wire
                                         :class="{ 'translate-x-6': on, 'translate-x-0': !on }">
                                     </div>
                                 </div>
