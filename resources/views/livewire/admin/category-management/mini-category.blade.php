@@ -7,7 +7,7 @@
         @include('livewire.admin.category-management.navbar')
     </nav>
 
-      <h1 class="text-7xl">Mini Category hala</h1>
+   
 
     <x-admin.searchbar page="Add " livewire_method="switchAddMiniCategoryModal" />
 
@@ -148,8 +148,8 @@
             <tbody class="divide-y divide-gray-200">
                 <tr class="md:table-row grid grid-cols-1 md:grid-cols-none items-center transition relative">
                     <td class="p-4 text-left font-normal text-base">
-                        <p class="text-black whitespace-nowrap">1</p>
-                    </td>
+                            <p class="text-black whitespace-nowrap"></p>
+                        </td>
 
                     <td class="p-4 text-left font-normal text-base">
                         <p class="text-black font-medium">Wedding Events</p>

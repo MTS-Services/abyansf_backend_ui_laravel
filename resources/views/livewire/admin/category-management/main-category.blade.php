@@ -63,10 +63,10 @@
 
             <tbody class="w-full">
                 @foreach ($mainCategories as $category)
-                    <tr wire:key="booking-{{ $category['id'] }}" x-data="{ dropdownOpen: false }"
+                    <tr wire:key="booking-" x-data="{ dropdownOpen: false }" 
                         class="border-b border-gray-200">
                         <td class="p-4 text-left font-normal text-base">
-                            <p class="text-black whitespace-nowrap">{{ $category['id'] }}</p>
+                            <p class="text-black whitespace-nowrap">{{ $loop->iteration }}</p>
                         </td>
                         <td class="p-4 text-left font-normal text-base">
                             <p class="text-black whitespace-nowrap">{{ $category['name'] }}</p>

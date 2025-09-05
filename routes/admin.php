@@ -6,6 +6,7 @@ use App\Livewire\Admin\Booking;
 use App\Livewire\Admin\CategoryManagement\MainCategory;
 use App\Livewire\Admin\CategoryManagement\MiniCategory;
 use App\Livewire\Admin\CategoryManagement\SpecificCategory;
+use App\Livewire\Admin\CategoryManagement\SubCategory;
 use App\Livewire\Admin\Event;
 use App\Livewire\Admin\EventManagement\Index as EventIndex;
 use App\Livewire\Admin\EventManagement\Create as EventCreate;
@@ -16,7 +17,7 @@ use App\Livewire\Admin\ListingManagement\Create as ListingCreate;
 use App\Livewire\Admin\ListingManagement\Update as ListingUpdate;
 use App\Livewire\Admin\User;
 
-use App\Livewire\Admin\SubCategory;
+
 use Illuminate\Support\Facades\Route;
 
 Route::name('admin.')->middleware(['api.auth'])->group(function () {
