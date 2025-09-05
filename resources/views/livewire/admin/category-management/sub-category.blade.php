@@ -420,18 +420,18 @@
                         <div class="mb-6 space-y-4">
                             <div class="flex items-center justify-between">
                                 <span class="text-sm font-medium text-gray-700">hasSpecificCategory</span>
-                                <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]"
+                                <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]" wire:model="hasSpecificCategory"
                                     x-data="{ on: true }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
-                                    <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
+                                    <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200" wire:model="hasSpecificCategory"
                                         :class="{ 'translate-x-6': on, 'translate-x-0': !on }">
                                     </div>
                                 </div>
                             </div>
                             <div class="flex items-center justify-between">
                                 <span class="text-sm font-medium text-gray-700">contactWhatsapp</span>
-                                <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]"
+                                <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]" wire:model="contactWhatsapp"
                                     x-data="{ on: true }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
-                                    <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
+                                    <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200" wire:model="contactWhatsapp"
                                         :class="{ 'translate-x-6': on, 'translate-x-0': !on }">
                                     </div>
                                 </div>
@@ -439,9 +439,9 @@
                             <div class="flex items-center justify-between">
                                 <span class="text-sm font-medium text-gray-700">Create
                                     Mini-Category</span>
-                                <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]"
+                                <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]" wire:model="hasMiniSubCategory"
                                     x-data="{ on: true }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
-                                    <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
+                                    <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200" wire:model="hasMiniSubCategory"
                                         :class="{ 'translate-x-6': on, 'translate-x-0': !on }">
                                     </div>
                                 </div>
