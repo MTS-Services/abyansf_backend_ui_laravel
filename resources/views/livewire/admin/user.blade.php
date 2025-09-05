@@ -104,106 +104,114 @@
             </tbody>
         </table>
     </div>
-    <div x-data="{ show: @entangle('detailsModal') }" x-show="show" x-cloak class="fixed inset-0 overflow-y-auto z-50">
-        <div class="flex items-center justify-center min-h-screen px-4 py-8">
-            <!-- Overlay -->
-            <div x-show="show" x-cloak x-effect="document.body.classList.toggle('overflow-hidden', show)"
-                x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
-                x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
-                x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-                class="fixed inset-0 bg-gray-900/40 bg-opacity-50" wire:click="closeModal"></div>
+    <div x-data="{ show: @entangle('detailsModal') }" x-show="show" x-cloak
+        class="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto px-4 py-6">
 
-            <!-- Modal content -->
-            <div x-show="show" x-transition:enter="ease-out duration-300"
-                x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
-                x-transition:leave="ease-in duration-200"
-                x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-                x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                class="relative bg-white rounded-xl shadow-lg max-w-5xl px-10 w-full p-6" wire:click.stop>
+        <!-- Overlay -->
+        <div x-show="show" x-cloak x-effect="document.body.classList.toggle('overflow-hidden', show)"
+            x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
+            x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+            class="fixed inset-0 bg-gradient-to-br from-gray-900/70 to-gray-800/80 backdrop-blur-sm"
+            wire:click="closeModal"></div>
 
-                <!-- Close button -->
-                <button wire:click="closeModal"
-                    class="absolute top-3 right-3 text-gray-400 hover:text-gray-600 rounded-full focus:outline-none">
-                    <flux:icon name="x-circle" class="h-6 w-6" />
-                </button>
+        <!-- Modal content -->
+        <div x-show="show" x-cloak x-transition:enter="ease-out duration-300"
+            x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0"
+            x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0"
+            x-transition:leave-end="opacity-0 translate-y-8"
+            class="relative bg-white rounded-xl shadow-2xl max-w-2xl w-full p-6 ring-1 ring-gray-100/10"
+            wire:click.stop>
 
-                <!-- User Profile Section -->
-                <section class="flex flex-col items-center text-center pb-6 border-b border-gray-200">
+            <!-- Close Button -->
+            <button wire:click="closeModal"
+                class="absolute top-5 right-5 text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-full hover:bg-gray-100">
+                <flux:icon name="x-mark" class="h-6 w-6" />
+            </button>
+
+            <!-- User Profile Section -->
+            <section class="flex flex-col items-center text-center border-b border-gray-100 pb-6">
+                <div class="relative">
                     <img src="{{ $profileImg }}" alt="Profile Picture"
-                        class="w-24 h-24 rounded-full object-cover shadow-lg ring-4 ring-blue-500 ring-offset-2">
-
-                    <h2 class="mt-4 text-2xl font-bold text-gray-800">
-                        <input type="text" wire:model="name"
-                            class="border-none w-auto text-center font-bold text-xl">
-                    </h2>
-
-                    <p class="text-sm font-medium text-blue-600 rounded-full px-3 py-1 mt-1 bg-blue-50">
-                        <input type="text" wire:model="role"
-                            class="border-none w-auto text-center text-sm font-medium">
-                    </p>
-                </section>
-
-
-                <!-- Details Section -->
-                <section class="mt-6 space-y-4">
-                    <h3 class="text-lg font-bold text-gray-800 mb-2">User Details</h3>
-
-                    <div class="flex items-center text-gray-600">
-                        <span class="font-medium text-gray-700">Email:</span>
-                        <input type="text" wire:model="email"
-                            class="ml-auto border-none w-auto text-gray-900 bg-transparent">
+                        class="w-28 h-28 rounded-full object-cover shadow-lg ring-2 ring-white ring-offset-2">
+                    <div
+                        class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-gradient-to-r from-[#AD8945] to-amber-400 border-2 border-white flex items-center justify-center">
+                        <flux:icon name="check" class="h-3.5 w-3.5 text-white" />
                     </div>
-                    <div class="flex items-center text-gray-600">
-                        <span class="font-medium text-gray-700">WhatsApp:</span>
-                        <input type="text" wire:model="whatsapp"
-                            class="ml-auto border-none w-auto text-gray-900 bg-transparent">
-                    </div>
-                    <div class="flex items-center text-gray-600">
-                        <span class="font-medium text-gray-700">Package:</span>
-                        <input type="text" wire:model="package"
-                            class="ml-auto border-none w-auto text-gray-900 font-semibold bg-transparent">
+                </div>
+
+                <h2 class="mt-5 text-2xl font-semibold text-gray-800">
+                    {{ $name }}
+                </h2>
+
+                <p
+                    class="mt-2 text-sm font-medium text-[#AD8945] bg-amber-50 rounded-full px-4 py-1.5 border border-amber-100">
+                    {{ $role }}
+                </p>
+            </section>
+
+            <!-- Details Section -->
+            <section class="mt-6 space-y-5">
+                <h3 class="text-lg font-medium text-gray-700 mb-1 flex items-center">
+                    <flux:icon name="user" class="h-5 w-5 mr-2 text-[#AD8945]" />
+                    User Details
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="flex flex-col bg-gray-100 p-3 rounded-lg">
+                        <label class="text-xs font-medium text-gray-500 mb-1">Email Address</label>
+                        <p class="text-gray-800 font-medium">{{ $email }}</p>
                     </div>
 
-                    <!-- Active / Verified -->
-                    <div class="flex flex-wrap gap-4 pt-2">
-                        <!-- Active -->
-                        <span class="flex items-center px-3 py-1 rounded-full text-xs font-semibold"
-                            @class([
-                                'bg-green-100 text-green-800' => $isActive,
-                                'bg-red-100 text-red-800' => !$isActive,
-                            ])>
-                            <span class="w-2 h-2 rounded-full mr-2" @class([
-                                'bg-green-500' => $isActive,
-                                'bg-red-500' => !$isActive,
-                            ])></span>
-                            {{ $isActive ? 'Active' : 'Inactive' }}
-                        </span>
-
-                        <!-- Verified -->
-                        <span class="flex items-center px-3 py-1 rounded-full text-xs font-semibold"
-                            @class([
-                                'bg-blue-100 text-blue-800' => $isVerified,
-                                'bg-gray-100 text-gray-800' => !$isVerified,
-                            ])>
-                            {{ $isVerified ? 'Verified' : 'Not Verified' }}
-                        </span>
+                    <div class="flex flex-col bg-gray-100 p-3 rounded-lg">
+                        <label class="text-xs font-medium text-gray-500 mb-1">WhatsApp Number</label>
+                        <p class="text-gray-800 font-medium">{{ $whatsapp }}</p>
                     </div>
-                </section>
 
-                <!-- Other Information -->
-                <section class="mt-6 pt-6 border-t border-gray-200">
-                    <div class="space-y-3 text-sm text-gray-600">
-                        <div class="flex justify-between">
-                            <span class="font-medium text-gray-700">User ID:</span>
-                            <input type="text" wire:model="uid"
-                                class="border-none w-auto bg-transparent text-gray-900">
-                        </div>
+                    <div class="flex flex-col bg-gray-100 p-3 rounded-lg">
+                        <label class="text-xs font-medium text-gray-500 mb-1">Package</label>
+                        <p class="text-gray-800 font-medium">{{ $package }}</p>
                     </div>
-                </section>
+
+                    <div class="flex flex-col bg-gray-100 p-3 rounded-lg">
+                        <label class="text-xs font-medium text-gray-500 mb-1">User ID</label>
+                        <p class="text-gray-800 font-medium">{{ $uid }}</p>
+                    </div>
+                </div>
+
+                <!-- Status Indicators -->
+                <div class="flex flex-wrap gap-3 pt-2">
+
+                    <!-- Active -->
+                    <div
+                        class="flex items-center px-3 py-1.5 rounded-full text-xs font-medium {{ $isActive ? 'bg-green-50 text-green-700 ring-1 ring-green-600/20' : 'bg-red-50 text-red-700 ring-1 ring-red-600/20' }}">
+                        <span
+                            class="w-2 h-2 rounded-full mr-2 flex-shrink-0 {{ $isActive ? 'bg-green-500' : 'bg-red-500' }}"></span>
+                        {{ $isActive ? 'Active' : 'Inactive' }}
+                    </div>
+
+                    <!-- Verified -->
+                    <div
+                        class="flex items-center px-3 py-1.5 rounded-full text-xs font-medium {{ $isVerified ? 'bg-[#AD8945]/10 text-[#AD8945] ring-1 ring-[#AD8945]/20' : 'bg-gray-100 text-gray-600 ring-1 ring-gray-300' }}">
+                        <flux:icon name="check" class="h-3.5 w-3.5 mr-1" />
+                        {{ $isVerified ? 'Verified' : 'Not Verified' }}
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- Action Buttons -->
+            <div class="mt-8 pt-5 border-t border-gray-100 flex justify-end">
+                <button wire:click="closeModal"
+                    class="px-4 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#AD8945] to-amber-600 hover:from-[#9c7a3d] hover:to-amber-700 rounded-lg shadow-sm transition-all transform hover:scale-[1.02]">
+                    <flux:icon name="x-circle" class="h-4 w-4 mr-1 inline" />
+                    Close
+                </button>
             </div>
         </div>
     </div>
+
 
 
     <div x-data="{ show: @entangle('userEditModal') }" x-show="show" x-cloak class="fixed inset-0 overflow-y-auto z-50">
