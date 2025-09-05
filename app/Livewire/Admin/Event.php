@@ -5,7 +5,7 @@ namespace App\Livewire\Admin;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
-use Livewire\Features\SupportFileUploads\WithFileUploads;
+use Livewire\WithFileUploads;
 
 class Event extends Component
 {
@@ -23,38 +23,24 @@ class Event extends Component
     public $time;
     public $date;
     public $status;
-    public $is_active; // Added these properties
-    public $is_disabled; // Added these properties
-    public $image;
-    public $existing_image;
+    public $image; // Holds the temporary UploadedFile object for a new file
+    public $existing_image; // Stores the URL of the existing image for display
 
-    public $event = [];
-    public $updateEventModal = false;
     public $events = [];
     public $pagination = [];
     public $openActions = null;
-    public $testImage;
-
     public $currentPage = 1;
 
     protected $queryString = [
         'currentPage' => ['as' => 'page', 'except' => 1]
     ];
 
-    public function switchAddEventModal()
-    {
-        $this->addEventModal = !$this->addEventModal;
-    }
-
-
-    /**
-     * Livewire's lifecycle hook that runs once on component initialization.
-     */
     public function mount()
     {
         $this->currentPage = request()->query('page', 1);
         $this->fetchEvents($this->currentPage);
     }
+
     public function fetchEvents($page = 1)
     {
         $token = session()->get('api_token');
@@ -77,10 +63,16 @@ class Event extends Component
         }
     }
 
-    //  create event
+    public function switchAddEventModal()
+    {
+        $this->addEventModal = !$this->addEventModal;
+        if (!$this->addEventModal) {
+            $this->reset(['title', 'max_person', 'description', 'location', 'time', 'date', 'image', 'existing_image']);
+        }
+    }
+
     public function saveEvent()
     {
-        // Validate
         $data = $this->validate([
             'title' => 'required|string|max:255',
             'max_person' => 'required|integer|min:1',
@@ -88,75 +80,49 @@ class Event extends Component
             'location' => 'required|string|max:255',
             'time' => 'required',
             'date' => 'required|date',
-            'image' => 'nullable|max:1024|mimetypes:image/jpeg,image/png',
+            'image' => 'nullable|image|max:2048',
         ]);
 
-        // Token
         $token = Session::get('api_token');
         if (!$token) {
             return $this->redirectRoute('login', navigate: true);
         }
 
-        // Prepare request
         $request = Http::withToken($token);
 
-        // Attach image
-        if (!empty($this->image)) {
-            foreach ($this->image as $image) {
-                $request->attach(
-                    'event_img',
-                    file_get_contents($image->getRealPath()),
-                    $image->getClientOriginalName()
-                );
-            }
+        if ($this->image) {
+            $request->asMultipart()->attach(
+                'event_img',
+                file_get_contents($this->image->getRealPath()),
+                $this->image->getClientOriginalName()
+            );
         }
 
-        // Send request (normal fields)
-        $response = $request->post(api_base_url() . '/events', [
-            'title' => $this->title,
-            'max_person' => $this->max_person,
-            'description' => $this->description,
-            'location' => $this->location,
-            'time' => $this->time,
-            'date' => $this->date,
-        ]);
+        $response = $request->post(api_base_url() . '/events', $data);
+        // dd($response->json());
 
-        // Response check
         if ($response->successful()) {
-            $this->reset([
-                'title',
-                'max_person',
-                'description',
-                'location',
-                'time',
-                'date',
-                'image'
-            ]);
-
             $this->switchAddEventModal();
-
             $this->dispatch('sweetalert2', type: 'success', message: 'Event created successfully.');
-
-            $this->fetchEvents();
+            $this->fetchEvents($this->currentPage);
         } else {
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to create event. Please try again.');
         }
     }
-    //  edit event
 
     public function switchEditEventModal($eventId = null)
     {
         $this->editEventModal = !$this->editEventModal;
-
         if ($this->editEventModal && $eventId) {
-            $this->event($eventId); // load event data
+            $this->event($eventId);
+        } else {
+            $this->reset(['eventId', 'title', 'max_person', 'description', 'location', 'time', 'date', 'image', 'existing_image']);
         }
     }
 
     public function event($eventId)
     {
         $this->eventId = $eventId;
-
         $token = Session::get('api_token');
         if (!$token) {
             return $this->redirectRoute('login', navigate: true);
@@ -165,53 +131,44 @@ class Event extends Component
         $decryptedId = decrypt($eventId);
         $response = Http::withToken($token)->get(api_base_url() . "/events/{$decryptedId}");
 
-
         if ($response->successful()) {
-            $json = $response->json();
-
-            if (isset($json['data'])) {
-                $event = $json['data'];
-
-                $this->title       = $event['title'] ?? '';
-                $this->max_person  = $event['max_person'] ?? '';
-                $this->description = $event['description'] ?? '';
-                $this->location    = $event['location'] ?? '';
-                $this->time        = $event['time'] ?? '';
-                $this->date        = $event['date'] ?? '';
-                $this->status      = $event['status'] ?? '';
-
-                // Convert single image string to array for AlpineJS
-                $this->image = $event['event_img'] ?? null;
-                // dd($event['event_img']);
-            }
+            $event = $response->json()['data'];
+            $this->title = $event['title'] ?? '';
+            $this->max_person = $event['max_person'] ?? '';
+            $this->description = $event['description'] ?? '';
+            $this->location = $event['location'] ?? '';
+            $this->time = $event['time'] ?? '';
+            $this->date = $event['date'] ?? '';
+            $this->status = $event['status'] ?? '';
+            $this->existing_image = $event['event_img'] ?? null;
+            $this->image = $event['event_img'] ?? null; // Clear the temporary image property
         } else {
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch event details.');
         }
     }
-
-
     public function updateEvent()
     {
-        // Validate the image if it's present
-        // $this->validate([
-        //     'image' => 'nullable|image|max:1024',
-        // ]);
-
+        // Prepare the regular form data
         $data = [
             'title' => $this->title,
             'max_person' => $this->max_person,
             'description' => $this->description,
             'location' => $this->location,
-            'status' => $this->status,
             'time' => $this->time,
             'date' => $this->date,
-            // Since we're sending a PUT request, we need to spoof the HTTP method
-            // '_method' => 'PUT',
+            'status' => $this->status,
         ];
 
-        $request = Http::withToken(api_token());
+        $token = Session::get('api_token');
+        if (!$token) {
+            return $this->redirectRoute('login', navigate: true);
+        }
 
-        // You MUST re-add the attach part to send the image
+        // dd($this->image);
+
+        $request = Http::withToken($token);
+
+               // You MUST re-add the attach part to send the image
         if ($this->image && !filter_var($this->image, FILTER_VALIDATE_URL)) {
             $request->attach(
                 'event_img',
@@ -220,10 +177,25 @@ class Event extends Component
             );
         }
 
+
         // Use post() with the _method field.
         $response = $request->put(api_base_url() . '/events/' . decrypt($this->eventId), $data);
-
         // dd($response->json());
+
+
+        // Check if a new image file has been selected (it's an UploadedFile object, not a URL string)
+        // if ($this->image && is_object($this->image)) {
+        //     $response = $request
+        //         ->asMultipart() 
+        //         ->post(api_base_url() . '/events/' . decrypt($this->eventId), array_merge($data, [
+        //             'event_img' => file_get_contents($this->image->getRealPath()), // Attach the image file
+        //             '_method' => 'PUT' // Emulate a PUT request
+        //         ]));
+        // } else {
+        //     $response = $request->put(api_base_url() . '/events/' . decrypt($this->eventId), $data);
+        // }
+
+        // Handle the response
         if ($response->successful()) {
             $this->reset([
                 'title',
@@ -233,25 +205,23 @@ class Event extends Component
                 'date',
                 'status',
                 'time',
-                'image', // Reset the testImage property
-                'eventId',
+                'image', // Reset the new image property
+                'existing_image', // Reset if you want to ensure the old URL is removed too if a new image was uploaded
+                'eventId'
             ]);
-
             $this->switchEditEventModal();
             $this->dispatch('sweetalert2', type: 'success', message: 'Event updated successfully.');
-            $this->fetchEvents();
+            $this->fetchEvents($this->currentPage); // Refresh the list
         } else {
+            // Log the error for debugging if needed
+            // \Log::error('Event update failed: ' . $response->body());
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to update event. Please try again.');
         }
     }
 
     public function toggleActions($userId)
     {
-        if ($this->openActions === $userId) {
-            $this->openActions = null;
-        } else {
-            $this->openActions = $userId;
-        }
+        $this->openActions = ($this->openActions === $userId) ? null : $userId;
     }
 
     public function deleteEvent($eventId)
@@ -265,21 +235,6 @@ class Event extends Component
         }
     }
 
-    public function activateUser($eventId)
-    {
-        $this->dispatch('sweetalert2', type: 'info', message: "Activate action for user ID: {$eventId}");
-        $this->fetchEvents($this->currentPage);
-    }
-
-    /**
-     * Handles the deactivate action.
-     * @param int $userId The ID of the user to deactivate.
-     */
-    public function deactivateUser($eventId)
-    {
-        $this->dispatch('sweetalert2', type: 'info', message: "Deactivate action for user ID: {$eventId}");
-        $this->fetchEvents($this->currentPage);
-    }
     public function gotoPage($page)
     {
         if ($page >= 1 && $page <= ($this->pagination['pages'] ?? 1)) {
@@ -287,9 +242,6 @@ class Event extends Component
         }
     }
 
-    /**
-     * Navigate to the previous page.
-     */
     public function previousPage()
     {
         if ($this->currentPage > 1) {
@@ -297,9 +249,6 @@ class Event extends Component
         }
     }
 
-    /**
-     * Navigate to the next page.
-     */
     public function nextPage()
     {
         if ($this->currentPage < ($this->pagination['pages'] ?? 1)) {
@@ -307,22 +256,15 @@ class Event extends Component
         }
     }
 
-    /**
-     * Get the pagination pages to display based on your custom logic.
-     * This matches the design pattern shown in your image.
-     */
     public function getPaginationPages()
     {
         $pages = [];
         $current = $this->currentPage;
         $total = $this->pagination['pages'] ?? 1;
 
-        // If only 1 page, show just that page
         if ($total == 1) {
             return [1];
         }
-
-        // If 2-4 pages, show all pages
         if ($total <= 4) {
             for ($i = 1; $i <= $total; $i++) {
                 $pages[] = $i;
@@ -330,33 +272,19 @@ class Event extends Component
             return $pages;
         }
 
-        // For 5+ pages, implement the custom logic from your design
         if ($current == 1) {
-            // Current page is 1: show [1, 2, ..., last]
             $pages = [1, 2, '...', $total];
         } elseif ($current == 2) {
-            // Current page is 2: show [1, 2, 3, ..., last]
             $pages = [1, 2, 3, '...', $total];
-        } elseif ($current == 3) {
-            // Current page is 3: show [1, 2, 3, 4, ..., last]
-            $pages = [1, 2, 3, 4, '...', $total];
         } elseif ($current == $total) {
-            // Current page is last: show [1, ..., last-1, last]
             $pages = [1, '...', $total - 1, $total];
         } elseif ($current == $total - 1) {
-            // Current page is second to last: show [1, ..., last-2, last-1, last]
             $pages = [1, '...', $total - 2, $total - 1, $total];
-        } elseif ($current == $total - 2) {
-            // Current page is third from last: show [1, ..., total-3, total-2, total-1, total]
-            $pages = [1, '...', $total - 3, $total - 2, $total - 1, $total];
         } else {
-            // Middle pages: show [1, ..., current-1, current, current+1, ..., last]
             $pages = [1, '...', $current - 1, $current, $current + 1, '...', $total];
         }
-
         return $pages;
     }
-
 
     public function render()
     {

@@ -18,43 +18,44 @@
             </div>
 
             <form wire:submit.prevent="saveEvent" class="p-6 space-y-6">
-                <div x-data="fileUpload()" class="space-y-4">
+                <div x-data="{ dragOver: false }" class="space-y-4">
                     <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
                         @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
-                        @drop.prevent="handleDrop($event)" @click="$refs.fileInput.click()"
+                        @drop.prevent="dragOver = false; $wire.upload('image', event.dataTransfer.files[0])"
+                        @click="$refs.fileInput.click()"
                         :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
 
-                        <input type="file" x-ref="fileInput" class="hidden" wire:model="image"
-                            @change="handleFiles($event)">
+                        <input type="file" x-ref="fileInput" class="hidden" wire:model="image" accept="image/*">
 
-                        <div class="text-center px-2">
-                            <div class="mb-4 flex items-center justify-center">
-                                <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                    viewBox="0 0 20 16">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                        stroke-width="2"
-                                        d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-                                </svg>
+                        @if ($image)
+                            <div class="relative w-full h-full">
+                                
+                                    <img src="{{ $image->temporaryUrl() }}"
+                                        class="w-full h-full object-cover rounded-md" alt="Preview">
+                               
+                                <button type="button"
+                                    @click.stop="$wire.set('image', null); $refs.fileInput.value = '';"
+                                    class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">
+                                    &times;
+                                </button>
                             </div>
-                            <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop it here</p>
-                            <button type="button"
-                                class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                                Browse File
-                            </button>
-                        </div>
-                    </div>
-
-                    <div x-show="image.length" class="overflow-x-auto mt-3">
-                        <div class="flex gap-2 min-w-max">
-                            <template x-for="(img, index) in image" :key="index">
-                                <div class="relative w-32 flex-shrink-0">
-                                    <img :src="img" class="w-full h-32 object-cover rounded-md border"
-                                        alt="Preview">
-                                    <button type="button" @click="removeImage(index)"
-                                        class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">×</button>
+                        @else
+                            <div class="text-center px-2">
+                                <div class="mb-4 flex items-center justify-center">
+                                    <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                        viewBox="0 0 20 16">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                    </svg>
                                 </div>
-                            </template>
-                        </div>
+                                <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop it here</p>
+                                <button type="button"
+                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                                    Browse File
+                                </button>
+                            </div>
+                        @endif
                     </div>
                 </div>
 
@@ -129,7 +130,7 @@
                     <tr wire:key="booking-{{ $event['id'] }}" x-data="{ dropdownOpen: false }"
                         class="grid grid-cols-1 md:table-row items-center py-4 px-2 gap-4 transition">
                         <td class="p-4 text-left font-normal text-base">
-                            <p class="text-black whitespace-nowrap">{{ $event['id'] }}</p>
+                            <p class="text-black whitespace-nowrap">{{ $loop->iteration }}</p>
                         </td>
                         <td class="flex items-start md:items-center col-span-3 space-x-3 md:space-x-4">
 
@@ -229,18 +230,19 @@
                 <div class="p-6 space-y-6">
 
 
-                    <div x-data="{ dragOver: false, imagePreview: @entangle('image') }" class="space-y-4">
+                    <div x-data="{ dragOver: false }" class="space-y-4">
                         <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
                             @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
                             @drop.prevent="dragOver = false; $wire.upload('image', event.dataTransfer.files[0])"
-                            @click="$refs.fileInput.click()" :class="{ 'border-blue-500': dragOver }">
+                            @click="$refs.fileInput.click()"
+                            :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
+
                             <input wire:model="image" type="file" x-ref="fileInput" class="hidden"
                                 accept="image/*">
 
-                            <template
-                                x-if="imagePreview && (imagePreview.previewUrl || (typeof imagePreview === 'string' && imagePreview.length > 0))">
+                            @if ($image)
                                 <div class="relative w-full h-full">
-                                    <img :src="imagePreview.previewUrl || imagePreview"
+                                    <img src="{{ $image && filter_var($image, FILTER_VALIDATE_URL) ? $image : $image->temporaryUrl() }}"
                                         class="w-full h-full object-cover rounded-md" alt="Preview">
 
                                     <button type="button"
@@ -249,24 +251,23 @@
                                         &times;
                                     </button>
                                 </div>
-                            </template>
-
-                            <div x-show="!imagePreview || (typeof imagePreview === 'string' && imagePreview.length === 0)"
-                                class="text-center px-2">
-                                <div class="mb-4 flex items-center justify-center">
-                                    <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg"
-                                        fill="none" viewBox="0 0 20 16">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                            stroke-width="2"
-                                            d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-                                    </svg>
+                            @else
+                                <div class="text-center px-2">
+                                    <div class="mb-4 flex items-center justify-center">
+                                        <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg"
+                                            fill="none" viewBox="0 0 20 16">
+                                            <path stroke="currentColor" stroke-linecap="round"
+                                                stroke-linejoin="round" stroke-width="2"
+                                                d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                        </svg>
+                                    </div>
+                                    <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop it here</p>
+                                    <button type="button"
+                                        class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                                        Browse File
+                                    </button>
                                 </div>
-                                <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop it here</p>
-                                <button type="button"
-                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                                    Browse File
-                                </button>
-                            </div>
+                            @endif
                         </div>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -323,12 +324,6 @@
             </form>
         </div>
     </div>
-
-    <div>
-        <input type="file" id="photoUpload" accept="image/*" multiple class="hidden">
-    </div>
-
-
 
     <!-- Pagination -->
 
