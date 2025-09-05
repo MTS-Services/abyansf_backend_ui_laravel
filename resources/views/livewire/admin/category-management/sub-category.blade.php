@@ -229,7 +229,7 @@
                                 </button>
                                 <div x-show="open" x-transition
                                     class="absolute right-0 mt-2 p-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
-                                    <button wire:click="switchEditSubCategoryModal('{{ encrypt($subCategory['id']) }}')"
+                                    <button wire:click="openEditSubCategory('{{ encrypt($subCategory['id']) }}')"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
                                         <flux:icon name="pencil-square" class="text-[#6D6D6D] mr-2 h-4 w-4" /> Edit
                                     </button>
@@ -263,7 +263,7 @@
                     <!-- Close Button -->
                     <button wire:click="switchEditSubCategoryModal"
                         class="absolute cursor-pointer top-4 right-4 text-gray-600 hover:text-gray-900 text-2xl font-bold">
-                        &times;
+                        <flux:icon name="x-circle" class="h-6 w-6" />
                     </button>
                     <!-- Header -->
                     <div class="flex items-center justify-between border-gray-200 pb-4">
@@ -271,10 +271,11 @@
                     </div>
 
                     <div class="p-6 bg-white rounded-lg max-w-5xl mx-auto my-10 font-playfair">
+                        <form wire:submit.prevent="updateSubCategory" class="space-y-6">
                         <div  class="mb-6">
                             <label for="category-title" class="block text-sm font-medium text-gray-700 mb-2">Category
                                 Title</label>
-                            <input type="text" id="category-title" placeholder="Enter your title here"
+                            <input type="text" wire:model='name' id="category-title" placeholder="Enter your title here"
                                 class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
                         </div>
 
@@ -283,7 +284,7 @@
                                 class="block text-sm font-medium text-gray-700 mb-2">Category
                                 Description</label>
                             <textarea id="category-description" rows="4" placeholder="Enter your description here"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] resize-none"></textarea>
+                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] resize-none " wire:model='description'></textarea>
                         </div>
 
                         <div class="mb-6 space-y-4">
@@ -309,7 +310,7 @@
                                             isDragging
                                     }">
 
-                                    <input id="hero-image-upload" type="file"
+                                    <input id="hero-image-upload" type="file" wire:model="img" accept="image/*" x-ref="image"
                                         @change="if (event.target.files.length) {
                                                               const file = event.target.files[0];
                                                               if (file.type.startsWith('image/')) {
@@ -373,7 +374,7 @@
                                             isDragging
                                     }">
 
-                                    <input id="category-image-upload" type="file"
+                                    <input id="category-image-upload" type="file" wire:model="heroImage" accept="image/*" x-ref="heroImage"
                                         @change="if (event.target.files.length) {
                                                               const file = event.target.files[0];
                                                               if (file.type.startsWith('image/')) {
@@ -447,16 +448,22 @@
                             </div>
                         </div>
 
-                        <div class="mb-6">
-                            <label for="parent-categories" class="block text-sm font-medium text-gray-700 mb-2">Parent
-                                Categories</label>
-                            <select id="parent-categories"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] ">
-                                <option>Select your parent categories</option>
-                                <option>Category 1</option>
-                                <option>Category 2</option>
-                            </select>
-                        </div>
+                        {{-- Parent Category Select --}}
+                            <div class="mb-6">
+                                <label for="parent-categories"
+                                    class="block text-sm font-medium text-gray-700 mb-2">Parent Categories</label>
+                                <select id="parent-categories" wire:model="mainCategoryId"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
+                                    <option value="">Select your parent categories</option>
+                                    {{-- Assuming you have a property to hold your parent categories --}}
+                                    @foreach ($mainCategories as $category)
+                                        <option value="{{ $category['id'] }}">{{ $category['name'] }}</option>
+                                    @endforeach
+                                </select>
+                                @error('mainCategoryId')
+                                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
+                            </div>
 
                         <div class="flex justify-left">
                             <button x-on:click="switchAddSubCategoryModal()"
@@ -464,6 +471,7 @@
                                 Save Category
                             </button>
                         </div>
+                        </form>
                     </div>
                 </div>
             </div>

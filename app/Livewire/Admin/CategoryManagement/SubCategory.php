@@ -45,9 +45,13 @@ class SubCategory extends Component
 
     public function switchEditSubCategoryModal($subCategoryId = null)
     {
+        
         $this->editSubCategoryModal = !$this->editSubCategoryModal;
+       
         if ($this->editSubCategoryModal && $subCategoryId) {
+        
             $this->fetchMainCategory($subCategoryId);
+           
         }
     }
 
@@ -163,43 +167,88 @@ class SubCategory extends Component
 
     // app/Livewire/Admin/CategoryManagement/SubCategory.php
 
-    public function openEditSubCategory($subCategoryId)
-    {
-        $this->subCategoryId = $subCategoryId;
+   public function openEditSubCategory($subCategoryId)
+{
+    $this->subCategoryId = $subCategoryId;
 
-        // Correcting the API call to use the decrypted ID
+    try {
         $decryptedId = decrypt($subCategoryId);
-        $response = Http::withToken(api_token())->get(api_base_url() . "/categories/sub/{$decryptedId}");
-       
-         dd($response->json());
-
-        if ($response->successful()) {
-            
-            $data = $response->json()['data'] ?? null;
-
-            if ($data) {
-                // Assign the fetched data to the public properties
-                $this->name = $data['name'] ?? '';
-                $this->mainCategoryId = $data['mainCategoryId'] ?? '';
-                $this->hasSpecificCategory = $data['hasSpecificCategory'] ?? false;
-                $this->description = $data['description'] ?? '';
-                $this->contractWhatsapp = $data['contractWhatsapp'] ?? '';
-                $this->hasMiniSubCategory = $data['hasMiniSubCategory'] ?? false;
-
-                // For images, you might need a different approach. For now, we'll just store the path.
-                $this->image = $data['image'] ?? '';
-                $this->heroImage = $data['heroImage'] ?? '';
-
-                // Open the modal after data is loaded
-                $this->editSubCategoryModal = true;
-            } else {
-                $this->dispatch('sweetalert2', type: 'error', message: 'Sub Category data not found.');
-            }
-        } else {
-            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch sub category details.');
-        }
+    } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+        $this->dispatch('sweetalert2', type: 'error', message: 'Invalid category ID.');
+        return;
     }
-    public function deleteSubCategory($subCategoryId)
+
+    $token = Session::get('api_token');
+    if (!$token) {
+        return $this->redirectRoute('login', navigate: true);
+    }
+
+    $response = Http::withToken($token)->get(api_base_url() . "/categories/sub/{$decryptedId}");
+
+    if ($response->successful()) {
+        $data = $response->json()['data'] ?? null;
+        if ($data) {
+            $this->name = $data['name'] ?? '';
+            $this->mainCategoryId = $data['mainCategoryId'] ?? '';
+            $this->hasSpecificCategory = $data['hasSpecificCategory'] ?? false;
+            $this->description = $data['description'] ?? '';
+            $this->contractWhatsapp = $data['contractWhatsapp'] ?? '';
+            $this->hasMiniSubCategory = $data['hasMiniSubCategory'] ?? false;
+
+            // Corrected part: Check if image paths exist and prepend the base URL
+            $this->image = $data['img'] ? asset('storage/' . $data['img']) : '';
+            // $this->heroImage = $data['heroImage'] ? asset('storage/' . $data['heroImage']) : '';
+
+            $this->editSubCategoryModal = true;
+        } else {
+            $this->dispatch('sweetalert2', type: 'error', message: 'Sub Category data not found.');
+        }
+    } else {
+        $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch sub category details.');
+    }
+
+
+    
+}  
+public function updateSubCategory()
+{
+    // Decrypt the ID before making the API call
+    try {
+        $decryptedId = decrypt($this->subCategoryId);
+    } catch (\Illuminate\Contracts\Encryption\DecryptException $e) {
+        $this->dispatch('sweetalert2', type: 'error', message: 'Invalid category ID.');
+        return;
+    }
+
+    $token = Session::get('api_token');
+
+    if (!$token) {
+        return $this->redirectRoute('login', navigate: true);
+    }
+    $response = Http::withToken($token)->put(api_base_url() . "/categories/sub/{$decryptedId}", [
+        'name' => $this->name,
+        'mainCategoryId' => $this->mainCategoryId,
+        'hasSpecificCategory' => $this->hasSpecificCategory,
+        'description' => $this->description,
+        'contractWhatsapp' => $this->contractWhatsapp,
+        'hasMiniSubCategory' => $this->hasMiniSubCategory,
+    ]);
+
+    // Your logic for image updates is flawed. 
+    // You should include the images in the original HTTP request if you're using multipart/form-data.
+    // The current code just assigns the image to a local variable after the request, which does nothing.
+
+    if ($response->successful()) {
+        $this->switchEditSubCategoryModal(); // Corrected function name
+        $this->fetchSubCategory($this->currentPage); // Corrected function name
+        $this->dispatch('sweetalert2', type: 'success', message: 'Sub category updated successfully.');
+    } else {
+        $this->dispatch('sweetalert2', type: 'error', message: 'Failed to update sub category.');
+    }
+}
+
+
+public function deleteSubCategory($subCategoryId)
     {
         $subCategoryId = decrypt($subCategoryId);
 
