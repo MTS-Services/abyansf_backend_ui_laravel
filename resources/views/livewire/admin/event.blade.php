@@ -3,7 +3,6 @@
     <x-admin.searchbar page="Add Event" livewire_method="switchAddEventModal" />
 
     <!-- Add Event Modal -->
-    <!-- Add Event Modal -->
     <div x-data x-init="$watch('$wire.addEventModal', value => document.body.classList.toggle('overflow-hidden', value))"
         class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 {{ $addEventModal ? '' : 'hidden' }}">
 
@@ -29,10 +28,10 @@
 
                         @if ($image)
                             <div class="relative w-full h-full">
-                                
-                                    <img src="{{ $image->temporaryUrl() }}"
-                                        class="w-full h-full object-cover rounded-md" alt="Preview">
-                               
+
+                                <img src="{{ $image && filter_var($image, FILTER_VALIDATE_URL) ? $image : $image->temporaryUrl() }}" class="w-full h-full object-cover rounded-md"
+                                    alt="Preview">
+
                                 <button type="button"
                                     @click.stop="$wire.set('image', null); $refs.fileInput.value = '';"
                                     class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">
@@ -212,8 +211,6 @@
         </table>
     </div>
     {{-- <!edit event modal--> --}}
-
-
 
     <div x-data x-data x-init="$watch('$wire.editEventModal', value => document.body.classList.toggle('overflow-hidden', value))"
         class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 {{ $editEventModal ? '' : 'hidden' }}">
