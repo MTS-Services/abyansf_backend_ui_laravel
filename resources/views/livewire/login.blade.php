@@ -22,12 +22,22 @@
             @error('password')
                 <span class="text-red-500 text-sm">{{ $message }}</span>
             @enderror
-            <div class="relative mb-4">
-                <input type="password" wire:model.live="password" placeholder="Password"
+            <div x-data="{ show: false }" class="relative mb-4">
+                <input :type="show ? 'text' : 'password'" wire:model.live="password" placeholder="Password"
                     class="w-full px-4 p-4 bg-[#F8F6EE] border border-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c5a86a]">
-                <span class="absolute right-3 top-2.5 cursor-pointer"><img
-                        src="{{ asset('image/PasswordProjection.png') }}" alt="" class="pt-2"></span>
+
+                <span
+                    class="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-[#c5a86a]"
+                    @click="show = !show">
+                    <template x-if="!show">
+                        <flux:icon name="eye" class="w-5 h-5" />
+                    </template>
+                    <template x-if="show">
+                        <flux:icon name="eye-off" class="w-5 h-5" />
+                    </template>
+                </span>
             </div>
+
 
             <div class="flex items-center mb-4 float-left">
                 <input type="checkbox" wire:model.live="rememberMe" id="rememberMe"
