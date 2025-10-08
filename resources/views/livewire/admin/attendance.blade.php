@@ -17,7 +17,8 @@
             </thead>
             <tbody class="text-black text-sm">
                 @forelse ($events as $index => $event)
-                    <tr wire:key="user-{{ $event['id'] }}" class="bg-white mb-4 rounded-lg shadow-sm border md:border-0 md:bg-transparent">
+                    <tr wire:key="user-{{ $event['id'] }}"
+                        class="bg-white mb-4 rounded-lg shadow-sm border md:border-0 md:bg-transparent">
                         <td class="p-4 text-left font-normal border-b md:border-b-0" data-label="SL">
                             <span class="font-medium md:hidden text-gray-500">SL: </span>
                             {{ ($pagination['page'] - 1) * $pagination['limit'] + $index + 1 }}
@@ -34,9 +35,9 @@
                             <span class="font-medium md:hidden text-gray-500">Join Date: </span>
                             {{ \Carbon\Carbon::parse($event['createdAt'])->format('d/m/Y') }}
                         </td>
-                        <td class="p-4 text-left font-normal text-base border-b md:border-b-0" data-label="Description">
+                        <td class="p-4 text-left font-normal text-base border-b md:border-b-0 " data-label="Description">
                             <span class="font-medium md:hidden text-gray-500">Description: </span>
-                            {{ $event['description'] }}
+                            {{ Str::limit($event['description'] ?? 'N/A', 50 ,'...') }}
                         </td>
                         <td class="p-4 text-left font-normal text-base border-b md:border-b-0" data-label="Max Person">
                             <span class="font-medium md:hidden text-gray-500">Max Person: </span>
@@ -52,24 +53,36 @@
                         </td>
                         <td class="py-3 px-6 text-right" data-label="Action">
                             <span class="font-medium md:hidden text-gray-500">Action: </span>
-                            <div class="relative inline-block text-left" x-data="{ open: false }" x-on:click.outside="open = false">
-                                <button x-on:click="open = ! open" class="-mt-1 text-[#AD8945] rounded-full focus:outline-none" title="Settings">
+                            <div class="relative inline-block text-left" x-data="{ open: false }"
+                                x-on:click.outside="open = false">
+                                <button x-on:click="open = ! open"
+                                    class="-mt-1 text-[#AD8945] rounded-full focus:outline-none" title="Settings">
                                     <flux:icon name="cog-6-tooth" class="text-[#C7AE6A]" />
                                 </button>
-                                <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute right-3 -mt-1 p-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
-                                    <button wire:click="editEvent('{{ $event['id'] }}')" class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
+                                <div x-show="open" x-transition:enter="transition ease-out duration-100"
+                                    x-transition:enter-start="transform opacity-0 scale-95"
+                                    x-transition:enter-end="transform opacity-100 scale-100"
+                                    x-transition:leave="transition ease-in duration-75"
+                                    x-transition:leave-start="transform opacity-100 scale-100"
+                                    x-transition:leave-end="transform opacity-0 scale-95"
+                                    class="absolute right-3 -mt-1 p-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
+                                    <button wire:click="editEvent('{{ $event['id'] }}')"
+                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
                                         <flux:icon name="pencil-square" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Edit
                                     </button>
-                                    <button wire:click="activateEvent('{{ $event['id'] }}')" class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
+                                    <button wire:click="activateEvent('{{ $event['id'] }}')"
+                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
                                         <flux:icon name="check" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Active
                                     </button>
-                                    <button wire:click="deactivateEvent('{{ encrypt($event['id']) }}')" class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
+                                    <button wire:click="deactivateEvent('{{ encrypt($event['id']) }}')"
+                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
                                         <flux:icon name="x-circle" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Deactivate
                                     </button>
-                                    <button wire:click="deleteEvent('{{ $event['id'] }}')" class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
+                                    <button wire:click="deleteEvent('{{ $event['id'] }}')"
+                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
                                         <flux:icon name="trash" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Delete
                                     </button>
@@ -85,7 +98,7 @@
             </tbody>
         </table>
     </div>
-</section>
+
     </div>
     @if (!empty($pagination) && ($pagination['pages'] ?? 1) > 1)
         <div class="flex items-center justify-center space-x-2 py-3 my-3 flex-wrap border-t border-slate-200">
@@ -105,7 +118,8 @@
                     <button wire:click="gotoPage({{ $page }})" @class([
                         'flex items-center justify-center w-8 h-8 rounded border font-medium text-sm',
                         'border-2 border-[#AD8945] text-[#AD8945]' => $page == $currentPage,
-                        'border-slate-300 bg-white text-slate-700 hover:bg-slate-50' => $page != $currentPage,
+                        'border-slate-300 bg-white text-slate-700 hover:bg-slate-50' =>
+                            $page != $currentPage,
                     ])>
                         {{ $page }}
                     </button>
