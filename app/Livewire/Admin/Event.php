@@ -13,6 +13,7 @@ class Event extends Component
 
     public $addEventModal = false;
     public $editEventModal = false;
+    public $eventDetailsModal = false;
 
     // Form data properties
     public $eventId;
@@ -31,6 +32,10 @@ class Event extends Component
     public $openActions = null;
     public $currentPage = 1;
     public string $eventName = '';
+
+    // event deatils
+
+
 
     protected $queryString = [
         'currentPage' => ['as' => 'page', 'except' => 1]
@@ -173,7 +178,7 @@ class Event extends Component
 
         $request = Http::withToken($token);
 
-               // You MUST re-add the attach part to send the image
+        // You MUST re-add the attach part to send the image
         if ($this->image && !filter_var($this->image, FILTER_VALIDATE_URL)) {
             $request->attach(
                 'event_img',
@@ -289,6 +294,45 @@ class Event extends Component
             $pages = [1, '...', $current - 1, $current, $current + 1, '...', $total];
         }
         return $pages;
+    }
+
+    public function closeModal()
+    {
+        $this->eventDetailsModal = false;
+        // $this->resetForm();
+    }
+    public function eventDtls($eventId = null)
+    {
+        $this->eventDetailsModal = $eventId;
+        if ($this->eventDetailsModal && $eventId) {
+            $this->eventDetails($eventId);
+        }
+    }
+
+
+    public function eventDetails($eventId = null)
+    {
+        try {
+
+            // // Fetch API response
+            $decryptedId = decrypt($eventId);
+            $response = Http::withToken(api_token())->get(api_base_url() . '/events/' . ($decryptedId));
+            dd($response->json());
+            if ($response->successful()) {
+                $json = $response->json();
+                if (isset($json['data'])) {
+                    $event = $json['data'];
+                    $this->title = $event['title'] ?? '';
+                    
+
+
+                }
+            } else {
+                $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch event details.');
+            }
+        } catch (\Exception $e) {
+            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch event details.');
+        }
     }
 
     public function render()
