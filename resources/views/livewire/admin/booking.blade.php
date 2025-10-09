@@ -149,7 +149,7 @@
                                             Details
                                         </button>
                                     @elseif($booking['type'] === 'subcategory')
-                                        <button wire:click="editSubcategoryBooking('{{ encrypt($booking['id']) }}')"
+                                        <button wire:click="listingBookingDtls('{{ encrypt($booking['id']) }}')"
                                             class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
                                             <flux:icon name="eye" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                             Details
