@@ -45,6 +45,9 @@
                 <label for="rememberMe" class="ml-2 text-sm text-[#AD8945] cursor-pointer">Remember me!</label>
             </div>
 
+            <a href="/forget" class="text-[#AD8945] hover:text-[#c5a86a]">Forgot
+                password?</a>
+
             <button type="submit"
                 class="font-family: Playfair Display; w-full bg-[#c5a86a] text-white font-medium p-4 rounded-md shadow-md hover:bg-[#b8964c] transition box-shadow">
                 Login

@@ -1,12 +1,12 @@
 <?php
 
+use App\Livewire\Forget;
 use App\Livewire\Login;
-use App\Livewire\Settings\Appearance;
-use App\Livewire\Settings\Password;
-use App\Livewire\Settings\Profile;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', Login::class)->name('login');
+Route::get('/login', Login::class)->name('login');
+
+Route::get('/forget', Forget::class)->name('password.forget');
 
 // require __DIR__.'/auth.php';
-require __DIR__ . '/admin.php';
+require __DIR__.'/admin.php';
