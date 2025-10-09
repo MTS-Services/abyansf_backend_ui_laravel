@@ -1,6 +1,6 @@
 <section class="font-playfair">
     <h2 class="font-medium text-3xl text-black mb-4">User Management</h2>
-    <div class="overflow-x-auto">
+    <div>
         <table class="leading-normal table">
             <thead>
                 <tr class="bg-[#e7e7e7] text-black font-medium">
