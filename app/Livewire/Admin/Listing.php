@@ -47,6 +47,13 @@ class Listing extends Component
     public $openActions = null;
     public $currentPage = 1;
 
+
+    //Specific Category List
+
+    public  $specificCategories = null;
+
+    public $selectedSpecificCategory = null;
+
     protected $queryString = [
         'currentPage' => ['as' => 'page', 'except' => 1]
     ];
@@ -76,11 +83,18 @@ class Listing extends Component
         ];
     }
 
-    public function mount()
+    // public function mount()
+    // {
+    //     $this->currentPage = request()->query('page', 1);
+    //     $this->fetchListings($this->currentPage);
+    // }
+
+    public function filterListing()
     {
-        $this->currentPage = request()->query('page', 1);
+        $this->currentPage = 1; // Reset to first page on filter change
         $this->fetchListings($this->currentPage);
     }
+
 
     public function fetchListings($page = 1)
     {
@@ -91,7 +105,8 @@ class Listing extends Component
         }
 
         $response = Http::withToken($token)->get(api_base_url() . '/listings', [
-            'page' => $page
+            'page' => $page,
+            'specificCategoryId' => $this->selectedSpecificCategory,
         ]);
 
         if ($response->successful()) {
@@ -382,12 +397,45 @@ class Listing extends Component
         return $pages;
     }
 
+    //Fetch All Specific Categories
+
+    protected function allSpecificCategories()
+    {
+        $token = Session::get('api_token');
+
+        if (!$token) {
+            return $this->redirectRoute('login', navigate: true);
+        }
+
+        $response = Http::withToken($token)->get(api_base_url() . '/categories/specific');
+
+        if ($response->successful()) {
+            $data = $response->json();
+            $this->specificCategories = $data['data']['specificCategories'] ?? [];
+        } else {
+            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to load specific categories from the API.');
+            $this->specificCategories = [];
+            Session::flash('error', 'Failed to load specific categories from the API.');
+        }
+    }
+
+
+
     public function render()
     {
+
+        $this->currentPage = request()->query('page', 1);
+        $this->fetchListings($this->currentPage);
+
+
         $pages = $this->getPaginationPages();
         $hasPrevious = $this->currentPage > 1;
         $hasNext = $this->currentPage < ($this->pagination['pages'] ?? 1);
 
+        // Fetch specific categories for the dropdown
+        $this->allSpecificCategories();
+        
+       
         return view(
             'livewire.admin.listing',
             [
