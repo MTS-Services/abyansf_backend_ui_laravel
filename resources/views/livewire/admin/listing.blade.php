@@ -289,6 +289,11 @@
                                     x-transition:leave-start="transform opacity-100 scale-100"
                                     x-transition:leave-end="transform opacity-0 scale-95"
                                     class="absolute right-3 -mt-1 p-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
+                                    <button wire:click="listingDtls('{{ encrypt($listing['id']) }}')"
+                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
+                                        <flux:icon name="eye" class="text-[#6D6D6D] mr-2 h-4 w-4" />
+                                        Details
+                                    </button>
                                     <button wire:click="switchEditListingModal('{{ encrypt($listing['id']) }}')"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
                                         <flux:icon name="pencil-square" class="text-[#6D6D6D] mr-2 h-4 w-4" />
@@ -316,6 +321,198 @@
                 @endforeach
             </tbody>
         </table>
+        {{-- listing details modal --}}
+        <div x-data="{ show: @entangle('listingDetailsModal') }" x-show="show" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
+
+            <div class="flex items-center justify-center min-h-screen px-4 py-8">
+
+                <!-- Backdrop -->
+                <div x-show="show" x-cloak x-effect="document.body.classList.toggle('overflow-hidden', show)"
+                    x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
+                    x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                    class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" wire:click="closeEditModal">
+                </div>
+
+                <!-- Modal Content -->
+                <div x-show="show" x-cloak x-transition:enter="ease-out duration-300"
+                    x-transition:enter-start="opacity-0 translate-y-6 scale-95"
+                    x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave="ease-in duration-200"
+                    x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                    x-transition:leave-end="opacity-0 translate-y-6 scale-95"
+                    class="relative bg-white rounded-xl shadow-2xl max-w-4xl w-full p-8 sm:p-10" wire:click.stop>
+
+                    <!-- Close Button -->
+                    <button wire:click="closeEditModal"
+                        class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
+                        <flux:icon name="x-circle" class="h-6 w-6" />
+                    </button>
+
+                    <!-- Header -->
+                    <div class="flex items-center gap-4 border-b border-gray-100 pb-6">
+                        <img src="{{ $listingMainImage ?? 'https://via.placeholder.com/150' }}" alt="Listing Image"
+                            class="w-20 h-20 rounded-lg object-cover shadow">
+                        <div>
+                            <h2 class="text-2xl font-semibold text-gray-800">{{ $name ?? 'Unknown Listing' }}
+                            </h2>
+                            <p class="text-sm text-[#AD8945]">{{ $mainCategoryName ?? '' }}</p>
+                        </div>
+                    </div>
+
+                    <!-- User & Booking Details -->
+                    <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                        <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                            <label class="text-xs text-gray-500 font-medium mb-1">Listing Name</label>
+                            <p class="text-gray-800 font-semibold">{{ $name ?? '' }}</p>
+                        </div>
+
+                        {{-- <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                            <label class="text-xs text-gray-500 font-medium mb-1">WhatsApp</label>
+                            <p class="text-gray-800 font-semibold">{{ $contractWhatsapp ?? '' }}</p>
+                        </div> --}}
+
+                        <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                            <label class="text-xs text-gray-500 font-medium mb-1">Location</label>
+                            <p class="text-gray-800">{{ $location ?? '' }}</p>
+                        </div>
+                        <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                            <label class="text-xs text-gray-500 font-medium mb-1">Member Privileges</label>
+                            @forelse ($privileges as $previlege)
+                                <p class="text-gray-800">{{ $previlege ?? '' }}</p>
+                            @empty
+                                <p class="text-gray-800">No Privileges</p>
+                            @endforelse
+
+                        </div>
+
+                        <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                            <label class="text-xs text-gray-500 font-medium mb-1">Hours</label>
+                            {{-- <p class="text-gray-800">{{ $listingHours ?? '' }}</p> --}}
+                            @forelse ($listingHours as $listingHour)
+                                <p class="text-gray-800">{{ $listingHour ?? '' }}</p>
+                            @empty
+                                <p class="text-gray-800">No Hours</p>
+                            @endforelse
+                        </div>
+
+                        <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                            <label class="text-xs text-gray-500 font-medium mb-1">Specific Category Id</label>
+                            <p class="text-gray-800">{{ $specificCategoryId ?? '' }}</p>
+                        </div>
+
+                        <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                            <label class="text-xs text-gray-500 font-medium mb-1">Status</label>
+                            {{-- <p class="text-gray-800">{{ $status_label ?? '' }}</p> --}}
+                            @if ($isActive == 1)
+                                <p
+                                    class="inline-block w-fit px-3 py-1 text-sm font-semibold text-green-700 bg-green-100 rounded-full">
+                                    Active</p>
+                            @else
+                                <p
+                                    class="inline-block w-fit px-3 py-1 text-sm font-semibold text-red-700 bg-red-100 rounded-full">
+                                    Inactive</p>
+                            @endif
+                        </div>
+
+
+                        <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                            <label class="text-xs text-gray-500 font-medium mb-1">Menu Images</label>
+                            @forelse ($menuImages as $menuImage)
+                                <img src="{{ $menuImage ?? '' }}" alt="">
+                            @empty
+                                <p class="text-gray-800">No Image ablavile</p>
+                            @endforelse
+                        </div>
+
+                        <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                            <label class="text-xs text-gray-500 font-medium mb-1">Listing Type of Service</label>
+                            @forelse ($listingTypeofServices as $listingTypeofService)
+                                <p class="text-gray-800">{{ $listingTypeofService ?? '' }}</p>
+                            @empty
+                                <p class="text-gray-500 italic">Not provided</p>
+                            @endforelse
+                        </div>
+
+
+                        <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                            <label class="text-xs text-gray-500 font-medium mb-1">Listing Venue Name</label>
+                            @forelse ($listingVenueNames as $listingVenueName)
+                                <p class="text-gray-800">{{ $listingVenueName ?? '' }}</p>
+                            @empty
+                                <p class="text-gray-500 italic">No venue name available.</p>
+                            @endforelse
+                        </div>
+
+
+                        <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                            <label class="text-xs text-gray-500 font-medium mb-1">From Name</label>
+                            <p class="text-gray-800">{{ $fromName ?? '' }}</p>
+                        </div>
+
+                        {{-- <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                            <label class="text-xs text-gray-500 font-medium mb-1">Has From</label>
+                            <p class="text-gray-800">{{ $hasForm ?? '' }}</p>
+                        </div> --}}
+
+
+                        <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                            <label class="text-xs text-gray-500 font-medium mb-1">Specific Category</label>
+                            <p class="text-gray-800">{{ $specificCategories ?? '' }}</p>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="mt-6 grid grid-cols-1 gap-5">
+                        <div class="flex  bg-gray-100 p-4 gap-4 flex-wrap rounded-lg">
+                            <label class="text-xs text-gray-500 font-medium mb-1">Bookings</label>
+                            @forelse ($bookings as $booking)
+                                <div class="bg-white p-3 rounded mb-2 border border-gray-200">
+                                    <p class="text-gray-800 font-semibold">{{ $booking['name'] ?? 'N/A' }}</p>
+                                    <p class="text-xs text-gray-500">Status: {{ $booking['status'] ?? 'N/A' }}</p>
+                                    @if (isset($booking['user']))
+                                        <p class="text-xs text-gray-500">User: {{ $booking['user']['name'] ?? 'N/A' }}
+                                        </p>
+                                    @endif
+                                </div>
+                            @empty
+                                <p class="text-gray-500 italic">No bookings available</p>
+                            @endforelse
+                        </div>
+                        <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                            <label class="text-xs text-gray-500 font-medium mb-1">Member Privileges Description</label>
+                            <p class="text-gray-800">{{ $member_privileges_description ?? '' }}</p>
+                        </div>
+
+                        <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                            <label class="text-xs text-gray-500 font-medium mb-1">Description</label>
+                            <p class="text-gray-800">{{ $description ?? '' }}</p>
+                        </div>
+
+                        <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                            <label class="text-xs text-gray-500 font-medium mb-1">Sub Images</label>
+                            @forelse ($listing_sub_images as $listing_sub_image)
+                                <img class="mb-5" src="{{ $listing_sub_image ?? '' }}" alt="">
+                            @empty
+                                <p class="text-gray-800 font-semibold">No Image Available</p>
+                            @endforelse
+                        </div>
+                    </div>
+
+
+                    <!-- Footer -->
+                    <div class="mt-8 pt-5 border-t border-gray-100 flex justify-end">
+                        <button wire:click="closeEditModal"
+                            class="px-5 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#AD8945] to-amber-600 hover:from-[#9c7a3d] hover:to-amber-700 rounded-lg shadow transition transform hover:scale-[1.02]">
+                            Close
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
         <div x-data="{ open: @entangle('editListingModal') }" x-show="open" x-cloak x-init="$watch('open', value => document.body.classList.toggle('overflow-hidden', value));" x-on:click.self="open = false"
             class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 transition-opacity duration-300 ease-in-out"
             x-transition:enter="opacity-0" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
@@ -349,12 +546,15 @@
                             <label class="block text-sm font-medium text-gray-700">Main Image (Single)</label>
                             <div class="h-56 sm:h-72 md:h-56 rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
                                 @click="$refs.mainImageInput.click()">
-                                <input type="file" wire:model.live="main_image" x-ref="mainImageInput" class="hidden" accept="image/*">
+                                <input type="file" wire:model.live="main_image" x-ref="mainImageInput"
+                                    class="hidden" accept="image/*">
                                 <div class="text-center px-2">
                                     <div class="mb-4 flex items-center justify-center">
-                                        <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                        <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg"
+                                            fill="none" viewBox="0 0 20 16">
+                                            <path stroke="currentColor" stroke-linecap="round"
+                                                stroke-linejoin="round" stroke-width="2"
+                                                d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
                                         </svg>
                                     </div>
                                     <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop it here</p>
@@ -362,13 +562,17 @@
                             </div>
                             @if ($main_image)
                                 <div class="relative w-32 flex-shrink-0 mt-3">
-                                    <img src="{{ $main_image->temporaryUrl() }}" class="w-full h-32 object-cover rounded-md border" alt="Main Image Preview">
-                                    <button type="button" wire:click="$set('main_image', null)" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">&times;</button>
+                                    <img src="{{ $main_image->temporaryUrl() }}"
+                                        class="w-full h-32 object-cover rounded-md border" alt="Main Image Preview">
+                                    <button type="button" wire:click="$set('main_image', null)"
+                                        class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">&times;</button>
                                 </div>
                             @elseif ($existing_main_image)
                                 <div class="relative w-32 flex-shrink-0 mt-3">
-                                    <img src="{{ $existing_main_image }}" class="w-full h-32 object-cover rounded-md border" alt="Existing Main Image">
-                                    <button type="button" wire:click="$set('existing_main_image', null)" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">&times;</button>
+                                    <img src="{{ $existing_main_image }}"
+                                        class="w-full h-32 object-cover rounded-md border" alt="Existing Main Image">
+                                    <button type="button" wire:click="$set('existing_main_image', null)"
+                                        class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">&times;</button>
                                 </div>
                             @endif
                         </div>
@@ -380,11 +584,15 @@
                                 <label class="block text-sm font-medium text-gray-700">Menu Images</label>
                                 <div class="h-56 sm:h-72 md:h-56 rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4 mt-2"
                                     @click="$refs.menuImagesInput.click()">
-                                    <input type="file" wire:model.live="menu_images" multiple x-ref="menuImagesInput" class="hidden" accept="image/*">
+                                    <input type="file" wire:model.live="menu_images" multiple
+                                        x-ref="menuImagesInput" class="hidden" accept="image/*">
                                     <div class="text-center px-2">
                                         <div class="mb-4 flex items-center justify-center">
-                                            <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                            <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg"
+                                                fill="none" viewBox="0 0 20 16">
+                                                <path stroke="currentColor" stroke-linecap="round"
+                                                    stroke-linejoin="round" stroke-width="2"
+                                                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
                                             </svg>
                                         </div>
                                         <p class="text-lg font-bold text-gray-800">Choose files or drag & drop here</p>
@@ -395,14 +603,22 @@
                                         <div class="flex gap-2 min-w-max">
                                             @foreach ($existing_menu_images as $image)
                                                 <div class="relative w-32 flex-shrink-0">
-                                                    <img src="{{ $image['url'] }}" class="w-full h-32 object-cover rounded-md border" alt="Existing Menu Image">
-                                                    <button type="button" wire:click="removeExistingImage('menu_images', '{{ $image['id'] }}')" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">&times;</button>
+                                                    <img src="{{ $image['url'] }}"
+                                                        class="w-full h-32 object-cover rounded-md border"
+                                                        alt="Existing Menu Image">
+                                                    <button type="button"
+                                                        wire:click="removeExistingImage('menu_images', '{{ $image['id'] }}')"
+                                                        class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">&times;</button>
                                                 </div>
                                             @endforeach
                                             @foreach ($menu_images as $index => $newImage)
                                                 <div class="relative w-32 flex-shrink-0">
-                                                    <img src="{{ $newImage->temporaryUrl() }}" class="w-full h-32 object-cover rounded-md border" alt="New Menu Image Preview">
-                                                    <button type="button" wire:click="removeNewImage('menu_images', {{ $index }})" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">&times;</button>
+                                                    <img src="{{ $newImage->temporaryUrl() }}"
+                                                        class="w-full h-32 object-cover rounded-md border"
+                                                        alt="New Menu Image Preview">
+                                                    <button type="button"
+                                                        wire:click="removeNewImage('menu_images', {{ $index }})"
+                                                        class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">&times;</button>
                                                 </div>
                                             @endforeach
                                         </div>
@@ -415,11 +631,15 @@
                                 <label class="block text-sm font-medium text-gray-700">Sub Images</label>
                                 <div class="h-56 sm:h-72 md:h-56 rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4 mt-2"
                                     @click="$refs.subImagesInput.click()">
-                                    <input type="file" wire:model.live="sub_images" multiple x-ref="subImagesInput" class="hidden" accept="image/*">
+                                    <input type="file" wire:model.live="sub_images" multiple
+                                        x-ref="subImagesInput" class="hidden" accept="image/*">
                                     <div class="text-center px-2">
                                         <div class="mb-4 flex items-center justify-center">
-                                            <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                            <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg"
+                                                fill="none" viewBox="0 0 20 16">
+                                                <path stroke="currentColor" stroke-linecap="round"
+                                                    stroke-linejoin="round" stroke-width="2"
+                                                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
                                             </svg>
                                         </div>
                                         <p class="text-lg font-bold text-gray-800">Choose files or drag & drop here</p>
@@ -430,14 +650,22 @@
                                         <div class="flex gap-2 min-w-max">
                                             @foreach ($existing_sub_images as $image)
                                                 <div class="relative w-32 flex-shrink-0">
-                                                    <img src="{{ $image['url'] }}" class="w-full h-32 object-cover rounded-md border" alt="Existing Sub Image">
-                                                    <button type="button" wire:click="removeExistingImage('sub_images', '{{ $image['id'] }}')" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">&times;</button>
+                                                    <img src="{{ $image['url'] }}"
+                                                        class="w-full h-32 object-cover rounded-md border"
+                                                        alt="Existing Sub Image">
+                                                    <button type="button"
+                                                        wire:click="removeExistingImage('sub_images', '{{ $image['id'] }}')"
+                                                        class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">&times;</button>
                                                 </div>
                                             @endforeach
                                             @foreach ($sub_images as $index => $newImage)
                                                 <div class="relative w-32 flex-shrink-0">
-                                                    <img src="{{ $newImage->temporaryUrl() }}" class="w-full h-32 object-cover rounded-md border" alt="New Sub Image Preview">
-                                                    <button type="button" wire:click="removeNewImage('sub_images', {{ $index }})" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">&times;</button>
+                                                    <img src="{{ $newImage->temporaryUrl() }}"
+                                                        class="w-full h-32 object-cover rounded-md border"
+                                                        alt="New Sub Image Preview">
+                                                    <button type="button"
+                                                        wire:click="removeNewImage('sub_images', {{ $index }})"
+                                                        class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">&times;</button>
                                                 </div>
                                             @endforeach
                                         </div>
