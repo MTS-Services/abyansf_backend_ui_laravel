@@ -30,14 +30,20 @@ class Event extends Component
     public $pagination = [];
     public $openActions = null;
     public $currentPage = 1;
+    public string $eventName = '';
 
     protected $queryString = [
         'currentPage' => ['as' => 'page', 'except' => 1]
     ];
 
-    public function mount()
+    // public function mount()
+    // {
+    //     $this->currentPage = request()->query('page', 1);
+    //     $this->fetchEvents($this->currentPage);
+    // }
+
+    public function applyFilters()
     {
-        $this->currentPage = request()->query('page', 1);
         $this->fetchEvents($this->currentPage);
     }
 
@@ -47,9 +53,7 @@ class Event extends Component
         if (!$token) {
             return $this->redirectRoute('login', navigate: true);
         }
-        $response = Http::withToken($token)->get(api_base_url() . '/events', [
-            'page' => $page
-        ]);
+        $response = Http::withToken($token)->get(api_base_url() . '/events');
         if ($response->successful()) {
             $data = $response->json();
             $this->events = $data['data']['events'] ?? [];
@@ -146,6 +150,7 @@ class Event extends Component
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch event details.');
         }
     }
+
     public function updateEvent()
     {
         // Prepare the regular form data
@@ -288,6 +293,8 @@ class Event extends Component
 
     public function render()
     {
+        $this->currentPage = request()->query('page', 1);
+        $this->fetchEvents($this->currentPage);
         $pages = $this->getPaginationPages();
         $hasPrevious = $this->currentPage > 1;
         $hasNext = $this->currentPage < ($this->pagination['pages'] ?? 1);
