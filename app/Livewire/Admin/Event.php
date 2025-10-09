@@ -31,11 +31,12 @@ class Event extends Component
     public $pagination = [];
     public $openActions = null;
     public $currentPage = 1;
+
     public string $eventName = '';
 
-    // event deatils
+    public string $eventLocation = '';
 
-
+    public string $eventStatus = '';
 
     protected $queryString = [
         'currentPage' => ['as' => 'page', 'except' => 1]
@@ -49,7 +50,11 @@ class Event extends Component
 
     public function applyFilters()
     {
-        $this->fetchEvents($this->currentPage);
+       
+       $response =  $this->fetchEvents($this->currentPage);
+
+
+        
     }
 
     public function fetchEvents($page = 1)
@@ -58,7 +63,14 @@ class Event extends Component
         if (!$token) {
             return $this->redirectRoute('login', navigate: true);
         }
-        $response = Http::withToken($token)->get(api_base_url() . '/events');
+        $response = Http::withToken($token)->get(api_base_url() . '/events',[
+            'page' => $page,
+            'name' => $this->eventName,
+            'location' => $this->eventLocation,
+            'status' => $this->eventStatus,
+        ]);
+
+
         if ($response->successful()) {
             $data = $response->json();
             $this->events = $data['data']['events'] ?? [];
@@ -323,7 +335,7 @@ class Event extends Component
                 if (isset($json['data'])) {
                     $event = $json['data'];
                     $this->title = $event['title'] ?? '';
-                    
+
 
 
                 }

@@ -5,17 +5,19 @@
     <div class="flex flex-col md:flex-row md:items-center md:space-x-4 mt-10 px-4 md:px-0 font-playfair">
         <!-- Dropdown -->
         <div class="relative w-full md:w-1/4 mb-4 md:mb-0">
-            <select
+            <select  wire:model="eventStatus" 
                 class="block w-full font-semibold font-playfair text-sm md:text-base px-4 py-3 text-gray-700 bg-[#F4F4F4] rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] custom-shadow">
-                <option value="Services" disabled selected>Services</option>
-                <option value="Service 1">Service 1</option>
-                <option value="Service 2">Service 2</option>
+                <option >All</option>
+                <option value="Active" >Active</option>
+                <option value="Inactive" >Inactive</option>     
+
             </select>
             <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                 <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
             </div>
+            
         </div>
 
         <!-- Search Bar -->
@@ -27,6 +29,18 @@
                 </svg>
             </div>
             <input type="text" placeholder="Search by services" wire:model="eventName"
+                class="block font-semibold  font-playfair text-sm w-full lg:max-w-[600px] md:text-base px-4 py-3 pl-14 text-gray-700 bg-[#F4F4F4]    rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] custom-shadow" />
+        </div>
+
+        <!-- Location Bar -->
+        <div class="relative flex-grow mb-4 md:mb-0 max-w-full rounded-sm ">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-5 pointer-events-none">
+                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
+            <input type="text" placeholder="Location" wire:model="eventLocation"
                 class="block font-semibold  font-playfair text-sm w-full lg:max-w-[600px] md:text-base px-4 py-3 pl-14 text-gray-700 bg-[#F4F4F4]    rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] custom-shadow" />
         </div>
 
