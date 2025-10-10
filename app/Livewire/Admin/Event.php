@@ -27,6 +27,17 @@ class Event extends Component
     public $image; // Holds the temporary UploadedFile object for a new file
     public $existing_image; // Stores the URL of the existing image for display
 
+    // Form properties for the deatils modal
+    public $detailTitle;
+    public $detailImage;
+    public $detailMaxPerson;
+    public $detailLocation;
+    public $detailDate;
+    public $detailTime;
+    public $detailStatus;
+    public $detailDescription;
+    public $detailBookings = [];
+
     public $events = [];
     public $pagination = [];
     public $openActions = null;
@@ -329,14 +340,20 @@ class Event extends Component
             // // Fetch API response
             $decryptedId = decrypt($eventId);
             $response = Http::withToken(api_token())->get(api_base_url() . '/events/' . ($decryptedId));
-            dd($response->json());
+            // dd($response->json());
             if ($response->successful()) {
                 $json = $response->json();
                 if (isset($json['data'])) {
                     $event = $json['data'];
-                    $this->title = $event['title'] ?? '';
-
-
+                    $this->detailTitle = $event['title'] ?? '';
+                    $this->detailImage = $event['event_img'] ?? '';
+                    $this->detailDate = $event['date'] ?? '';
+                    $this->detailTime = $event['time'] ?? '';
+                    $this->detailDescription = $event['description'] ?? '';
+                    $this->detailMaxPerson = $event['max_person'] ?? '';
+                    $this->detailLocation = $event['location'] ?? '';
+                    $this->detailStatus = $event['status'] ?? '';
+                    $this->detailBookings = $event['bookings'] ?? [];
 
                 }
             } else {

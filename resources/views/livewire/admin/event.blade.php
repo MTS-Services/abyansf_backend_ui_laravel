@@ -5,11 +5,11 @@
     <div class="flex flex-col md:flex-row md:items-center md:space-x-4 mt-10 px-4 md:px-0 font-playfair">
         <!-- Dropdown -->
         <div class="relative w-full md:w-1/4 mb-4 md:mb-0">
-            <select  wire:model="eventStatus" 
+            <select wire:model="eventStatus"
                 class="block w-full font-semibold font-playfair text-sm md:text-base px-4 py-3 text-gray-700 bg-[#F4F4F4] rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] custom-shadow">
-                <option >All</option>
-                <option value="Active" >Active</option>
-                <option value="Inactive" >Inactive</option>     
+                <option>All</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
 
             </select>
             <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
@@ -17,7 +17,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
             </div>
-            
+
         </div>
 
         <!-- Search Bar -->
@@ -340,17 +340,32 @@
                         <p class="text-gray-800">{{ $detailTime ?? 'N/A' }}</p>
                     </div>
 
-                    {{-- <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                    <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
                         <label class="text-xs text-gray-500 font-medium mb-1">Status</label>
                         <span
                             class="inline-block px-3 py-1 text-sm font-semibold rounded-full w-fit
                         {{ $detailStatus == 'Active' ? 'text-green-800 bg-green-200' : 'text-red-800 bg-red-200' }}">
                             {{ $detailStatus ?? 'N/A' }}
                         </span>
-                    </div> --}}
+                    </div>
                 </div>
 
                 <div class="mt-6 grid grid-cols-1 gap-5">
+                    <div class="flex  bg-gray-100 p-4 gap-4 flex-wrap rounded-lg">
+                        <label class="text-xs text-gray-500 font-medium mb-1">Bookings</label>
+                        @forelse ($detailBookings as $booking)
+                            <div class="bg-white p-3 rounded mb-2 border border-gray-200">
+                                <p class="text-gray-800 font-semibold">{{ $booking['name'] ?? 'N/A' }}</p>
+                                <p class="text-xs text-gray-500">Status: {{ $booking['status'] ?? 'N/A' }}</p>
+                                @if (isset($booking['user']))
+                                    <p class="text-xs text-gray-500">User: {{ $booking['user']['name'] ?? 'N/A' }}
+                                    </p>
+                                @endif
+                            </div>
+                        @empty
+                            <p class="text-gray-500 italic">No bookings available</p>
+                        @endforelse
+                    </div>
                     <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
                         <label class="text-xs text-gray-500 font-medium mb-1">Description</label>
                         <p class="text-gray-800">{{ $detailDescription ?? 'N/A' }}</p>
