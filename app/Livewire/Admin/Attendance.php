@@ -5,11 +5,25 @@ namespace App\Livewire\Admin;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
+use PhpParser\Node\Stmt\TryCatch;
 
 class Attendance extends Component
 {
 
-     public $events = [];
+    public $eventDetailsModal = false;
+
+    // Form properties for the deatils modal
+    public $detailTitle;
+    public $detailImage;
+    public $detailMaxPerson;
+    public $detailLocation;
+    public $detailDate;
+    public $detailTime;
+    public $detailStatus;
+    public $detailDescription;
+    public $detailBookings = [];
+
+    public $events = [];
     public $pagination = [];
 
     public $openActions = null;
@@ -72,7 +86,7 @@ class Attendance extends Component
             $this->openActions = $userId;
         }
     }
-public function deleteEvent($eventId)
+    public function deleteEvent($eventId)
     {
         $response = Http::withToken(api_token())->delete(api_base_url() . '/events/' . decrypt($eventId));
 
@@ -160,12 +174,55 @@ public function deleteEvent($eventId)
         return $pages;
     }
 
+    public function closeModal()
+    {
+        $this->eventDetailsModal = false;
+        // $this->resetForm();
+    }
+    public function eventDtls($eventId = null)
+    {
+        $this->eventDetailsModal = $eventId;
+        if ($this->eventDetailsModal && $eventId) {
+            $this->eventDetails($eventId);
+        }
+    }
+
+    public function eventDetails($eventId = null)
+    {
+        try {
+            $decryptedId = decrypt($eventId);
+
+
+            $response = Http::withToken(api_token())->get(api_base_url() . '/events/' . ($decryptedId));
+            // dd($response->json());
+            if ($response->successful()) {
+                $json = $response->json();
+                if (isset($response->json()['data'])) {
+                    $event = $json['data'];
+                    $this->detailTitle = $event['title'] ?? '';
+                    $this->detailImage = $event['event_img'] ?? '';
+                    $this->detailDate = $event['date'] ?? '';
+                    $this->detailTime = $event['time'] ?? '';
+                    $this->detailDescription = $event['description'] ?? '';
+                    $this->detailMaxPerson = $event['max_person'] ?? '';
+                    $this->detailLocation = $event['location'] ?? '';
+                    $this->detailStatus = $event['status'] ?? '';
+                    $this->detailBookings = $event['bookings'] ?? [];
+                } else {
+                    $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch event details.');
+                }
+            }
+        } catch (\Throwable $th) {
+            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch event details.');
+        }
+    }
+
     public function render()
     {
-            $pages = $this->getPaginationPages();
-            $hasPrevious = $this->currentPage > 1;
-            $hasNext = $this->currentPage < ($this->pagination['pages'] ??
-1);
+        $pages = $this->getPaginationPages();
+        $hasPrevious = $this->currentPage > 1;
+        $hasNext = $this->currentPage < ($this->pagination['pages'] ??
+            1);
         return view('livewire.admin.attendance', [
             'pages' => $pages,
             'hasPrevious' => $hasPrevious,
