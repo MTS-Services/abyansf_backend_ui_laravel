@@ -10,14 +10,21 @@ class Category extends Component
 {
     public $addCategoryModal = false;
     public $editCategoryModal = false;
+    public $categoryDetailsModal = false;
 
-    public $category ;
-    
 
-     public $mainCategories = [];
+    public $category;
+
+    // details modal
+    public $detailName;
+    public $detailSubCategories = [];
+    public $detailSpecificCategories = [];
+
+
+    public $mainCategories = [];
     public $pagination = [];
     public $openActions = null;
-     public $parentCategory = null;
+    public $parentCategory = null;
 
     // Add this property to sync currentPage with the URL
     public $currentPage = 1;
@@ -60,7 +67,7 @@ class Category extends Component
         } else {
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to load bookings from the API.');
             $this->mainCategories
-             = [];
+                = [];
             $this->pagination = [];
             Session::flash('error', 'Failed to load bookings from the API.');
         }
@@ -78,7 +85,7 @@ class Category extends Component
             $this->openActions = $userId;
         }
     }
-public function deleteCategory($categoryId)
+    public function deleteCategory($categoryId)
     {
         $response = Http::withToken(api_token())->delete(api_base_url() . '/categories/main/' . decrypt($categoryId));
 
@@ -89,14 +96,14 @@ public function deleteCategory($categoryId)
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to delete user.');
         }
     }
-     public function gotoPage($page)
+    public function gotoPage($page)
     {
         if ($page >= 1 && $page <= ($this->pagination['pages'] ?? 1)) {
             $this->fetchUsers($page);
         }
     }
 
-    
+
 
     /**
      * Navigate to the previous page.
@@ -173,7 +180,7 @@ public function deleteCategory($categoryId)
         $this->addCategoryModal = !$this->addCategoryModal;
     }
 
-   public function openEditCategoryModal()
+    public function openEditCategoryModal()
     {
         $this->editCategoryModal = true;
     }
@@ -183,10 +190,43 @@ public function deleteCategory($categoryId)
     {
         $this->editCategoryModal = !$this->editCategoryModal;
     }
+    public function closeCategoryModal()
+    {
+        $this->categoryDetailsModal = false;
+        // $this->resetForm();
+    }
+    public function categoryDtls($categoryId = null)
+    {
+        $this->categoryDetailsModal = true;
+        if ($this->categoryDetailsModal && $categoryId) {
+            $this->categoryDetails($categoryId);
+        }
+    }
 
+    public function categoryDetails($categoryId = null)
+    {
+        try {
+            $decryptedId = decrypt($categoryId);
+
+            $response = Http::withToken(api_token())->get(api_base_url() . '/categories/main/' . $decryptedId);
+            // dd($response->json());
+            if ($response->successful()) {
+                $json = $response->json();
+                if (isset($json['data'])) {
+                    $category = $json['data'];
+                    $this->detailName = $category['name'] ?? '';
+                    $this->detailSubCategories = $category['subCategories'] ?? [];
+                } else {
+                    $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch category details.');
+                }
+            }
+        } catch (\Exception $e) {
+            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch category details.');
+        }
+    }
     public function render()
     {
-          $pages = $this->getPaginationPages();
+        $pages = $this->getPaginationPages();
         $hasPrevious = $this->currentPage > 1;
         $hasNext = $this->currentPage < ($this->pagination['pages'] ?? 1);
         return view('livewire.admin.category', [
