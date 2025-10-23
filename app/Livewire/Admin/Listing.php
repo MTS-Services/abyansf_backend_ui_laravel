@@ -52,7 +52,7 @@ class Listing extends Component
     public $listingVenueNames = [];
     public $listingMainImage;
     public $listing_sub_images = [];
-    // public $specificCategories;
+    public $specificCategories;
     public $bookings = [];
 
     public $listings = [];
@@ -60,14 +60,6 @@ class Listing extends Component
     public $listingData = [];
     public $openActions = null;
     public $currentPage = 1;
-
-
-    //Specific Category List
-
-    // public  $specificCategories = null;
-
-    // public $selectedSpecificCategory = null;
-    
 
     protected $queryString = [
         'currentPage' => ['as' => 'page', 'except' => 1]
@@ -98,18 +90,11 @@ class Listing extends Component
         ];
     }
 
-    // public function mount()
-    // {
-    //     $this->currentPage = request()->query('page', 1);
-    //     $this->fetchListings($this->currentPage);
-    // }
-
-    public function filterListing()
+    public function mount()
     {
-        $this->currentPage = 1; // Reset to first page on filter change
+        $this->currentPage = request()->query('page', 1);
         $this->fetchListings($this->currentPage);
     }
-
 
     public function fetchListings($page = 1)
     {
@@ -120,8 +105,7 @@ class Listing extends Component
         }
 
         $response = Http::withToken($token)->get(api_base_url() . '/listings', [
-            'page' => $page,
-            'specificCategoryId' => $this->selectedSpecificCategory,
+            'page' => $page
         ]);
 
         if ($response->successful()) {
@@ -474,19 +458,10 @@ class Listing extends Component
     }
     public function render()
     {
-
-        $this->currentPage = request()->query('page', 1);
-        $this->fetchListings($this->currentPage);
-
-
         $pages = $this->getPaginationPages();
         $hasPrevious = $this->currentPage > 1;
         $hasNext = $this->currentPage < ($this->pagination['pages'] ?? 1);
 
-        // Fetch specific categories for the dropdown
-        $this->allSpecificCategories();
-        
-       
         return view(
             'livewire.admin.listing',
             [
