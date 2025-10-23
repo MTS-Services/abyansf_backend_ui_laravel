@@ -13,6 +13,7 @@ class Event extends Component
 
     public $addEventModal = false;
     public $editEventModal = false;
+    public $eventDetailsModal = false;
 
     // Form data properties
     public $eventId;
@@ -25,6 +26,17 @@ class Event extends Component
     public $status;
     public $image; // Holds the temporary UploadedFile object for a new file
     public $existing_image; // Stores the URL of the existing image for display
+
+    // Form properties for the deatils modal
+    public $detailTitle;
+    public $detailImage;
+    public $detailMaxPerson;
+    public $detailLocation;
+    public $detailDate;
+    public $detailTime;
+    public $detailStatus;
+    public $detailDescription;
+    public $detailBookings = [];
 
     public $events = [];
     public $pagination = [];
@@ -189,7 +201,7 @@ class Event extends Component
 
         $request = Http::withToken($token);
 
-               // You MUST re-add the attach part to send the image
+        // You MUST re-add the attach part to send the image
         if ($this->image && !filter_var($this->image, FILTER_VALIDATE_URL)) {
             $request->attach(
                 'event_img',
@@ -305,6 +317,51 @@ class Event extends Component
             $pages = [1, '...', $current - 1, $current, $current + 1, '...', $total];
         }
         return $pages;
+    }
+
+    public function closeModal()
+    {
+        $this->eventDetailsModal = false;
+        // $this->resetForm();
+    }
+    public function eventDtls($eventId = null)
+    {
+        $this->eventDetailsModal = $eventId;
+        if ($this->eventDetailsModal && $eventId) {
+            $this->eventDetails($eventId);
+        }
+    }
+
+
+    public function eventDetails($eventId = null)
+    {
+        try {
+
+            // // Fetch API response
+            $decryptedId = decrypt($eventId);
+            $response = Http::withToken(api_token())->get(api_base_url() . '/events/' . ($decryptedId));
+            // dd($response->json());
+            if ($response->successful()) {
+                $json = $response->json();
+                if (isset($json['data'])) {
+                    $event = $json['data'];
+                    $this->detailTitle = $event['title'] ?? '';
+                    $this->detailImage = $event['event_img'] ?? '';
+                    $this->detailDate = $event['date'] ?? '';
+                    $this->detailTime = $event['time'] ?? '';
+                    $this->detailDescription = $event['description'] ?? '';
+                    $this->detailMaxPerson = $event['max_person'] ?? '';
+                    $this->detailLocation = $event['location'] ?? '';
+                    $this->detailStatus = $event['status'] ?? '';
+                    $this->detailBookings = $event['bookings'] ?? [];
+
+                }
+            } else {
+                $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch event details.');
+            }
+        } catch (\Exception $e) {
+            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch event details.');
+        }
     }
 
     public function render()

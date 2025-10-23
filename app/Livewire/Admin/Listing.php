@@ -5,6 +5,7 @@ namespace App\Livewire\Admin;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 
 class Listing extends Component
@@ -13,6 +14,7 @@ class Listing extends Component
 
     public $addListingModal = false;
     public $editListingModal = false;
+    public $listingDetailsModal = false;
 
     // Form properties for the edit modal
     public $listingIdToEdit;
@@ -21,7 +23,7 @@ class Listing extends Component
     public $location;
     public $active;
     public $disabled;
-    
+
     // Image properties
     public $existing_main_image;
     public $existing_menu_images = [];
@@ -40,6 +42,18 @@ class Listing extends Component
     public $typeofservice;
     public $contractWhatsapp;
     public $hasForm;
+    public $member_privileges;
+    public $privileges = [];
+    public $isActive;
+    public $menuImages = [];
+    public $fromName;
+    public $listingHours = [];
+    public $listingTypeofServices = [];
+    public $listingVenueNames = [];
+    public $listingMainImage;
+    public $listing_sub_images = [];
+    // public $specificCategories;
+    public $bookings = [];
 
     public $listings = [];
     public $pagination = [];
@@ -57,7 +71,7 @@ class Listing extends Component
     protected $queryString = [
         'currentPage' => ['as' => 'page', 'except' => 1]
     ];
-    
+
     /**
      * Rules for validation.
      */
@@ -121,7 +135,7 @@ class Listing extends Component
             Session::flash('error', 'Failed to load listings from the API.');
         }
     }
-    
+
     public function switchAddListingModal()
     {
         $this->addListingModal = !$this->addListingModal;
@@ -135,12 +149,12 @@ class Listing extends Component
     {
         $this->editListingModal = true;
         $this->listingIdToEdit = decrypt($listingId);
-        
+
         $token = api_token();
-        
+
         try {
             $response = Http::withToken($token)->get(api_base_url() . '/listings/' . $this->listingIdToEdit);
-            
+
             if ($response->successful()) {
                 $this->listingData = $response->json();
                 $this->fillFormWithData();
@@ -170,7 +184,7 @@ class Listing extends Component
             $status = $data['status'] ?? '';
             $this->active = ($status === 'active');
             $this->disabled = ($status === 'disabled');
-            
+
             // Set existing images
             $this->existing_main_image = $data['main_image'] ?? null;
             $this->existing_menu_images = $data['menu_images'] ?? [];
@@ -222,7 +236,7 @@ class Listing extends Component
             'contract_whatsapp' => $this->contractWhatsapp,
             'has_form' => $this->hasForm,
         ];
-        
+
         $request = Http::withToken($token)->asMultipart();
 
         // Attach files to the multipart request
@@ -238,7 +252,7 @@ class Listing extends Component
 
         try {
             $response = $request->post(api_base_url() . '/listings', $payload);
-            
+
             if ($response->successful()) {
                 $this->dispatch('sweetalert2', type: 'success', message: 'Listing created successfully!');
                 $this->switchAddListingModal(); // Close the modal
@@ -254,7 +268,7 @@ class Listing extends Component
     public function updateListing()
     {
         $this->validate();
-        
+
         $token = api_token();
         if (!$token) {
             $this->dispatch('sweetalert2', type: 'error', message: 'Authentication token not found.');
@@ -311,14 +325,14 @@ class Listing extends Component
 
         // Remove the image from the Livewire property to update the UI
         if ($type === 'menu_images') {
-            $this->existing_menu_images = collect($this->existing_menu_images)->reject(fn ($image) => $image['id'] == $id)->values()->all();
+            $this->existing_menu_images = collect($this->existing_menu_images)->reject(fn($image) => $image['id'] == $id)->values()->all();
         } elseif ($type === 'sub_images') {
-            $this->existing_sub_images = collect($this->existing_sub_images)->reject(fn ($image) => $image['id'] == $id)->values()->all();
+            $this->existing_sub_images = collect($this->existing_sub_images)->reject(fn($image) => $image['id'] == $id)->values()->all();
         } elseif ($type === 'main_image') {
             $this->existing_main_image = null;
         }
     }
-    
+
     public function removeNewImage($type, $index)
     {
         // Remove the new image from the Livewire property to update the UI
@@ -334,19 +348,37 @@ class Listing extends Component
     public function resetForm()
     {
         $this->reset([
-            'name', 'description', 'location', 'active', 'disabled', 'listingIdToEdit',
-            'specificCategoryId', 'member_privileges_description', 'hours', 'formName', 'venueName', 'typeofservice',
-            'contractWhatsapp', 'hasForm', 'menu_images', 'sub_images', 'main_image',
-            'existing_main_image', 'existing_menu_images', 'existing_sub_images', 'removed_existing_image_ids'
+            'name',
+            'description',
+            'location',
+            'active',
+            'disabled',
+            'listingIdToEdit',
+            'specificCategoryId',
+            'member_privileges_description',
+            'hours',
+            'formName',
+            'venueName',
+            'typeofservice',
+            'contractWhatsapp',
+            'hasForm',
+            'menu_images',
+            'sub_images',
+            'main_image',
+            'existing_main_image',
+            'existing_menu_images',
+            'existing_sub_images',
+            'removed_existing_image_ids'
         ]);
     }
 
     public function closeEditModal()
     {
         $this->editListingModal = false;
+        $this->listingDetailsModal = false;
         $this->resetForm();
     }
-    
+
     public function previousPage()
     {
         if ($this->currentPage > 1) {
@@ -421,6 +453,49 @@ class Listing extends Component
 
 
 
+    public function listingDtls($listingId = null)
+    {
+        $this->listingDetailsModal = $listingId;
+        if ($this->listingDetailsModal && $listingId) {
+            $this->listingDetails($listingId);
+        }
+    }
+    public function listingDetails($listingId = null)
+    {
+        try {
+            $decryptedId = decrypt($listingId);
+            // Fetch API response
+            $response = Http::withToken(api_token())->get(api_base_url() . '/listings/' . $decryptedId);
+            // dd($response->json());
+            if ($response->successful()) {
+                $json = $response->json();
+                if (isset($json['data'])) {
+                    $listing = $json['data'];
+                    $this->name = $listing['name'] ?? '';
+                    $this->listingMainImage = $listing['main_image'] ?? '';
+                    $this->listing_sub_images = $listing['sub_images'] ?? [];
+                    $this->location = $listing['location'] ?? '';
+                    $this->privileges = $listing['member_privileges'] ?? [];
+                    $this->member_privileges_description = $listing['member_privileges_description'] ?? '';
+                    $this->description = $listing['description'] ?? '';
+                    $this->listingHours = $listing['hours'] ?? '';
+                    $this->specificCategoryId = $listing['specificCategoryId'] ['name'] ?? null;
+                    $this->isActive = $listing['isActive'] ?? false;
+                    $this->menuImages = $listing['menuImages'] ?? [];
+                    $this->listingTypeofServices = $listing['typeofservice'] ?? '';
+                    $this->listingVenueNames = $listing['venueName'] ?? [];
+                    // $this->contractWhatsapp = $listing['contractWhatsapp'] ?? '';
+                    $this->fromName = $listing['fromName'] ?? '';
+                    // $this->hasForm = $listing['hasForm'] ?? false;
+                    $this->specificCategories = $listing['specificCategory']['name'] ?? '';
+                    $this->bookings = $listing['bookings'] ?? [];
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error('Error fetching listing details: ' . $e->getMessage());
+            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch listing details.');
+        }
+    }
     public function render()
     {
 

@@ -5,11 +5,11 @@
     <div class="flex flex-col md:flex-row md:items-center md:space-x-4 mt-10 px-4 md:px-0 font-playfair">
         <!-- Dropdown -->
         <div class="relative w-full md:w-1/4 mb-4 md:mb-0">
-            <select  wire:model="eventStatus" 
+            <select wire:model="eventStatus"
                 class="block w-full font-semibold font-playfair text-sm md:text-base px-4 py-3 text-gray-700 bg-[#F4F4F4] rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] custom-shadow">
-                <option >All</option>
-                <option value="Active" >Active</option>
-                <option value="Inactive" >Inactive</option>     
+                <option>All</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
 
             </select>
             <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
@@ -17,7 +17,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                 </svg>
             </div>
-            
+
         </div>
 
         <!-- Search Bar -->
@@ -174,7 +174,7 @@
                     </th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200 mt-4 md:mt-2" >
+            <tbody class="divide-y divide-gray-200 mt-4 md:mt-2">
                 @foreach ($events as $event)
                     <tr wire:key="booking-{{ $event['id'] }}" x-data="{ dropdownOpen: false }"
                         class="grid grid-cols-1 md:table-row items-center py-4 px-2 gap-4 transition">
@@ -229,6 +229,13 @@
                                     x-transition:leave-end="transform opacity-0 scale-95"
                                     class="absolute right-3 -mt-1 p-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
 
+                                    <button wire:click="eventDtls('{{ encrypt($event['id']) }}')"
+                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
+                                        <flux:icon name="eye" class="text-[#6D6D6D] mr-2 h-4 w-4" />
+                                        Deatils
+                                    </button>
+
+
                                     <button wire:click="switchEditEventModal('{{ encrypt($event['id']) }}')"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
                                         <flux:icon name="pencil-square" class="text-[#6D6D6D] mr-2 h-4 w-4" />
@@ -271,8 +278,110 @@
             </tbody> --}}
         </table>
     </div>
-    {{-- <!edit event modal--> --}}
 
+    {{-- event details modal --}}
+    <div x-data="{ show: @entangle('eventDetailsModal') }" x-show="show" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
+        <div class="flex items-center justify-center min-h-screen px-4 py-8">
+            <!-- Backdrop -->
+            <div x-show="show" x-cloak x-effect="document.body.classList.toggle('overflow-hidden', show)"
+                x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm" wire:click="closeModal">
+            </div>
+
+            <!-- Modal Content -->
+            <div x-show="show" x-cloak x-transition:enter="ease-out duration-300"
+                x-transition:enter-start="opacity-0 translate-y-6 scale-95"
+                x-transition:enter-end="opacity-100 translate-y-0 scale-100" x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+                x-transition:leave-end="opacity-0 translate-y-6 scale-95"
+                class="relative bg-white rounded-xl shadow-2xl max-w-4xl w-full p-8 sm:p-10" wire:click.stop>
+
+                <!-- Close Button -->
+                <button wire:click="closeModal"
+                    class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
+                    <flux:icon name="x-circle" class="h-6 w-6" />
+                </button>
+
+                <!-- Header -->
+                <div class="flex items-center gap-4 border-b border-gray-100 pb-6">
+                    <img src="{{ $detailImage ?? 'https://via.placeholder.com/150' }}" alt="Event Image"
+                        class="w-20 h-20 rounded-lg object-cover shadow">
+                    <div>
+                        <h2 class="text-2xl font-semibold text-gray-800">{{ $detailTitle ?? 'Event Details' }}</h2>
+                    </div>
+                </div>
+
+                <!-- Event Details -->
+                <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                        <label class="text-xs text-gray-500 font-medium mb-1">Title</label>
+                        <p class="text-gray-800 font-semibold">{{ $detailTitle ?? 'N/A' }}</p>
+                    </div>
+
+                    <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                        <label class="text-xs text-gray-500 font-medium mb-1">Max Person</label>
+                        <p class="text-gray-800 font-semibold">{{ $detailMaxPerson ?? 'N/A' }}</p>
+                    </div>
+
+                    <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                        <label class="text-xs text-gray-500 font-medium mb-1">Location</label>
+                        <p class="text-gray-800">{{ $detailLocation ?? 'N/A' }}</p>
+                    </div>
+
+                    <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                        <label class="text-xs text-gray-500 font-medium mb-1">Date</label>
+                        <p class="text-gray-800">{{ $detailDate ?? 'N/A' }}</p>
+                    </div>
+
+                    <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                        <label class="text-xs text-gray-500 font-medium mb-1">Time</label>
+                        <p class="text-gray-800">{{ $detailTime ?? 'N/A' }}</p>
+                    </div>
+
+                    <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                        <label class="text-xs text-gray-500 font-medium mb-1">Status</label>
+                        <span
+                            class="inline-block px-3 py-1 text-sm font-semibold rounded-full w-fit
+                        {{ $detailStatus == 'Active' ? 'text-green-800 bg-green-200' : 'text-red-800 bg-red-200' }}">
+                            {{ $detailStatus ?? 'N/A' }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="mt-6 grid grid-cols-1 gap-5">
+                    <div class="flex  bg-gray-100 p-4 gap-4 flex-wrap rounded-lg">
+                        <label class="text-xs text-gray-500 font-medium mb-1">Bookings</label>
+                        @forelse ($detailBookings as $booking)
+                            <div class="bg-white p-3 rounded mb-2 border border-gray-200">
+                                <p class="text-gray-800 font-semibold">{{ $booking['name'] ?? 'N/A' }}</p>
+                                <p class="text-xs text-gray-500">Status: {{ $booking['status'] ?? 'N/A' }}</p>
+                                @if (isset($booking['user']))
+                                    <p class="text-xs text-gray-500">User: {{ $booking['user']['name'] ?? 'N/A' }}
+                                    </p>
+                                @endif
+                            </div>
+                        @empty
+                            <p class="text-gray-500 italic">No bookings available</p>
+                        @endforelse
+                    </div>
+                    <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                        <label class="text-xs text-gray-500 font-medium mb-1">Description</label>
+                        <p class="text-gray-800">{{ $detailDescription ?? 'N/A' }}</p>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="mt-8 pt-5 border-t border-gray-100 flex justify-end">
+                    <button wire:click="closeModal"
+                        class="px-5 py-2 text-sm font-medium text-white bg-gradient-to-r from-[#AD8945] to-amber-600 hover:from-[#9c7a3d] hover:to-amber-700 rounded-lg shadow transition transform hover:scale-[1.02]">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
     <div x-data x-data x-init="$watch('$wire.editEventModal', value => document.body.classList.toggle('overflow-hidden', value))"
@@ -281,14 +390,15 @@
         <div class="bg-white w-full max-w-[1200px] mx-auto rounded-lg p-6 relative max-h-[90vh] overflow-y-auto">
 
             <button wire:click="switchEditEventModal"
-                class="absolute top-4 right-4 text-gray-600 cursor-pointer hover:text-gray-900 text-2xl font-bold">&times;</button>
+                class="absolute top-4 right-4 text-gray-600 cursor-pointer hover:text-gray-900 text-2xl font-bold">
+                <flux:icon name="x-circle" />
+            </button>
 
             <div class="flex items-center justify-between border-gray-200 pb-4">
                 <h1 class="text-2xl font-semibold text-gray-900">Edit Event</h1>
             </div>
             <form wire:submit.prevent="updateEvent" class="p-6 space-y-6">
                 <div class="p-6 space-y-6">
-
 
                     <div x-data="{ dragOver: false }" class="space-y-4">
                         <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
@@ -381,6 +491,7 @@
                             Save
                         </button>
                     </div>
+                </div>
             </form>
         </div>
     </div>
