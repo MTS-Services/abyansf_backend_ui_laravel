@@ -63,9 +63,7 @@ class Event extends Component
     {
        
        $response =  $this->fetchEvents($this->currentPage);
-
-
-        
+ 
     }
 
     public function fetchEvents($page = 1)
