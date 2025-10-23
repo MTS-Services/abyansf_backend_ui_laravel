@@ -175,7 +175,7 @@ class Listing extends Component
             $this->existing_menu_images = $data['menu_images'] ?? [];
             $this->existing_sub_images = $data['sub_images'] ?? [];
 
-            // Clear temporary and removed properties
+            // Clear temporary properties - SET TO NULL, NOT THE URL
             $this->main_image = null;
             $this->menu_images = [];
             $this->sub_images = [];
@@ -305,14 +305,35 @@ class Listing extends Component
 
     public function removeExistingImage($type, $id)
     {
-        // Add the image ID to the list of images to be removed
-        $this->removed_existing_image_ids[] = $id;
-
-        // Remove the image from the Livewire property to update the UI
         if ($type === 'menu_images') {
-            $this->existing_menu_images = collect($this->existing_menu_images)->reject(fn($image) => $image['id'] == $id)->values()->all();
+            $this->existing_menu_images = collect($this->existing_menu_images)
+                ->reject(function ($image) use ($id) {
+                    if (is_array($image)) {
+                        return $image['id'] == $id;
+                    }
+                    return false; // Don't remove if it's just a string URL
+                })
+                ->values()
+                ->all();
+
+            // Only add to removed list if we have an actual ID
+            if (!empty($id)) {
+                $this->removed_existing_image_ids[] = $id;
+            }
         } elseif ($type === 'sub_images') {
-            $this->existing_sub_images = collect($this->existing_sub_images)->reject(fn($image) => $image['id'] == $id)->values()->all();
+            $this->existing_sub_images = collect($this->existing_sub_images)
+                ->reject(function ($image) use ($id) {
+                    if (is_array($image)) {
+                        return $image['id'] == $id;
+                    }
+                    return false;
+                })
+                ->values()
+                ->all();
+
+            if (!empty($id)) {
+                $this->removed_existing_image_ids[] = $id;
+            }
         } elseif ($type === 'main_image') {
             $this->existing_main_image = null;
         }
@@ -439,7 +460,7 @@ class Listing extends Component
                     $this->member_privileges_description = $listing['member_privileges_description'] ?? '';
                     $this->description = $listing['description'] ?? '';
                     $this->listingHours = $listing['hours'] ?? '';
-                    $this->specificCategoryId = $listing['specificCategoryId'] ['name'] ?? null;
+                    $this->specificCategoryId = $listing['specificCategoryId']['name'] ?? null;
                     $this->isActive = $listing['isActive'] ?? false;
                     $this->menuImages = $listing['menuImages'] ?? [];
                     $this->listingTypeofServices = $listing['typeofservice'] ?? '';
