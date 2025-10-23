@@ -61,11 +61,8 @@ class Event extends Component
 
     public function applyFilters()
     {
-       
-       $response =  $this->fetchEvents($this->currentPage);
 
-
-        
+        $response =  $this->fetchEvents($this->currentPage);
     }
 
     public function fetchEvents($page = 1)
@@ -74,7 +71,7 @@ class Event extends Component
         if (!$token) {
             return $this->redirectRoute('login', navigate: true);
         }
-        $response = Http::withToken($token)->get(api_base_url() . '/events',[
+        $response = Http::withToken($token)->get(api_base_url() . '/events', [
             'page' => $page,
             'name' => $this->eventName,
             'location' => $this->eventLocation,
@@ -144,6 +141,7 @@ class Event extends Component
 
     public function switchEditEventModal($eventId = null)
     {
+
         $this->editEventModal = !$this->editEventModal;
         if ($this->editEventModal && $eventId) {
             $this->event($eventId);
@@ -173,7 +171,7 @@ class Event extends Component
             $this->date = $event['date'] ?? '';
             $this->status = $event['status'] ?? '';
             $this->existing_image = $event['event_img'] ?? null;
-            $this->image = $event['event_img'] ?? null; // Clear the temporary image property
+            $this->image = null; // Set to null instead of the URL
         } else {
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch event details.');
         }
@@ -354,7 +352,6 @@ class Event extends Component
                     $this->detailLocation = $event['location'] ?? '';
                     $this->detailStatus = $event['status'] ?? '';
                     $this->detailBookings = $event['bookings'] ?? [];
-
                 }
             } else {
                 $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch event details.');
