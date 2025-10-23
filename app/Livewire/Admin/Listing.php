@@ -64,9 +64,10 @@ class Listing extends Component
 
     //Specific Category List
 
-    public  $specificCategories = null;
+    // public  $specificCategories = null;
 
-    public $selectedSpecificCategory = null;
+    // public $selectedSpecificCategory = null;
+    
 
     protected $queryString = [
         'currentPage' => ['as' => 'page', 'except' => 1]
@@ -428,31 +429,6 @@ class Listing extends Component
 
         return $pages;
     }
-
-    //Fetch All Specific Categories
-
-    protected function allSpecificCategories()
-    {
-        $token = Session::get('api_token');
-
-        if (!$token) {
-            return $this->redirectRoute('login', navigate: true);
-        }
-
-        $response = Http::withToken($token)->get(api_base_url() . '/categories/specific');
-
-        if ($response->successful()) {
-            $data = $response->json();
-            $this->specificCategories = $data['data']['specificCategories'] ?? [];
-        } else {
-            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to load specific categories from the API.');
-            $this->specificCategories = [];
-            Session::flash('error', 'Failed to load specific categories from the API.');
-        }
-    }
-
-
-
     public function listingDtls($listingId = null)
     {
         $this->listingDetailsModal = $listingId;
