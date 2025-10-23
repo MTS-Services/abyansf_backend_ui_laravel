@@ -9,7 +9,8 @@ use Livewire\Component;
 class Attendance extends Component
 {
 
-     public $events = [];
+    public $events = [];
+
     public $pagination = [];
 
     public $openActions = null;
@@ -160,6 +161,9 @@ public function deleteEvent($eventId)
         return $pages;
     }
 
+    public function editEvent($id){
+        dd($id);
+    }
     public function render()
     {
             $pages = $this->getPaginationPages();

@@ -32,14 +32,14 @@ class Category extends Component
     public function mount()
     {
         $this->currentPage = request()->query('page', 1);
-        $this->fetchUsers($this->currentPage);
+        $this->fetchCategories($this->currentPage);
     }
 
     /**
      * Fetches users from the API.
      * @param int $page The page number to fetch.
      */
-    public function fetchUsers($page = 1)
+    public function fetchCategories($page = 1)
     {
         $token = Session::get('api_token');
 
@@ -84,7 +84,7 @@ public function deleteCategory($categoryId)
 
         if ($response->successful()) {
             // $this->dispatch('sweetalert2', type: 'success', message: 'booking deleted successfully.');
-            $this->fetchUsers($this->currentPage);
+            $this->fetchCategories($this->currentPage);
         } else {
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to delete user.');
         }
@@ -92,7 +92,7 @@ public function deleteCategory($categoryId)
      public function gotoPage($page)
     {
         if ($page >= 1 && $page <= ($this->pagination['pages'] ?? 1)) {
-            $this->fetchUsers($page);
+            $this->fetchCategories($page);
         }
     }
 
@@ -104,7 +104,7 @@ public function deleteCategory($categoryId)
     public function previousPage()
     {
         if ($this->currentPage > 1) {
-            $this->fetchUsers($this->currentPage - 1);
+            $this->fetchCategories($this->currentPage - 1);
         }
     }
 
@@ -114,7 +114,7 @@ public function deleteCategory($categoryId)
     public function nextPage()
     {
         if ($this->currentPage < ($this->pagination['pages'] ?? 1)) {
-            $this->fetchUsers($this->currentPage + 1);
+            $this->fetchCategories($this->currentPage + 1);
         }
     }
 
@@ -186,7 +186,7 @@ public function deleteCategory($categoryId)
 
     public function render()
     {
-          $pages = $this->getPaginationPages();
+        $pages = $this->getPaginationPages();
         $hasPrevious = $this->currentPage > 1;
         $hasNext = $this->currentPage < ($this->pagination['pages'] ?? 1);
         return view('livewire.admin.category', [

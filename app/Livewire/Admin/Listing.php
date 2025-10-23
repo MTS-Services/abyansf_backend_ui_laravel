@@ -114,7 +114,7 @@ class Listing extends Component
 
             $data = $response->json();
 
-         return $data['data']['specificCategories'] ?? [];
+            return $data['data']['specificCategories'] ?? [];
 
         }
 

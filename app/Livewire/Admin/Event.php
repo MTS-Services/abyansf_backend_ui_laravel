@@ -142,6 +142,8 @@ class Event extends Component
 
     public function switchEditEventModal($eventId = null)
     {
+        dd($eventId);
+
         $this->editEventModal = !$this->editEventModal;
         if ($this->editEventModal && $eventId) {
             $this->event($eventId);

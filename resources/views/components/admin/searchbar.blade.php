@@ -7,9 +7,11 @@
         <select wire:model="specificCategoryId"
             class="block w-full font-semibold font-playfair text-sm md:text-base px-4 py-3 text-gray-700 bg-[#F4F4F4] rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] custom-shadow">
             <option value=""  selected>Categories</option>
+            @empty(! $categories)
             @foreach ( $categories as $category  )
                  <option value="{{ $category['id'] }}">{{ $category['name'] }}</option>
-            @endforeach
+            @endforeach 
+            @endempty
         </select>
 
         <div class="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
