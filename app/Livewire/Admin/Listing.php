@@ -35,7 +35,7 @@ class Listing extends Component
 
     // New properties for the Add Listing form
     public $specificCategoryId;
-    public $member_privileges_description;
+    // public $member_privileges_description;
     public $hours;
     public $formName;
     public $venueName;
@@ -53,6 +53,7 @@ class Listing extends Component
     public $listingMainImage;
     public $listing_sub_images = [];
     public $specificCategories;
+    public $specificCategoriesss;
     public $bookings = [];
 
     public $listings = [];
@@ -75,7 +76,7 @@ class Listing extends Component
             'description' => 'nullable|string',
             'location' => 'required|string|max:255',
             'specificCategoryId' => 'required|integer',
-            'member_privileges_description' => 'nullable|string',
+            // 'member_privileges_description' => 'nullable|string',
             'hours' => 'nullable|string',
             'formName' => 'nullable|string',
             'venueName' => 'nullable|string',
@@ -90,10 +91,68 @@ class Listing extends Component
         ];
     }
 
+
+    // Add this method to fetch specific categories
+    public function fetchSpecificCategories()
+    {
+        $token = api_token();
+
+        if (!$token) {
+            return;
+        }
+
+        try {
+            $response = Http::withToken($token)->get(api_base_url() . '/categories/specific');
+
+            if ($response->successful()) {
+                $data = $response->json();
+                $this->specificCategories = $data['data']['specificCategories'] ?? [];
+            }
+        } catch (\Exception $e) {
+            Log::error('Error fetching specific categories: ' . $e->getMessage());
+        }
+    }
+
+    // Update your mount method
     public function mount()
     {
         $this->currentPage = request()->query('page', 1);
         $this->fetchListings($this->currentPage);
+        $this->fetchSpecificCategories(); // Add this line
+    }
+
+    // Update switchAddListingModal
+    public function switchAddListingModal()
+    {
+        $this->addListingModal = !$this->addListingModal;
+
+        if ($this->addListingModal) {
+            $this->resetForm();
+            $this->fetchSpecificCategories(); // Fetch categories when opening modal
+        }
+    }
+
+    // Update switchEditListingModal
+    public function switchEditListingModal($listingId)
+    {
+        $this->editListingModal = true;
+        $this->listingIdToEdit = decrypt($listingId);
+        $this->fetchSpecificCategories(); // Fetch categories before opening edit modal
+
+        $token = api_token();
+
+        try {
+            $response = Http::withToken($token)->get(api_base_url() . '/listings/' . $this->listingIdToEdit);
+
+            if ($response->successful()) {
+                $this->listingData = $response->json();
+                $this->fillFormWithData();
+            } else {
+                $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch listing data.');
+            }
+        } catch (\Exception $e) {
+            $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred while fetching listing data.');
+        }
     }
 
     public function fetchListings($page = 1)
@@ -121,36 +180,6 @@ class Listing extends Component
         }
     }
 
-    public function switchAddListingModal()
-    {
-        $this->addListingModal = !$this->addListingModal;
-
-        if ($this->addListingModal) {
-            $this->resetForm();
-        }
-    }
-
-    public function switchEditListingModal($listingId)
-    {
-        $this->editListingModal = true;
-        $this->listingIdToEdit = decrypt($listingId);
-
-        $token = api_token();
-
-        try {
-            $response = Http::withToken($token)->get(api_base_url() . '/listings/' . $this->listingIdToEdit);
-
-            if ($response->successful()) {
-                $this->listingData = $response->json();
-                $this->fillFormWithData();
-            } else {
-                $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch listing data.');
-            }
-        } catch (\Exception $e) {
-            $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred while fetching listing data.');
-        }
-    }
-
     public function fillFormWithData()
     {
         if ($this->listingData) {
@@ -159,7 +188,7 @@ class Listing extends Component
             $this->description = $data['description'] ?? '';
             $this->location = $data['location'] ?? '';
             $this->specificCategoryId = $data['specific_category_id'] ?? null;
-            $this->member_privileges_description = $data['member_privileges_description'] ?? '';
+            // $this->member_privileges_description = $data['member_privileges_description'] ?? '';
             $this->hours = $data['hours'] ?? '';
             $this->formName = $data['form_name'] ?? '';
             $this->venueName = $data['venue_name'] ?? '';
@@ -185,22 +214,24 @@ class Listing extends Component
 
     public function saveListing()
     {
+        
         $this->validate([
             'specificCategoryId' => 'required|integer',
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'member_privileges_description' => 'nullable|string',
+            // 'member_privileges_description' => 'nullable|string',
             'hours' => 'nullable|string',
             'formName' => 'nullable|string',
             'venueName' => 'nullable|string',
             'typeofservice' => 'nullable|string',
             'contractWhatsapp' => 'nullable|numeric',
             'hasForm' => 'nullable|boolean',
-            'main_image' => 'required|image|max:1024',
-            'menu_images.*' => 'nullable|image|max:1024',
-            'sub_images.*' => 'nullable|image|max:1024',
+            'main_image' => 'required|image|max:2048',
+            'menu_images.*' => 'nullable|image|max:2048',
+            'sub_images.*' => 'nullable|image|max:2048',
         ]);
+        dd('saveListing');
 
         $token = api_token();
         if (!$token) {
@@ -213,7 +244,7 @@ class Listing extends Component
             'name' => $this->name,
             'location' => $this->location,
             'description' => $this->description,
-            'member_privileges_description' => $this->member_privileges_description,
+            // 'member_privileges_description' => $this->member_privileges_description,
             'hours' => $this->hours,
             'form_name' => $this->formName,
             'venue_name' => $this->venueName,
@@ -265,7 +296,7 @@ class Listing extends Component
             'description' => $this->description,
             'location' => $this->location,
             'specific_category_id' => $this->specificCategoryId,
-            'member_privileges_description' => $this->member_privileges_description,
+            // 'member_privileges_description' => $this->member_privileges_description,
             'hours' => $this->hours,
             'form_name' => $this->formName,
             'venue_name' => $this->venueName,
@@ -361,7 +392,7 @@ class Listing extends Component
             'disabled',
             'listingIdToEdit',
             'specificCategoryId',
-            'member_privileges_description',
+            // 'member_privileges_description',
             'hours',
             'formName',
             'venueName',
@@ -457,7 +488,7 @@ class Listing extends Component
                     $this->listing_sub_images = $listing['sub_images'] ?? [];
                     $this->location = $listing['location'] ?? '';
                     $this->privileges = $listing['member_privileges'] ?? [];
-                    $this->member_privileges_description = $listing['member_privileges_description'] ?? '';
+                    // $this->member_privileges_description = $listing['member_privileges_description'] ?? '';
                     $this->description = $listing['description'] ?? '';
                     $this->listingHours = $listing['hours'] ?? '';
                     $this->specificCategoryId = $listing['specificCategoryId']['name'] ?? null;
@@ -468,7 +499,7 @@ class Listing extends Component
                     // $this->contractWhatsapp = $listing['contractWhatsapp'] ?? '';
                     $this->fromName = $listing['fromName'] ?? '';
                     // $this->hasForm = $listing['hasForm'] ?? false;
-                    $this->specificCategories = $listing['specificCategory']['name'] ?? '';
+                    $this->specificCategoriesss = $listing['specificCategory']['name'] ?? '';
                     $this->bookings = $listing['bookings'] ?? [];
                 }
             }

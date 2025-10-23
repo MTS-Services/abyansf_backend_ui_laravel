@@ -25,11 +25,17 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <label class="block text-sm font-medium mb-1 font-playfair">Specific Category</label>
-                        <select wire:model="specificCategoryId"
-                            class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Specific Category</label>
+                        <select wire:model.defer="specificCategoryId"
+                            class="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
                             <option value="">Select a category</option>
+                            @foreach ($specificCategories as $category)
+                                <option value="{{ $category['id'] }}">{{ $category['name'] }}</option>
+                            @endforeach
                         </select>
+                        @error('specificCategoryId')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div>
                         <label class="block text-sm font-medium mb-1 font-playfair">Name</label>
@@ -43,11 +49,11 @@
                     </div>
                 </div>
 
-                <div>
+                {{-- <div>
                     <label class="block text-sm font-medium mb-1 font-playfair">Member Privileges Description</label>
                     <textarea wire:model="member_privileges_description" placeholder="Enter member privileges description"
                         class="w-full border border-[#C7AE6A] rounded p-2 focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] h-[100px]"></textarea>
-                </div>
+                </div> --}}
 
                 <div>
                     <label class="block text-sm font-medium mb-1 font-playfair">Description</label>
@@ -322,7 +328,7 @@
             </tbody>
         </table>
         {{-- listing details modal --}}
-        <div x-data="{ show: @entangle('listingDetailsModal') }" x-show="show" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
+         <div x-data="{ show: @entangle('listingDetailsModal') }" x-show="show" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
 
             <div class="flex items-center justify-center min-h-screen px-4 py-8">
 
@@ -397,10 +403,10 @@
                             @endforelse
                         </div>
 
-                        <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                        {{-- <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
                             <label class="text-xs text-gray-500 font-medium mb-1">Specific Category Id</label>
                             <p class="text-gray-800">{{ $specificCategoryId ?? '' }}</p>
-                        </div>
+                        </div> --}}
 
                         <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
                             <label class="text-xs text-gray-500 font-medium mb-1">Status</label>
@@ -459,7 +465,7 @@
 
                         <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
                             <label class="text-xs text-gray-500 font-medium mb-1">Specific Category</label>
-                            <p class="text-gray-800">{{ $specificCategories ?? '' }}</p>
+                            <p class="text-gray-800">{{ $specificCategoriesss ?? '' }}</p>
                         </div>
                     </div>
 
@@ -513,6 +519,7 @@
             </div>
         </div>
 
+
         <div x-data="{ open: @entangle('editListingModal') }" x-show="open" x-cloak x-init="$watch('open', value => document.body.classList.toggle('overflow-hidden', value));" x-on:click.self="open = false"
             class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 transition-opacity duration-300 ease-in-out"
             x-transition:enter="opacity-0" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
@@ -538,81 +545,40 @@
                     {{-- Image Upload and Preview Section --}}
                     {{-- <div class="grid grid-cols-1 md:grid-cols-3 gap-4"> --}}
 
-                        {{-- Main Image Section --}}
-                        <div x-data="{ isUploading: false, progress: 0 }" x-on:livewire-upload-start="isUploading = true"
-                            x-on:livewire-upload-finish="isUploading = false"
-                            x-on:livewire-upload-error="isUploading = false"
-                            x-on:livewire-upload-progress="progress = $event.detail.progress">
+                    {{-- Main Image Section --}}
+                    <div x-data="{ isUploading: false, progress: 0 }" x-on:livewire-upload-start="isUploading = true"
+                        x-on:livewire-upload-finish="isUploading = false"
+                        x-on:livewire-upload-error="isUploading = false"
+                        x-on:livewire-upload-progress="progress = $event.detail.progress">
 
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Main Image (Single)</label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Main Image (Single)</label>
 
-                            {{-- Show existing main image if no new upload --}}
-                            @if (!$main_image && $existing_main_image)
-                                <div class="relative w-full h-50 sm:h-80 mb-3">
-                                    <img src="{{ $existing_main_image }}"
-                                        class="w-full h-full object-cover rounded-md border"
-                                        alt="Existing Main Image">
-                                    <button type="button" wire:click="$set('existing_main_image', null)"
-                                        class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold opacity-75 hover:opacity-100 transition-opacity">&times;</button>
-                                </div>
-                            @endif
+                        {{-- Show existing main image if no new upload --}}
+                        @if (!$main_image && $existing_main_image)
+                            <div class="relative w-full h-50 sm:h-80 mb-3">
+                                <img src="{{ $existing_main_image }}"
+                                    class="w-full h-full object-cover rounded-md border" alt="Existing Main Image">
+                                <button type="button" wire:click="$set('existing_main_image', null)"
+                                    class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold opacity-75 hover:opacity-100 transition-opacity">&times;</button>
+                            </div>
+                        @endif
 
-                            {{-- Show new upload preview --}}
-                            @if ($main_image)
-                                <div class="relative w-full h-64 mb-3">
-                                    <img src="{{ $main_image->temporaryUrl() }}"
-                                        class="w-full h-full object-cover rounded-md border" alt="Main Image Preview">
-                                    <button type="button" wire:click="$set('main_image', null)"
-                                        class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold opacity-75 hover:opacity-100 transition-opacity">&times;</button>
-                                </div>
-                            @endif
+                        {{-- Show new upload preview --}}
+                        @if ($main_image)
+                            <div class="relative w-full h-64 mb-3">
+                                <img src="{{ $main_image->temporaryUrl() }}"
+                                    class="w-full h-full object-cover rounded-md border" alt="Main Image Preview">
+                                <button type="button" wire:click="$set('main_image', null)"
+                                    class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold opacity-75 hover:opacity-100 transition-opacity">&times;</button>
+                            </div>
+                        @endif
 
-                            {{-- Upload area (show only if no image) --}}
-                            @if (!$main_image && !$existing_main_image)
-                                <div class="h-64 rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
-                                    @click="$refs.mainImageInput.click()">
-                                    <input type="file" wire:model.live="main_image" x-ref="mainImageInput"
-                                        class="hidden" accept="image/*">
-                                    <div class="text-center px-2">
-                                        <div class="mb-4 flex items-center justify-center">
-                                            <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg"
-                                                fill="none" viewBox="0 0 20 16">
-                                                <path stroke="currentColor" stroke-linecap="round"
-                                                    stroke-linejoin="round" stroke-width="2"
-                                                    d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-                                            </svg>
-                                        </div>
-                                        <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop it here
-                                        </p>
-                                        <button type="button"
-                                            class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100">
-                                            Browse File
-                                        </button>
-                                    </div>
-                                </div>
-                            @endif
-
-                            {{-- Change image button when image exists --}}
-                            @if ($main_image || $existing_main_image)
-                                <button type="button" @click="$refs.mainImageInput.click()"
-                                    class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100">
-                                    Change Image
-                                </button>
+                        {{-- Upload area (show only if no image) --}}
+                        @if (!$main_image && !$existing_main_image)
+                            <div class="h-64 rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
+                                @click="$refs.mainImageInput.click()">
                                 <input type="file" wire:model.live="main_image" x-ref="mainImageInput"
                                     class="hidden" accept="image/*">
-                            @endif
-                        </div>
-
-                        {{-- Menu Images Section (Multiple) --}}
-                        <div x-data="{ isUploading: false }" x-on:livewire-upload-start="isUploading = true"
-                            x-on:livewire-upload-finish="isUploading = false">
-
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Menu Images</label>
-
-                            <div class="h-64 rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
-                                @click="$refs.menuImagesInput.click()">
-                                <input type="file" wire:model.live="menu_images" multiple x-ref="menuImagesInput"
-                                    class="hidden" accept="image/*">
                                 <div class="text-center px-2">
                                     <div class="mb-4 flex items-center justify-center">
                                         <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg"
@@ -622,104 +588,144 @@
                                                 d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
                                         </svg>
                                     </div>
-                                    <p class="text-lg font-bold text-gray-800">Choose files or drag & drop here</p>
+                                    <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop it here
+                                    </p>
                                     <button type="button"
                                         class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100">
-                                        Browse Files
+                                        Browse File
                                     </button>
                                 </div>
                             </div>
+                        @endif
 
-                            {{-- Show existing and new menu images --}}
-                            @if ($existing_menu_images || $menu_images)
-                                <div class="mt-4 overflow-x-auto">
-                                    <div class="flex gap-2 min-w-max">
-                                        {{-- Existing images --}}
-                                        @foreach ($existing_menu_images as $image)
-                                            <div class="relative w-32 flex-shrink-0">
-                                                <img src="{{ is_array($image) ? $image['url'] : $image }}"
-                                                    class="w-full h-32 object-cover rounded-md border"
-                                                    alt="Existing Menu Image">
-                                                <button type="button"
-                                                    wire:click="removeExistingImage('menu_images', '{{ is_array($image) ? $image['id'] : '' }}')"
-                                                    class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">&times;</button>
-                                            </div>
-                                        @endforeach
+                        {{-- Change image button when image exists --}}
+                        @if ($main_image || $existing_main_image)
+                            <button type="button" @click="$refs.mainImageInput.click()"
+                                class="w-full mt-2 px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100">
+                                Change Image
+                            </button>
+                            <input type="file" wire:model.live="main_image" x-ref="mainImageInput" class="hidden"
+                                accept="image/*">
+                        @endif
+                    </div>
 
-                                        {{-- New uploaded images --}}
-                                        @foreach ($menu_images as $index => $newImage)
-                                            <div class="relative w-32 flex-shrink-0">
-                                                <img src="{{ $newImage->temporaryUrl() }}"
-                                                    class="w-full h-32 object-cover rounded-md border"
-                                                    alt="New Menu Image Preview">
-                                                <button type="button"
-                                                    wire:click="removeNewImage('menu_images', {{ $index }})"
-                                                    class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">&times;</button>
-                                            </div>
-                                        @endforeach
-                                    </div>
+                    {{-- Menu Images Section (Multiple) --}}
+                    <div x-data="{ isUploading: false }" x-on:livewire-upload-start="isUploading = true"
+                        x-on:livewire-upload-finish="isUploading = false">
+
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Menu Images</label>
+
+                        <div class="h-64 rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
+                            @click="$refs.menuImagesInput.click()">
+                            <input type="file" wire:model.live="menu_images" multiple x-ref="menuImagesInput"
+                                class="hidden" accept="image/*">
+                            <div class="text-center px-2">
+                                <div class="mb-4 flex items-center justify-center">
+                                    <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 20 16">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                    </svg>
                                 </div>
-                            @endif
+                                <p class="text-lg font-bold text-gray-800">Choose files or drag & drop here</p>
+                                <button type="button"
+                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100">
+                                    Browse Files
+                                </button>
+                            </div>
                         </div>
 
-                        {{-- Sub Images Section (Multiple) --}}
-                        <div x-data="{ isUploading: false }" x-on:livewire-upload-start="isUploading = true"
-                            x-on:livewire-upload-finish="isUploading = false">
+                        {{-- Show existing and new menu images --}}
+                        @if ($existing_menu_images || $menu_images)
+                            <div class="mt-4 overflow-x-auto">
+                                <div class="flex gap-2 min-w-max">
+                                    {{-- Existing images --}}
+                                    @foreach ($existing_menu_images as $image)
+                                        <div class="relative w-32 flex-shrink-0">
+                                            <img src="{{ is_array($image) ? $image['url'] : $image }}"
+                                                class="w-full h-32 object-cover rounded-md border"
+                                                alt="Existing Menu Image">
+                                            <button type="button"
+                                                wire:click="removeExistingImage('menu_images', '{{ is_array($image) ? $image['id'] : '' }}')"
+                                                class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">&times;</button>
+                                        </div>
+                                    @endforeach
 
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Sub Images</label>
-
-                            <div class="h-64 rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
-                                @click="$refs.subImagesInput.click()">
-                                <input type="file" wire:model.live="sub_images" multiple x-ref="subImagesInput"
-                                    class="hidden" accept="image/*">
-                                <div class="text-center px-2">
-                                    <div class="mb-4 flex items-center justify-center">
-                                        <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg"
-                                            fill="none" viewBox="0 0 20 16">
-                                            <path stroke="currentColor" stroke-linecap="round"
-                                                stroke-linejoin="round" stroke-width="2"
-                                                d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-                                        </svg>
-                                    </div>
-                                    <p class="text-lg font-bold text-gray-800">Choose files or drag & drop here</p>
-                                    <button type="button"
-                                        class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100">
-                                        Browse Files
-                                    </button>
+                                    {{-- New uploaded images --}}
+                                    @foreach ($menu_images as $index => $newImage)
+                                        <div class="relative w-32 flex-shrink-0">
+                                            <img src="{{ $newImage->temporaryUrl() }}"
+                                                class="w-full h-32 object-cover rounded-md border"
+                                                alt="New Menu Image Preview">
+                                            <button type="button"
+                                                wire:click="removeNewImage('menu_images', {{ $index }})"
+                                                class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">&times;</button>
+                                        </div>
+                                    @endforeach
                                 </div>
                             </div>
+                        @endif
+                    </div>
 
-                            {{-- Show existing and new sub images --}}
-                            @if ($existing_sub_images || $sub_images)
-                                <div class="mt-4 overflow-x-auto">
-                                    <div class="flex gap-2 min-w-max">
-                                        {{-- Existing images --}}
-                                        @foreach ($existing_sub_images as $image)
-                                            <div class="relative w-32 flex-shrink-0">
-                                                <img src="{{ is_array($image) ? $image['url'] : $image }}"
-                                                    class="w-full h-32 object-cover rounded-md border"
-                                                    alt="Existing Sub Image">
-                                                <button type="button"
-                                                    wire:click="removeExistingImage('sub_images', '{{ is_array($image) ? $image['id'] : '' }}')"
-                                                    class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">&times;</button>
-                                            </div>
-                                        @endforeach
+                    {{-- Sub Images Section (Multiple) --}}
+                    <div x-data="{ isUploading: false }" x-on:livewire-upload-start="isUploading = true"
+                        x-on:livewire-upload-finish="isUploading = false">
 
-                                        {{-- New uploaded images --}}
-                                        @foreach ($sub_images as $index => $newImage)
-                                            <div class="relative w-32 flex-shrink-0">
-                                                <img src="{{ $newImage->temporaryUrl() }}"
-                                                    class="w-full h-32 object-cover rounded-md border"
-                                                    alt="New Sub Image Preview">
-                                                <button type="button"
-                                                    wire:click="removeNewImage('sub_images', {{ $index }})"
-                                                    class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">&times;</button>
-                                            </div>
-                                        @endforeach
-                                    </div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Sub Images</label>
+
+                        <div class="h-64 rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
+                            @click="$refs.subImagesInput.click()">
+                            <input type="file" wire:model.live="sub_images" multiple x-ref="subImagesInput"
+                                class="hidden" accept="image/*">
+                            <div class="text-center px-2">
+                                <div class="mb-4 flex items-center justify-center">
+                                    <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg"
+                                        fill="none" viewBox="0 0 20 16">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                    </svg>
                                 </div>
-                            @endif
+                                <p class="text-lg font-bold text-gray-800">Choose files or drag & drop here</p>
+                                <button type="button"
+                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100">
+                                    Browse Files
+                                </button>
+                            </div>
                         </div>
+
+                        {{-- Show existing and new sub images --}}
+                        @if ($existing_sub_images || $sub_images)
+                            <div class="mt-4 overflow-x-auto">
+                                <div class="flex gap-2 min-w-max">
+                                    {{-- Existing images --}}
+                                    @foreach ($existing_sub_images as $image)
+                                        <div class="relative w-32 flex-shrink-0">
+                                            <img src="{{ is_array($image) ? $image['url'] : $image }}"
+                                                class="w-full h-32 object-cover rounded-md border"
+                                                alt="Existing Sub Image">
+                                            <button type="button"
+                                                wire:click="removeExistingImage('sub_images', '{{ is_array($image) ? $image['id'] : '' }}')"
+                                                class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">&times;</button>
+                                        </div>
+                                    @endforeach
+
+                                    {{-- New uploaded images --}}
+                                    @foreach ($sub_images as $index => $newImage)
+                                        <div class="relative w-32 flex-shrink-0">
+                                            <img src="{{ $newImage->temporaryUrl() }}"
+                                                class="w-full h-32 object-cover rounded-md border"
+                                                alt="New Sub Image Preview">
+                                            <button type="button"
+                                                wire:click="removeNewImage('sub_images', {{ $index }})"
+                                                class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">&times;</button>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+                    </div>
 
                     {{-- </div> --}}
 
