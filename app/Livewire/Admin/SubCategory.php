@@ -14,6 +14,7 @@ class SubCategory extends Component
     public $pagination = [];
     public $SubCategoryDetailsModal = false;
     public $subCategory = [];
+    public $categories = [];
 
     public function switchAddSubCategoryModal()
     {
@@ -29,16 +30,43 @@ class SubCategory extends Component
     {
         $this->currentPage = request()->query('page', 1);
         $this->fetchSubCategories($this->currentPage);
+
+        $this->fetchCategories();
+
+       
+    }
+
+
+    public function fetchCategories(){
+        $token = session()->get('api_token');
+        if (!$token) {
+            return $this->redirectRoute('login', navigate: true);
+        }
+
+        $response = Http::withToken($token)->get(api_base_url() . '/categories/main' );
+
+        if ($response->successful()) {
+            $data = $response->json();
+            
+          return  $this->categories = $data['data']['mainCategories'] ?? [];
+           
+        } else {
+            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to load category details.');
+            Session::flash('error', 'Failed to load category details.');
+        }
     }
 
     public function SubCategoryDetails($id)
     {
+  
         $id = Decrypt($id);
+
         // Close other modals before opening details
         $this->addSubCategoryModal = false;
         $this->editSubCategoryModal = false;
         
         $this->SubCategoryDetailsModal = true;
+      
         $this->fetchCategoryById($id);
     }
 
@@ -65,7 +93,9 @@ class SubCategory extends Component
 
         if ($response->successful()) {
             $data = $response->json();
+            
             $this->subCategory = $data['data'] ?? [];
+           
         } else {
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to load category details.');
             Session::flash('error', 'Failed to load category details.');
@@ -108,7 +138,9 @@ class SubCategory extends Component
     public function render()
     {
         return view('livewire.admin.sub-category', [
-            'subCategoreis' => $this->subCategoreis
+            'subCategoreis' => $this->subCategoreis,
+            'subCategory'   => $this->subCategory,
+            'categories'    => $this->categories,
         ]);
     }
 }

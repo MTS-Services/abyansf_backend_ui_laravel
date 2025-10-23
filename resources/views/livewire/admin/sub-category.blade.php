@@ -5,7 +5,8 @@
         @include('livewire.admin.category-management.navbar')
     </nav>
 
-    <x-admin.searchbar page="Add Event" livewire_method="switchAddSubCategoryModal" />
+   
+    <x-admin.searchbar page="Add Event" livewire_method="switchAddSubCategoryModal" :categories="$categories"/>
 
     <!-- Add Sub Category Modal -->
     <div x-data="{ show: @entangle('addSubCategoryModal') }" 
@@ -161,7 +162,7 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
-                @forelse ($subCategoreis as $index => $subCategory)
+                @forelse ($subCategoreis as $index => $subcategory_item)
                     <tr class="md:table-row grid grid-cols-1 md:grid-cols-none items-center transition">
                         <!-- SL -->
                         <td class="p-4 text-left font-normal text-base">
@@ -173,7 +174,7 @@
                         <!-- Category Image -->
                         <td class="p-4">
                             <div class="w-20 h-20 overflow-hidden rounded shadow-sm">
-                                <img src="{{ $subCategory['img'] }}" alt="{{ $subCategory['name'] }}" 
+                                <img src="{{ $subcategory_item['img'] }}" alt="{{ $subcategory_item['name'] }}" 
                                      class="object-cover w-full h-full">
                             </div>
                         </td>
@@ -181,14 +182,14 @@
                         <!-- Category Name -->
                         <td class="p-4 text-left font-normal text-base">
                             <p class="text-black font-medium">
-                                {{ $subCategory['name'] }}
+                                {{ $subcategory_item['name'] }}
                             </p>
                         </td>
 
                         <!-- Parent Category -->
                         <td class="p-4 text-left font-normal text-base">
                             <p class="text-gray-600">
-                                {{ $subCategory['mainCategory']['name'] ?? 'N/A' }}
+                                {{ $subcategory_item['mainCategory']['name'] ?? 'N/A' }}
                             </p>
                         </td>
 
@@ -209,7 +210,7 @@
 
                                     <button
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer" 
-                                        wire:click="SubCategoryDetails('{{ encrypt($subCategory['id']) }}')">
+                                        wire:click="SubCategoryDetails('{{ encrypt($subcategory_item['id']) }}')">
                                         <flux:icon name="eye" class="text-[#6D6D6D] mr-2 h-4 w-4" /> Details
                                     </button>
 
@@ -291,6 +292,7 @@
                          alt="Category Image"
                          class="w-20 h-20 rounded-lg object-cover shadow">
                     <div>
+                     
                         <h2 class="text-2xl font-semibold text-gray-800">
                             {{ $subCategory['name'] ?? 'Unknown Category' }}
                         </h2>
@@ -315,7 +317,11 @@
 
                     <div class="flex flex-col bg-gray-100 p-4 rounded-lg md:col-span-2">
                         <label class="text-xs text-gray-500 font-medium mb-1">Description</label>
-                        <p class="text-gray-800">{{ $subCategory['description'] ?? 'No description available' }}</p>
+                        <p class="text-gray-800">{{ $subCategory['description']['content'] ?? 'No description available' }}</p>
+                    </div>
+                    <div class="flex flex-col bg-gray-100 p-4 rounded-lg md:col-span-2">
+                        <label class="text-xs text-gray-500 font-medium mb-1">Section Description</label>
+                        <p class="text-gray-800">{{ $subCategory['description']['section'] ?? 'No description available' }}</p>
                     </div>
 
                     <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
@@ -332,8 +338,30 @@
                     <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
                         <label class="text-xs text-gray-500 font-medium mb-1">Contact WhatsApp</label>
                         <p class="text-gray-800">
-                            @if(isset($subCategory['contactWhatsapp']))
-                                {{ $subCategory['contactWhatsapp'] ? 'Enabled' : 'Disabled' }}
+                            @if(isset($subCategory['adminWhatsApp']))
+                                {{ $subCategory['adminWhatsApp'] ? 'Enabled' : 'Disabled' }}
+                            @else
+                                N/A
+                            @endif
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                        <label class="text-xs text-gray-500 font-medium mb-1">Created at</label>
+                        <p class="text-gray-800">
+                            @if(isset($subCategory['createdAt']))
+                                {{ $subCategory['createdAt'] ? format_date_time($subCategory['createdAt']) : 'Uknown' }}
+                            @else
+                                N/A
+                            @endif
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                        <label class="text-xs text-gray-500 font-medium mb-1">Updated at</label>
+                        <p class="text-gray-800">
+                            @if(isset($subCategory['updatedAt']))
+                                 {{ $subCategory['updatedAt'] ? format_date_time($subCategory['updatedAt']) : 'Uknown' }}
                             @else
                                 N/A
                             @endif
