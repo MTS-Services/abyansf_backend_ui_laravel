@@ -1,7 +1,6 @@
 <section class="mx-auto max-w-[1200px]  font-playfair">
     <h2 class="font-medium text-3xl text-black mb-4">Listing Management</h2>
     <x-admin.searchbar page="Add Listing" livewire_method="switchAddListingModal" />
-
     <div x-data x-init="$watch('$wire.addListingModal', value => document.body.classList.toggle('overflow-hidden', value))"
         class="fixed inset-0 bg-black/70 {{ $addListingModal ? 'block' : 'hidden' }} z-50 overflow-auto flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-[1200px] mx-auto rounded-lg p-6 relative max-h-[90vh] overflow-y-auto">
@@ -14,19 +13,12 @@
                 <h1 class="text-4xl font-semibold text-gray-900">Add Listing</h1>
             </div>
 
-
-            <div class="w-full max-w-8xl mx-auto px-4">
-                <div class="overflow-x-auto scroll-smooth snap-x snap-mandatory flex gap-4 pb-8 no-scrollbar"
-                    id="previewSlider">
-                </div>
-            </div>
-
             <form wire:submit.prevent="saveListing" class="space-y-6">
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Specific Category</label>
-                        <select wire:model.defer="specificCategoryId"
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Specific Category *</label>
+                        <select wire:model="specificCategoryId"
                             class="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
                             <option value="">Select a category</option>
                             @foreach ($specificCategories as $category)
@@ -38,22 +30,22 @@
                         @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-1 font-playfair">Name</label>
+                        <label class="block text-sm font-medium mb-1 font-playfair">Name *</label>
                         <input wire:model="name" type="text" placeholder="Name"
                             class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
+                        @error('name')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-1 font-playfair">Location</label>
+                        <label class="block text-sm font-medium mb-1 font-playfair">Location *</label>
                         <input wire:model="location" type="text" placeholder="Location"
                             class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
+                        @error('location')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
                     </div>
                 </div>
-
-                {{-- <div>
-                    <label class="block text-sm font-medium mb-1 font-playfair">Member Privileges Description</label>
-                    <textarea wire:model="member_privileges_description" placeholder="Enter member privileges description"
-                        class="w-full border border-[#C7AE6A] rounded p-2 focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] h-[100px]"></textarea>
-                </div> --}}
 
                 <div>
                     <label class="block text-sm font-medium mb-1 font-playfair">Description</label>
@@ -64,7 +56,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                         <label class="block text-sm font-medium mb-1 font-playfair">Hours</label>
-                        <input wire:model="hours" type="time" placeholder="e.g., Mon-Fri: 9am-5pm"
+                        <input wire:model="hours" type="text" placeholder="e.g., Sunday:6:00 AM - 11:00 PM"
                             class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
                     </div>
                     <div>
@@ -72,37 +64,35 @@
                         <input wire:model="formName" type="text" placeholder="Form Name"
                             class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-1 font-playfair">Venue Name</label>
-                        <input wire:model="venueName" type="text" placeholder="Venue Name"
-                            class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
-                    </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium mb-1 font-playfair">Type of Service</label>
-                        <input wire:model="typeofservice" type="text" placeholder="Type of Service"
-                            class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
-                    </div>
+                <div class="grid grid-cols-1 gap-4">
                     <div>
                         <label class="block text-sm font-medium mb-1 font-playfair">Contract Whatsapp</label>
-                        <input wire:model="contractWhatsapp" type="number" placeholder="Whatsapp number"
+                        <input wire:model="contractWhatsapp" type="text" placeholder="Whatsapp number"
                             class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
                     </div>
-
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
-                    <div x-data="{ mainImage: null, dragOver: false }" class="space-y-4">
-                        <label class="block text-sm font-medium mb-1">Main Image (Single)</label>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Main Image -->
+                    <div x-data="{
+                        mainImage: null,
+                        dragOver: false,
+                        uploadToWire() {
+                            if (this.mainImage) {
+                                @this.upload('main_image', this.mainImage)
+                            }
+                        }
+                    }" class="space-y-4">
+                        <label class="block text-sm font-medium mb-1">Main Image (Single) *</label>
                         <div class="h-64 rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
                             @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
-                            @drop.prevent="mainImage = $event.dataTransfer.files[0]"
+                            @drop.prevent="mainImage = $event.dataTransfer.files[0]; uploadToWire()"
                             @click="$refs.mainImageInput.click()"
                             :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
-                            <input type="file" x-ref="mainImageInput" class="hidden"
-                                @change="mainImage = $event.target.files[0]">
+                            <input type="file" x-ref="mainImageInput" class="hidden" accept="image/*"
+                                @change="mainImage = $event.target.files[0]; uploadToWire()">
                             <div class="text-center px-2">
                                 <div class="mb-4 flex items-center justify-center">
                                     <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -121,23 +111,35 @@
                         </div>
                         <div x-show="mainImage" class="mt-3">
                             <div class="relative w-32 flex-shrink-0">
-                                <img :src="URL.createObjectURL(mainImage)"
+                                <img :src="mainImage ? URL.createObjectURL(mainImage) : ''"
                                     class="w-full h-32 object-cover rounded-md border" alt="Preview">
-                                <button type="button" @click="mainImage = null"
+                                <button type="button" @click="mainImage = null; @this.set('main_image', null)"
                                     class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">×</button>
                             </div>
                         </div>
+                        @error('main_image')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
                     </div>
 
-                    <div x-data="{ menuImages: [], dragOver: false }" class="space-y-4">
+                    <!-- Menu Images -->
+                    <div x-data="{
+                        menuImages: [],
+                        dragOver: false,
+                        uploadToWire() {
+                            if (this.menuImages.length > 0) {
+                                @this.upload('menu_images', this.menuImages)
+                            }
+                        }
+                    }" class="space-y-4">
                         <label class="block text-sm font-medium mb-1">Menu Images</label>
                         <div class="h-64 rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
                             @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
-                            @drop.prevent="menuImages = Array.from($event.dataTransfer.files)"
+                            @drop.prevent="menuImages = Array.from($event.dataTransfer.files); uploadToWire()"
                             @click="$refs.menuImageInput.click()"
                             :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
-                            <input type="file" x-ref="menuImageInput" multiple class="hidden"
-                                @change="menuImages = Array.from($event.target.files)">
+                            <input type="file" x-ref="menuImageInput" multiple class="hidden" accept="image/*"
+                                @change="menuImages = Array.from($event.target.files); uploadToWire()">
                             <div class="text-center px-2">
                                 <div class="mb-4 flex items-center justify-center">
                                     <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg"
@@ -160,7 +162,7 @@
                                     <div class="relative w-32 flex-shrink-0">
                                         <img :src="URL.createObjectURL(img)"
                                             class="w-full h-32 object-cover rounded-md border" alt="Preview">
-                                        <button type="button" @click="menuImages.splice(index, 1)"
+                                        <button type="button" @click="menuImages.splice(index, 1); uploadToWire()"
                                             class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">×</button>
                                     </div>
                                 </template>
@@ -168,15 +170,24 @@
                         </div>
                     </div>
 
-                    <div x-data="{ subImages: [], dragOver: false }" class="space-y-4">
+                    <!-- Sub Images -->
+                    <div x-data="{
+                        subImages: [],
+                        dragOver: false,
+                        uploadToWire() {
+                            if (this.subImages.length > 0) {
+                                @this.upload('sub_images', this.subImages)
+                            }
+                        }
+                    }" class="space-y-4">
                         <label class="block text-sm font-medium mb-1">Sub Images</label>
                         <div class="h-64 rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
                             @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
-                            @drop.prevent="subImages = Array.from($event.dataTransfer.files)"
+                            @drop.prevent="subImages = Array.from($event.dataTransfer.files); uploadToWire()"
                             @click="$refs.subImageInput.click()"
                             :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
-                            <input type="file" x-ref="subImageInput" multiple class="hidden"
-                                @change="subImages = Array.from($event.target.files)">
+                            <input type="file" x-ref="subImageInput" multiple class="hidden" accept="image/*"
+                                @change="subImages = Array.from($event.target.files); uploadToWire()">
                             <div class="text-center px-2">
                                 <div class="mb-4 flex items-center justify-center">
                                     <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg"
@@ -199,17 +210,17 @@
                                     <div class="relative w-32 flex-shrink-0">
                                         <img :src="URL.createObjectURL(img)"
                                             class="w-full h-32 object-cover rounded-md border" alt="Preview">
-                                        <button type="button" @click="subImages.splice(index, 1)"
+                                        <button type="button" @click="subImages.splice(index, 1); uploadToWire()"
                                             class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">×</button>
                                     </div>
                                 </template>
                             </div>
                         </div>
                     </div>
-
                 </div>
+
                 <div>
-                    <label class="block text-sm font-medium mb-1">Has Form</label>
+                    <label class="block text-sm font-medium mb-1">Has Form *</label>
                     <div class="flex items-center space-x-4">
                         <label class="inline-flex items-center">
                             <input wire:model="hasForm" type="radio" value="1"
@@ -224,16 +235,14 @@
                     </div>
                 </div>
 
-
                 <div class="flex justify-center md:justify-start pt-6">
                     <button type="submit"
                         class="px-8 py-2 bg-[#C7AE6A] text-black rounded-md hover:bg-opacity-90 transition-colors font-medium">
                         Save
                     </button>
                 </div>
+            </form>
         </div>
-        </form>
-    </div>
     </div>
     <div class="bg-white rounded-lg overflow-y-visible mt-14 mb-5 ">
         <table class="min-w-full table-fixed border-collapse">
@@ -328,7 +337,7 @@
             </tbody>
         </table>
         {{-- listing details modal --}}
-         <div x-data="{ show: @entangle('listingDetailsModal') }" x-show="show" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
+        <div x-data="{ show: @entangle('listingDetailsModal') }" x-show="show" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
 
             <div class="flex items-center justify-center min-h-screen px-4 py-8">
 

@@ -214,24 +214,19 @@ class Listing extends Component
 
     public function saveListing()
     {
-        
         $this->validate([
             'specificCategoryId' => 'required|integer',
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
             'description' => 'nullable|string',
-            // 'member_privileges_description' => 'nullable|string',
             'hours' => 'nullable|string',
             'formName' => 'nullable|string',
-            'venueName' => 'nullable|string',
-            'typeofservice' => 'nullable|string',
-            'contractWhatsapp' => 'nullable|numeric',
-            'hasForm' => 'nullable|boolean',
+            'contractWhatsapp' => 'nullable|string',
+            'hasForm' => 'required|boolean',
             'main_image' => 'required|image|max:2048',
             'menu_images.*' => 'nullable|image|max:2048',
             'sub_images.*' => 'nullable|image|max:2048',
         ]);
-        dd('saveListing');
 
         $token = api_token();
         if (!$token) {
@@ -239,31 +234,64 @@ class Listing extends Component
             return;
         }
 
+        // Build payload with only checked fields
         $payload = [
-            'specific_category_id' => $this->specificCategoryId,
+            'specificCategoryId' => $this->specificCategoryId,
             'name' => $this->name,
             'location' => $this->location,
-            'description' => $this->description,
-            // 'member_privileges_description' => $this->member_privileges_description,
-            'hours' => $this->hours,
-            'form_name' => $this->formName,
-            'venue_name' => $this->venueName,
-            'typeofservice' => $this->typeofservice,
-            'contract_whatsapp' => $this->contractWhatsapp,
-            'has_form' => $this->hasForm,
+            'contractWhatsapp' => $this->contractWhatsapp,
+            'hasForm' => $this->hasForm ? 'true' : 'false',
         ];
+
+        // Add optional fields if they exist
+        if (!empty($this->description)) {
+            $payload['description'] = $this->description;
+        }
+
+        if (!empty($this->formName)) {
+            $payload['formName'] = $this->formName;
+        }
+
+        if (!empty($this->fromName)) {
+            $payload['fromName'] = $this->fromName;
+        }
+
+        // Add hours as JSON array format
+        if (!empty($this->hours)) {
+            $payload['hours'] = json_encode([$this->hours]);
+        }
 
         $request = Http::withToken($token)->asMultipart();
 
-        // Attach files to the multipart request
+        // Attach main image
         if ($this->main_image) {
-            $request->attach('main_image', file_get_contents($this->main_image->getRealPath()), $this->main_image->getClientOriginalName());
+            $request->attach(
+                'main_image',
+                file_get_contents($this->main_image->getRealPath()),
+                $this->main_image->getClientOriginalName()
+            );
         }
-        foreach ($this->menu_images as $index => $menuImage) {
-            $request->attach("menu_images[{$index}]", file_get_contents($menuImage->getRealPath()), $menuImage->getClientOriginalName());
+
+        // Attach menu images
+        if (!empty($this->menu_images)) {
+            foreach ($this->menu_images as $index => $menuImage) {
+                $request->attach(
+                    "menuImages[{$index}]",
+                    file_get_contents($menuImage->getRealPath()),
+                    $menuImage->getClientOriginalName()
+                );
+            }
         }
-        foreach ($this->sub_images as $index => $subImage) {
-            $request->attach("sub_images[{$index}]", file_get_contents($subImage->getRealPath()), $subImage->getClientOriginalName());
+
+        // Attach sub images
+        if (!empty($this->sub_images)) {
+            foreach ($this->sub_images as $index => $subImage) {
+                $request->attach(
+                    "sub_images[{$index}]",
+                    file_get_contents($subImage->getRealPath()),
+                    $subImage->getClientOriginalName()
+                );
+            }
         }
 
         try {
@@ -271,13 +299,29 @@ class Listing extends Component
 
             if ($response->successful()) {
                 $this->dispatch('sweetalert2', type: 'success', message: 'Listing created successfully!');
-                $this->switchAddListingModal(); // Close the modal
-                $this->fetchListings(); // Refresh the list
+                $this->reset([
+                    'specificCategoryId',
+                    'name',
+                    'location',
+                    'description',
+                    'hours',
+                    'formName',
+                    'contractWhatsapp',
+                    'hasForm',
+                    'main_image',
+                    'menu_images',
+                    'sub_images'
+                ]);
+                $this->switchAddListingModal();
+                $this->fetchListings();
             } else {
-                $this->dispatch('sweetalert2', type: 'error', message: 'Failed to create listing.');
+                $errorMessage = $response->json()['message'] ?? 'Failed to create listing.';
+                Log::error('API Error Response: ' . $response->body());
+                $this->dispatch('sweetalert2', type: 'error', message: $errorMessage);
             }
         } catch (\Exception $e) {
-            $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred while creating the listing.');
+            Log::error('Error creating listing: ' . $e->getMessage());
+            $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred: ' . $e->getMessage());
         }
     }
 
