@@ -46,17 +46,18 @@ class SubCategory extends Component
         }
     }
 
-    public function resetForm(){
+    public function resetForm()
+    {
         $this->reset([
-           'name',
-           'description',
-           'mainCategoryId',
-           'hasSpecificCategory',
-           'hasForm',
-           'hasMiniSubCategory',
-           'fromName',
-           'heroImage',
-           'image',
+            'name',
+            'description',
+            'mainCategoryId',
+            'hasSpecificCategory',
+            'hasForm',
+            'hasMiniSubCategory',
+            'fromName',
+            'heroImage',
+            'image',
             'specificCategoryId',
             'editCategoryId',
         ]);
@@ -118,7 +119,7 @@ class SubCategory extends Component
     public function closeAddModal()
     {
         $this->addSubCategoryModal = false;
-         $this->editSubCategoryModal = false;
+        $this->editSubCategoryModal = false;
     }
 
     public function fetchCategoryById($id)
@@ -184,7 +185,8 @@ class SubCategory extends Component
         $this->fillUpdateForm();
     }
 
-    public function closeEditModal(){
+    public function closeEditModal()
+    {
         $this->editSubCategoryModal = false;
         $this->resetForm();
     }
@@ -213,44 +215,48 @@ class SubCategory extends Component
             'heroImage' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
-      try{
-          $token = api_token();
-        if (!$token) {
-            $this->dispatch('sweetalert2', type: 'error', message: 'Authentication token not found.');
-            return;
+        try {
+            $token = api_token();
+            if (!$token) {
+                $this->dispatch('sweetalert2', type: 'error', message: 'Authentication token not found.');
+                return;
+            }
+
+            $payload = [
+                'name' => $this->name,
+                'hasSpecificCategory' => $this->hasSpecificCategory,
+            ];
+
+            $request = Http::withToken($token);
+
+            if ($this->heroImage && !filter_var($this->heroImage, FILTER_VALIDATE_URL)) {
+                $request->attach(
+                    'heroImage',
+                     file_get_contents($this->heroImage->getRealPath()),
+                      $this->heroImage->getClientOriginalName());
+            }
+            if ($this->image && !filter_var($this->image, FILTER_VALIDATE_URL)) {
+                $request->attach(
+                    'image',
+                     file_get_contents($this->image->getRealPath()),
+                     $this->image->getClientOriginalName());
+            }
+            $response = $request->put(api_base_url() . '/categories/sub/' . $this->editCategoryId, $payload);
+
+            if ($response->successful()) {
+                $this->dispatch('sweetalert2', type: 'success', message: 'Category updated successfully!');
+                $this->closeEditModal();
+                $this->fetchSubCategories($this->currentPage);
+            } else {
+                $this->dispatch('sweetalert2', type: 'error', message: 'Failed to update Sub Cateogry.');
+            }
+
+        } catch (\Exception $e) {
+            dd('error' . $e->getMessage());
         }
-
-        $payload = [
-            'name' => $this->name,
-            'hasSpecificCategory' => $this->hasSpecificCategory,
-        ];
-
-        $request = Http::withToken($token)->asMultipart();
-
-        if ($this->heroImage) {
-            $request->attach('heroImage', file_get_contents($this->heroImage->getRealPath()), $this->heroImage->getClientOriginalName());
-        }
-        if ($this->image) {
-            $request->attach('image', file_get_contents($this->image->getRealPath()), $this->image->getClientOriginalName());
-        }
-        $response = $request->post(api_base_url() . '/categories/sub/' . $this->editCategoryId . '?_method=PUT', $payload);
-
-        if ($response->successful()) {
-            $this->dispatch('sweetalert2', type: 'success', message: 'Listing updated successfully!');
-            $this->closeEditModal();
-            $this->fetchSubCategories($this->currentPage);
-        } else {
-            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to update listing.');
-        }
-
-      }catch (\Exception $e){
-        dd('error'. $e->getMessage());
-      }
-
-       
     }
 
-        public function getPaginationPages()
+    public function getPaginationPages()
     {
         $pages = [];
         $current = $this->currentPage;
@@ -300,17 +306,20 @@ class SubCategory extends Component
         }
     }
 
-    public function gotoPage ($page){
+    public function gotoPage($page)
+    {
         $this->fetchSubCategories($page);
     }
 
-    public function deleteSubCategory($id) :void {
+    public function deleteSubCategory($id): void
+    {
         $id = Decrypt($id);
 
         $this->delete($id);
     }
 
-    protected function delete($id): void{
+    protected function delete($id): void
+    {
         $response = Http::withToken(api_token())->delete(api_base_url() . '/categories/sub/' . $id);
 
         if ($response->successful()) {

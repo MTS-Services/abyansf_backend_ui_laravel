@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
 
@@ -11,13 +12,14 @@ class Category extends Component
     public $addCategoryModal = false;
     public $editCategoryModal = false;
 
-    public $category ;
-    
+    public $category;
 
-     public $mainCategories = [];
+    public $name ;
+    public $mainCategories = [];
     public $pagination = [];
     public $openActions = null;
-     public $parentCategory = null;
+    public $parentCategory = null;
+    protected $editCategoryId = null;
 
     // Add this property to sync currentPage with the URL
     public $currentPage = 1;
@@ -60,7 +62,7 @@ class Category extends Component
         } else {
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to load bookings from the API.');
             $this->mainCategories
-             = [];
+                = [];
             $this->pagination = [];
             Session::flash('error', 'Failed to load bookings from the API.');
         }
@@ -78,7 +80,7 @@ class Category extends Component
             $this->openActions = $userId;
         }
     }
-public function deleteCategory($categoryId)
+    public function deleteCategory($categoryId)
     {
         $response = Http::withToken(api_token())->delete(api_base_url() . '/categories/main/' . decrypt($categoryId));
 
@@ -89,14 +91,14 @@ public function deleteCategory($categoryId)
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to delete user.');
         }
     }
-     public function gotoPage($page)
+    public function gotoPage($page)
     {
         if ($page >= 1 && $page <= ($this->pagination['pages'] ?? 1)) {
             $this->fetchCategories($page);
         }
     }
 
-    
+
 
     /**
      * Navigate to the previous page.
@@ -173,10 +175,34 @@ public function deleteCategory($categoryId)
         $this->addCategoryModal = !$this->addCategoryModal;
     }
 
-   public function openEditCategoryModal()
+    public function openEditCategoryModal($id)
     {
+        $this->editCategoryId = decrypt($id);
         $this->editCategoryModal = true;
+
+        $this->fetchCategoryById($this->editCategoryId);
     }
+
+   
+
+    protected function fetchCategoryById($id)
+    {
+        try{
+            $token = session()->get('api_token');
+            if (!$token) {
+                return $this->redirectRoute('login', navigate: true);
+            }
+            $response = Http::withToken($token)->get(api_base_url() . "/categories/main/{$id}");
+
+            if ($response->successful()) {
+                $data = $response->json();
+                $this->name = $data['data']['name'] ?? [];
+            }
+        }catch(\Exception $e){
+            Log::error('error', $e->getMessage());
+        }
+    }
+
 
     // This method will close the modal (and can be used by the 'x' button)
     public function switchEditCategoryModel()
