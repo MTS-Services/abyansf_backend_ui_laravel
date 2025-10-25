@@ -35,7 +35,6 @@ class Listing extends Component
 
     // New properties for the Add Listing form
     public $specificCategoryId;
-    // public $member_privileges_description;
     public $hours;
     public $formName;
     public $venueName;
@@ -76,7 +75,6 @@ class Listing extends Component
             'description' => 'nullable|string',
             'location' => 'required|string|max:255',
             'specificCategoryId' => 'required|integer',
-            // 'member_privileges_description' => 'nullable|string',
             'hours' => 'nullable|string',
             'formName' => 'nullable|string',
             'venueName' => 'nullable|string',
@@ -128,7 +126,7 @@ class Listing extends Component
 
         if ($this->addListingModal) {
             $this->resetForm();
-            $this->fetchSpecificCategories(); // Fetch categories when opening modal
+            $this->fetchSpecificCategories();
         }
     }
 
@@ -137,7 +135,7 @@ class Listing extends Component
     {
         $this->editListingModal = true;
         $this->listingIdToEdit = decrypt($listingId);
-        $this->fetchSpecificCategories(); // Fetch categories before opening edit modal
+        $this->fetchSpecificCategories();
 
         $token = api_token();
 
@@ -188,7 +186,6 @@ class Listing extends Component
             $this->description = $data['description'] ?? '';
             $this->location = $data['location'] ?? '';
             $this->specificCategoryId = $data['specific_category_id'] ?? null;
-            // $this->member_privileges_description = $data['member_privileges_description'] ?? '';
             $this->hours = $data['hours'] ?? '';
             $this->formName = $data['form_name'] ?? '';
             $this->venueName = $data['venue_name'] ?? '';
@@ -340,7 +337,6 @@ class Listing extends Component
             'description' => $this->description,
             'location' => $this->location,
             'specific_category_id' => $this->specificCategoryId,
-            // 'member_privileges_description' => $this->member_privileges_description,
             'hours' => $this->hours,
             'form_name' => $this->formName,
             'venue_name' => $this->venueName,
@@ -386,12 +382,11 @@ class Listing extends Component
                     if (is_array($image)) {
                         return $image['id'] == $id;
                     }
-                    return false; // Don't remove if it's just a string URL
+                    return false;
                 })
                 ->values()
                 ->all();
 
-            // Only add to removed list if we have an actual ID
             if (!empty($id)) {
                 $this->removed_existing_image_ids[] = $id;
             }
@@ -416,7 +411,6 @@ class Listing extends Component
 
     public function removeNewImage($type, $index)
     {
-        // Remove the new image from the Livewire property to update the UI
         if ($type === 'menu_images') {
             unset($this->menu_images[$index]);
             $this->menu_images = array_values($this->menu_images);
@@ -436,7 +430,6 @@ class Listing extends Component
             'disabled',
             'listingIdToEdit',
             'specificCategoryId',
-            // 'member_privileges_description',
             'hours',
             'formName',
             'venueName',
@@ -532,7 +525,6 @@ class Listing extends Component
                     $this->listing_sub_images = $listing['sub_images'] ?? [];
                     $this->location = $listing['location'] ?? '';
                     $this->privileges = $listing['member_privileges'] ?? [];
-                    // $this->member_privileges_description = $listing['member_privileges_description'] ?? '';
                     $this->description = $listing['description'] ?? '';
                     $this->listingHours = $listing['hours'] ?? '';
                     $this->specificCategoryId = $listing['specificCategoryId']['name'] ?? null;
@@ -540,9 +532,7 @@ class Listing extends Component
                     $this->menuImages = $listing['menuImages'] ?? [];
                     $this->listingTypeofServices = $listing['typeofservice'] ?? '';
                     $this->listingVenueNames = $listing['venueName'] ?? [];
-                    // $this->contractWhatsapp = $listing['contractWhatsapp'] ?? '';
                     $this->fromName = $listing['fromName'] ?? '';
-                    // $this->hasForm = $listing['hasForm'] ?? false;
                     $this->specificCategoriesss = $listing['specificCategory']['name'] ?? '';
                     $this->bookings = $listing['bookings'] ?? [];
                 }
