@@ -7,7 +7,8 @@
         <!-- Navigation links container -->
        @include('livewire.admin.category-management.navbar')
     </nav>
-    <x-admin.searchbar page="Add" livewire_method="switchAddCategoryModal" />
+
+    {{-- <x-admin.searchbar page="Add" livewire_method="switchAddCategoryModal" /> --}}
 
     <!--Add Category Modal-->
     <div x-data="{ open: @entangle('addCategoryModal') }" x-show="open"
