@@ -236,18 +236,19 @@
                 </button>
 
                 <form wire:submit.prevent="updateUser" class="mt-4">
-                    <div x-data="{ dragOver: false, imagePreview: @entangle('image') }" class="space-y-4">
+                    <div x-data="{ dragOver: false }" class="space-y-4">
                         <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
-                            @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
+                            @dragover.prevent="dragOver = true" 
+                            @dragleave.prevent="dragOver = false"
                             @drop.prevent="dragOver = false; $wire.upload('image', event.dataTransfer.files[0])"
-                            @click="$refs.fileInput.click()" :class="{ 'border-blue-500': dragOver }">
-                            <input wire:model="image" type="file" x-ref="fileInput" class="hidden"
-                                accept="image/*">
+                            @click="$refs.fileInput.click()"
+                            :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
 
-                            <template
-                                x-if="imagePreview && (imagePreview.previewUrl || (typeof imagePreview === 'string' && imagePreview.length > 0))">
+                            <input wire:model="image" type="file" x-ref="fileInput" class="hidden" accept="image/*">
+
+                            @if ($image)
                                 <div class="relative w-full h-full">
-                                    <img :src="imagePreview.previewUrl || imagePreview"
+                                    <img src="{{ $image->temporaryUrl() }}"
                                         class="w-full h-full object-cover rounded-md" alt="Preview">
 
                                     <button type="button"
@@ -256,27 +257,36 @@
                                         &times;
                                     </button>
                                 </div>
-                            </template>
+                            @elseif ($existing_image)
+                                <div class="relative w-full h-full">
+                                    <img src="{{ $existing_image }}" class="w-full h-full object-cover rounded-md"
+                                        alt="Current Image">
 
-                            <div x-show="!imagePreview || (typeof imagePreview === 'string' && imagePreview.length === 0)"
-                                class="text-center px-2">
-                                <div class="mb-4 flex items-center justify-center">
-                                    <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg"
-                                        fill="none" viewBox="0 0 20 16">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                            stroke-width="2"
-                                            d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-                                    </svg>
+                                    <button type="button"
+                                        @click.stop="$wire.set('existing_image', null); $refs.fileInput.click();"
+                                        class="absolute top-2 right-2 bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">
+                                        Change
+                                    </button>
                                 </div>
-                                <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop it here</p>
-                                <button type="button"
-                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                                    Browse File
-                                </button>
-                            </div>
+                            @else
+                                <div class="text-center px-2">
+                                    <div class="mb-4 flex items-center justify-center">
+                                        <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg"
+                                            fill="none" viewBox="0 0 20 16">
+                                            <path stroke="currentColor" stroke-linecap="round"
+                                                stroke-linejoin="round" stroke-width="2"
+                                                d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                        </svg>
+                                    </div>
+                                    <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop it here</p>
+                                    <button type="button"
+                                        class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                                        Browse File
+                                    </button>
+                                </div>
+                            @endif
                         </div>
                     </div>
-                    <input type="file" wire:model="image" accept="image/*">
                     <div class="mb-5">
                         <label for="name" class="block text-gray-700 text-sm font-medium mb-2">Name</label>
                         <input type="text" wire:model="name" id="name"
