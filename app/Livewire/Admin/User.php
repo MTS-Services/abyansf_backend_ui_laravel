@@ -22,7 +22,7 @@ class User extends Component
     public $whatsapp;
     public $password;
     public $image;
-    
+
     public $profileImg;
     public $role;
     public $package;
@@ -170,10 +170,8 @@ class User extends Component
             );
         }
 
-
         // Use post() with the _method field.
         $response = $request->put(api_base_url() . '/users/' . decrypt($this->userId), $data);
-
 
         if ($response->successful()) {
             $this->reset([
@@ -181,7 +179,7 @@ class User extends Component
                 'email',
                 'whatsapp',
                 'password',
-                'profile_pic',
+                'image',
             ]);
 
             $this->userEditModal = false; // Close the modal();
@@ -245,17 +243,9 @@ class User extends Component
             // Find the user from the current fetched users array
             $user = collect($this->users)->firstWhere('id', $userId);
 
-            if (! $user || ! ($user['is_operational'] ?? false)) {
-                $this->dispatch('sweetalert2', type: 'error', message: 'This user is not operational. Payment link not available.');
-                return;
-            }
-
-            $response = Http::withToken(config('services.payment.token'))
-                ->post(api_base_url() . '/send-payment-link', ['userId' => $user['id']]);
+            $response = Http::withToken(api_token())->post(api_base_url() . "/users/{$user['id']}/send-payment-link");
 
             if ($response->successful()) {
-                // Assuming you have a way to update the local state without a full reload
-                // For a more robust solution, you could refetch the single user or the whole list
                 $this->fetchUsers($this->currentPage);
                 $this->dispatch('sweetalert2', type: 'success', message: 'Payment link sent successfully!');
             } else {
@@ -273,7 +263,7 @@ class User extends Component
             return $this->redirectRoute('login', navigate: true);
         }
 
-        $response = Http::withToken($token)->delete(api_base_url() . '/users/' . $userId);
+        $response = Http::withToken(api_token())->delete(api_base_url() . '/users/' . $userId);
 
         if ($response->successful()) {
             $this->dispatch('sweetalert2', type: 'success', message: 'User deleted successfully.');
