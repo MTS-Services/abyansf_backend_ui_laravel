@@ -15,8 +15,10 @@ class Listing extends Component
     public $addListingModal = false;
     public $editListingModal = false;
     public $listingDetailsModal = false;
+    public $deleteConfirmModal = false;
+    public $listingIdToDelete = null;
 
-    // Form properties for the edit modal
+    // Form properties
     public $listingIdToEdit;
     public $name;
     public $description;
@@ -34,7 +36,7 @@ class Listing extends Component
     public $sub_images = [];
     public $removed_existing_image_ids = [];
 
-    // New properties for the Add Listing form
+    // Additional properties
     public $specificCategoryId;
     public $hours;
     public $formName;
@@ -52,7 +54,7 @@ class Listing extends Component
     public $listingVenueNames = [];
     public $listingMainImage;
     public $listing_sub_images = [];
-    public $specificCategories;
+    public $specificCategories = [];
     public $specificCategoriesss;
     public $bookings = [];
 
@@ -66,9 +68,6 @@ class Listing extends Component
         'currentPage' => ['as' => 'page', 'except' => 1]
     ];
 
-    /**
-     * Rules for validation.
-     */
     protected function rules()
     {
         return [
@@ -77,55 +76,13 @@ class Listing extends Component
             'location' => 'required|string|max:255',
             'specificCategoryId' => 'required|integer',
             'hours' => 'nullable|string',
-            'formName' => 'nullable|string',
-            'venueName' => 'nullable|string',
-            'typeofservice' => 'nullable|string',
-            'contractWhatsapp' => 'nullable|numeric',
-            'hasForm' => 'nullable|boolean',
-            'main_image' => 'nullable|image|max:1024',
-            'menu_images.*' => 'nullable|image|max:1024',
-            'sub_images.*' => 'nullable|image|max:1024',
-            'active' => 'nullable|boolean',
-            'disabled' => 'nullable|boolean',
+            'contractWhatsapp' => 'nullable|in:true,false',
+            'hasForm' => 'nullable|in:true,false',
+            'fromName' => 'nullable|string|max:255',
+            'main_image' => 'nullable|image|max:2048',
+            'menu_images.*' => 'nullable|image|max:2048',
+            'sub_images.*' => 'nullable|image|max:2048',
         ];
-    }
-
-    public function fetchSpecificCategories()
-    {
-        $token = api_token();
-
-        if (!$token) {
-            Log::error('No API token found');
-            return;
-        }
-
-        try {
-            $response = Http::withToken($token)->get(api_base_url() . '/categories/specific');
-
-            Log::info('Fetching specific categories', [
-                'status' => $response->status(),
-                'response' => $response->json()
-            ]);
-
-            if ($response->successful()) {
-                $data = $response->json();
-                $this->specificCategories = $data['data']['specificCategories'] ?? [];
-                
-                Log::info('Categories loaded', [
-                    'count' => count($this->specificCategories)
-                ]);
-            } else {
-                Log::error('Failed to fetch categories', [
-                    'status' => $response->status(),
-                    'body' => $response->body()
-                ]);
-            }
-        } catch (\Exception $e) {
-            Log::error('Error fetching specific categories', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-        }
     }
 
     public function mount()
@@ -133,6 +90,58 @@ class Listing extends Component
         $this->currentPage = request()->query('page', 1);
         $this->fetchListings($this->currentPage);
         $this->fetchSpecificCategories();
+    }
+
+    public function fetchSpecificCategories()
+    {
+        $token = api_token();
+
+        if (!$token) {
+            return;
+        }
+
+        try {
+            $response = Http::withToken($token)->get(api_base_url() . '/categories/specific');
+
+            if ($response->successful()) {
+                $data = $response->json();
+                $this->specificCategories = $data['data']['specificCategories'] ?? [];
+            }
+        } catch (\Exception $e) {
+            Log::error('Error fetching categories: ' . $e->getMessage());
+        }
+    }
+
+    public function fetchListings($page = 1)
+    {
+        $token = Session::get('api_token');
+
+        if (!$token) {
+            return $this->redirectRoute('login', navigate: true);
+        }
+
+        try {
+            $response = Http::withToken($token)->get(api_base_url() . '/listings', [
+                'page' => $page,
+                'specificCategoryId' => $this->specificCategoryId ?? '',
+                'name' => $this->formName ?? '',
+                'location' => $this->location ?? '',
+            ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                $this->listings = $data['data']['listings'] ?? [];
+                $this->pagination = $data['data']['pagination'] ?? [];
+                $this->currentPage = $page;
+            } else {
+                $this->dispatch('sweetalert2', type: 'error', message: 'Failed to load listings.');
+                $this->listings = [];
+                $this->pagination = [];
+            }
+        } catch (\Exception $e) {
+            Log::error('Error fetching listings: ' . $e->getMessage());
+            $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred while loading listings.');
+        }
     }
 
     public function switchAddListingModal()
@@ -150,13 +159,6 @@ class Listing extends Component
         try {
             $this->editListingModal = true;
             $this->listingIdToEdit = decrypt($listingId);
-            
-            Log::info('Opening edit modal', [
-                'encrypted_id' => $listingId,
-                'decrypted_id' => $this->listingIdToEdit
-            ]);
-
-            // Fetch categories first
             $this->fetchSpecificCategories();
 
             $token = api_token();
@@ -165,95 +167,78 @@ class Listing extends Component
                 throw new \Exception('API token not found');
             }
 
-            $url = api_base_url() . '/listings/' . $this->listingIdToEdit;
-            
-            Log::info('Fetching listing data', [
-                'url' => $url,
-                'listing_id' => $this->listingIdToEdit
-            ]);
-
-            $response = Http::withToken($token)->get($url);
-
-            Log::info('API Response', [
-                'status' => $response->status(),
-                'body' => $response->json()
-            ]);
+            $response = Http::withToken($token)->get(api_base_url() . '/listings/' . $this->listingIdToEdit);
 
             if ($response->successful()) {
                 $this->listingData = $response->json();
                 $this->fillFormWithData();
-                
-                Log::info('Form filled with data', [
-                    'name' => $this->name,
-                    'specificCategoryId' => $this->specificCategoryId,
-                    'contractWhatsapp' => $this->contractWhatsapp
-                ]);
             } else {
-                Log::error('Failed to fetch listing', [
-                    'status' => $response->status(),
-                    'body' => $response->body()
-                ]);
                 $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch listing data.');
             }
         } catch (\Exception $e) {
-            Log::error('Error in switchEditListingModal', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred: ' . $e->getMessage());
+            Log::error('Error opening edit modal: ' . $e->getMessage());
+            $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred.');
         }
     }
 
-    public function applyFilters()
+    public function fillFormWithData()
     {
-        $this->fetchListings($this->currentPage);
-    }
+        try {
+            if (!$this->listingData) {
+                return;
+            }
 
-    public function specificCategories()
-    {
-        $token = api_token();
+            $data = $this->listingData['data'] ?? [];
 
-        $response = Http::withToken($token)->get(api_base_url() . '/categories/specific');
+            $this->name = $data['name'] ?? '';
+            $this->description = $data['description'] ?? '';
+            $this->location = $data['location'] ?? '';
+            
+            // Get category ID from multiple possible keys
+            if (isset($data['specific_category_id'])) {
+                $this->specificCategoryId = $data['specific_category_id'];
+            } elseif (isset($data['specificCategoryId'])) {
+                $this->specificCategoryId = $data['specificCategoryId'];
+            } elseif (isset($data['specificCategory']['id'])) {
+                $this->specificCategoryId = $data['specificCategory']['id'];
+            }
 
-        if ($response->successful()) {
-            $data = $response->json();
-            return $data['data']['specificCategories'] ?? [];
-        }
-        
-        return [];
-    }
+            // Hours
+            $hours = $data['hours'] ?? [];
+            if (is_array($hours) && !empty($hours)) {
+                $this->hours = $hours[0] ?? '';
+            } else {
+                $this->hours = is_string($hours) ? $hours : '';
+            }
 
-    public function fetchListings($page = 1)
-    {
-        $token = Session::get('api_token');
+            // Convert boolean to string for radio buttons
+            $this->contractWhatsapp = isset($data['contract_whatsapp']) 
+                ? ($data['contract_whatsapp'] ? 'true' : 'false') 
+                : 'true';
 
-        if (!$token) {
-            return $this->redirectRoute('login', navigate: true);
-        }
+            $this->fromName = $data['from_name'] ?? '';
+            
+            $this->hasForm = isset($data['has_form']) 
+                ? ($data['has_form'] ? 'true' : 'false') 
+                : 'false';
 
-        $response = Http::withToken($token)->get(api_base_url() . '/listings', [
-            'page' => $page,
-            'specificCategoryId' => $this->specificCategoryId ?? '',
-            'name' => $this->formName ?? '',
-            'location' => $this->location ?? '',
-        ]);
+            // Images
+            $this->existing_main_image = $data['main_image'] ?? null;
+            $this->existing_menu_images = $data['menu_images'] ?? $data['menuImages'] ?? [];
+            $this->existing_sub_images = $data['sub_images'] ?? [];
 
-        if ($response->successful()) {
-            $data = $response->json();
-            $this->listings = $data['data']['listings'] ?? [];
-            $this->pagination = $data['data']['pagination'] ?? [];
-            $this->currentPage = $page;
-        } else {
-            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to load listings from the API.');
-            $this->listings = [];
-            $this->pagination = [];
-            Session::flash('error', 'Failed to load listings from the API.');
+            // Clear temporary uploads
+            $this->main_image = null;
+            $this->menu_images = [];
+            $this->sub_images = [];
+            $this->removed_existing_image_ids = [];
+        } catch (\Exception $e) {
+            Log::error('Error filling form: ' . $e->getMessage());
         }
     }
 
     public function saveListing()
     {
-        // Dynamic validation rules based on contractWhatsapp value
         $rules = [
             'specificCategoryId' => 'required|integer',
             'name' => 'required|string|max:255',
@@ -340,39 +325,19 @@ class Listing extends Component
                 }
             }
 
-            Log::info('Sending listing data', [
-                'payload' => $payload,
-                'has_main_image' => !empty($this->main_image),
-                'menu_images_count' => !empty($this->menu_images) ? count($this->menu_images) : 0,
-                'sub_images_count' => !empty($this->sub_images) ? count($this->sub_images) : 0
-            ]);
-
             $response = $request->post(api_base_url() . '/listings', $payload);
 
             if ($response->successful()) {
                 $this->dispatch('sweetalert2', type: 'success', message: 'Listing created successfully!');
-
                 $this->reset([
-                    'specificCategoryId',
-                    'name',
-                    'location',
-                    'description',
-                    'hours',
-                    'fromName',
-                    'contractWhatsapp',
-                    'hasForm',
-                    'main_image',
-                    'menu_images',
-                    'sub_images'
+                    'specificCategoryId', 'name', 'location', 'description', 'hours',
+                    'fromName', 'contractWhatsapp', 'hasForm', 'main_image', 'menu_images', 'sub_images'
                 ]);
-
                 $this->switchAddListingModal();
                 $this->fetchListings();
             } else {
                 $errorMessage = $response->json()['message'] ?? 'Failed to create listing.';
                 $errors = $response->json()['errors'] ?? [];
-
-                Log::error('API Error Response: ' . $response->body());
 
                 if (!empty($errors)) {
                     $errorList = collect($errors)->flatten()->implode(', ');
@@ -383,162 +348,66 @@ class Listing extends Component
             }
         } catch (\Exception $e) {
             Log::error('Error creating listing: ' . $e->getMessage());
-            Log::error('Stack trace: ' . $e->getTraceAsString());
             $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred: ' . $e->getMessage());
-        }
-    }
-
-    public function fillFormWithData()
-    {
-        try {
-            if (!$this->listingData) {
-                Log::error('No listing data to fill form');
-                return;
-            }
-
-            $data = $this->listingData['data'] ?? [];
-
-            Log::info('Filling form with data', [
-                'raw_data' => $data
-            ]);
-
-            // Basic fields
-            $this->name = $data['name'] ?? '';
-            $this->description = $data['description'] ?? '';
-            $this->location = $data['location'] ?? '';
-            
-            // FIXED: Get specific_category_id correctly - check multiple possible keys
-            if (isset($data['specific_category_id'])) {
-                $this->specificCategoryId = $data['specific_category_id'];
-            } elseif (isset($data['specificCategoryId'])) {
-                $this->specificCategoryId = $data['specificCategoryId'];
-            } elseif (isset($data['specificCategory']['id'])) {
-                $this->specificCategoryId = $data['specificCategory']['id'];
-            } else {
-                $this->specificCategoryId = null;
-            }
-            
-            Log::info('Category ID set', [
-                'specificCategoryId' => $this->specificCategoryId
-            ]);
-
-            // Hours field
-            $hours = $data['hours'] ?? [];
-            if (is_array($hours) && !empty($hours)) {
-                $this->hours = $hours[0] ?? '';
-            } else {
-                $this->hours = is_string($hours) ? $hours : '';
-            }
-
-            // Contract WhatsApp field - FIXED: Convert boolean/int to string
-            if (isset($data['contract_whatsapp'])) {
-                $this->contractWhatsapp = $data['contract_whatsapp'] ? 'true' : 'false';
-            } else {
-                $this->contractWhatsapp = 'true';
-            }
-
-            // Conditional fields
-            $this->fromName = $data['from_name'] ?? '';
-            
-            // FIXED: Convert boolean/int to string for hasForm
-            if (isset($data['has_form'])) {
-                $this->hasForm = $data['has_form'] ? 'true' : 'false';
-            } else {
-                $this->hasForm = 'false';
-            }
-
-            // Set existing images
-            $this->existing_main_image = $data['main_image'] ?? null;
-            $this->existing_menu_images = $data['menu_images'] ?? $data['menuImages'] ?? [];
-            $this->existing_sub_images = $data['sub_images'] ?? [];
-
-            // Clear temporary properties
-            $this->main_image = null;
-            $this->menu_images = [];
-            $this->sub_images = [];
-            $this->removed_existing_image_ids = [];
-
-            Log::info('Form filled successfully', [
-                'name' => $this->name,
-                'specificCategoryId' => $this->specificCategoryId,
-                'contractWhatsapp' => $this->contractWhatsapp,
-                'hasForm' => $this->hasForm,
-                'fromName' => $this->fromName
-            ]);
-        } catch (\Exception $e) {
-            Log::error('Error filling form', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
         }
     }
 
     public function updateListing()
     {
+        $rules = [
+            'specificCategoryId' => 'required|integer',
+            'name' => 'required|string|max:255',
+            'location' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'hours' => 'nullable|string',
+            'contractWhatsapp' => 'required|in:true,false',
+            'main_image' => 'nullable|image|max:2048',
+            'menu_images.*' => 'nullable|image|max:2048',
+            'sub_images.*' => 'nullable|image|max:2048',
+        ];
+
+        if ($this->contractWhatsapp == 'false') {
+            $rules['fromName'] = 'nullable|string|max:255';
+            $rules['hasForm'] = 'required|in:true,false';
+        }
+
+        $this->validate($rules);
+
+        $token = api_token();
+        if (!$token) {
+            $this->dispatch('sweetalert2', type: 'error', message: 'Authentication token not found.');
+            return;
+        }
+
+        $payload = [
+            'specificCategoryId' => $this->specificCategoryId,
+            'name' => $this->name,
+            'location' => $this->location,
+            'contractWhatsapp' => $this->contractWhatsapp,
+        ];
+
+        if (!empty($this->description)) {
+            $payload['description'] = $this->description;
+        }
+
+        if (!empty($this->hours)) {
+            $payload['hours'] = json_encode([$this->hours]);
+        }
+
+        if ($this->contractWhatsapp == 'false') {
+            if (!empty($this->fromName)) {
+                $payload['fromName'] = $this->fromName;
+            }
+            $payload['hasForm'] = $this->hasForm ? 'true' : 'false';
+        }
+
+        if (!empty($this->removed_existing_image_ids)) {
+            $payload['removed_existing_image_ids'] = json_encode($this->removed_existing_image_ids);
+        }
+
         try {
-            Log::info('Starting update listing', [
-                'listing_id' => $this->listingIdToEdit,
-                'specificCategoryId' => $this->specificCategoryId,
-                'name' => $this->name,
-                'contractWhatsapp' => $this->contractWhatsapp
-            ]);
-
-            // Dynamic validation rules
-            $rules = [
-                'specificCategoryId' => 'required|integer',
-                'name' => 'required|string|max:255',
-                'location' => 'required|string|max:255',
-                'description' => 'nullable|string',
-                'hours' => 'nullable|string',
-                'contractWhatsapp' => 'required|in:true,false',
-                'main_image' => 'nullable|image|max:2048',
-                'menu_images.*' => 'nullable|image|max:2048',
-                'sub_images.*' => 'nullable|image|max:2048',
-            ];
-
-            if ($this->contractWhatsapp == 'false') {
-                $rules['fromName'] = 'nullable|string|max:255';
-                $rules['hasForm'] = 'required|in:true,false';
-            }
-
-            $this->validate($rules);
-
-            $token = api_token();
-            if (!$token) {
-                throw new \Exception('Authentication token not found.');
-            }
-
-            // Build payload
-            $payload = [
-                'specificCategoryId' => $this->specificCategoryId,
-                'name' => $this->name,
-                'location' => $this->location,
-                'contractWhatsapp' => $this->contractWhatsapp,
-            ];
-
-            if (!empty($this->description)) {
-                $payload['description'] = $this->description;
-            }
-
-            if (!empty($this->hours)) {
-                $payload['hours'] = json_encode([$this->hours]);
-            }
-
-            if ($this->contractWhatsapp == 'false') {
-                if (!empty($this->fromName)) {
-                    $payload['fromName'] = $this->fromName;
-                }
-                $payload['hasForm'] = $this->hasForm ? 'true' : 'false';
-            }
-
-            if (!empty($this->removed_existing_image_ids)) {
-                $payload['removed_existing_image_ids'] = json_encode($this->removed_existing_image_ids);
-            }
-
-            // Initialize multipart request
             $request = Http::withToken($token)->asMultipart();
 
-            // Attach images
             if ($this->main_image) {
                 $request->attach(
                     'main_image',
@@ -575,41 +444,16 @@ class Listing extends Component
                 }
             }
 
-            // FIXED: Correct URL format for PUT request
             $url = api_base_url() . '/listings/' . $this->listingIdToEdit;
-
-            Log::info('Sending update request', [
-                'url' => $url,
-                'payload' => $payload,
-                'has_main_image' => !empty($this->main_image),
-                'menu_images_count' => !empty($this->menu_images) ? count($this->menu_images) : 0,
-                'sub_images_count' => !empty($this->sub_images) ? count($this->sub_images) : 0,
-                'removed_image_ids' => $this->removed_existing_image_ids
-            ]);
-
-            // FIXED: Use PUT method correctly
             $response = $request->put($url, $payload);
 
-            Log::info('Update response received', [
-                'status' => $response->status(),
-                'body' => $response->json()
-            ]);
-
             if ($response->successful()) {
-                Log::info('Listing updated successfully');
                 $this->dispatch('sweetalert2', type: 'success', message: 'Listing updated successfully!');
                 $this->closeEditModal();
                 $this->fetchListings($this->currentPage);
             } else {
                 $errorMessage = $response->json()['message'] ?? 'Failed to update listing.';
                 $errors = $response->json()['errors'] ?? [];
-
-                Log::error('API Error Response', [
-                    'status' => $response->status(),
-                    'message' => $errorMessage,
-                    'errors' => $errors,
-                    'body' => $response->body()
-                ]);
 
                 if (!empty($errors)) {
                     $errorList = collect($errors)->flatten()->implode(', ');
@@ -618,18 +462,54 @@ class Listing extends Component
                     $this->dispatch('sweetalert2', type: 'error', message: $errorMessage);
                 }
             }
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            Log::error('Validation failed', [
-                'errors' => $e->errors()
-            ]);
-            throw $e;
         } catch (\Exception $e) {
-            Log::error('Error updating listing', [
-                'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
-            ]);
+            Log::error('Error updating listing: ' . $e->getMessage());
             $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred: ' . $e->getMessage());
         }
+    }
+
+    public function confirmDelete($listingId)
+    {
+        $this->listingIdToDelete = decrypt($listingId);
+        $this->deleteConfirmModal = true;
+    }
+
+    public function deleteListing()
+    {
+        if (!$this->listingIdToDelete) {
+            $this->dispatch('sweetalert2', type: 'error', message: 'No listing selected for deletion.');
+            return;
+        }
+
+        $token = api_token();
+        if (!$token) {
+            $this->dispatch('sweetalert2', type: 'error', message: 'Authentication token not found.');
+            return;
+        }
+
+        try {
+            $url = api_base_url() . '/listings/' . $this->listingIdToDelete;
+            $response = Http::withToken($token)->delete($url);
+
+            if ($response->successful()) {
+                $this->dispatch('sweetalert2', type: 'success', message: 'Listing deleted successfully!');
+                $this->deleteConfirmModal = false;
+                $this->listingIdToDelete = null;
+                $this->fetchListings($this->currentPage);
+            } else {
+                $errorMessage = $response->json()['message'] ?? 'Failed to delete listing.';
+                $this->dispatch('sweetalert2', type: 'error', message: $errorMessage);
+            }
+        } catch (\Exception $e) {
+            Log::error('Error deleting listing: ' . $e->getMessage());
+            $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred: ' . $e->getMessage());
+        }
+    }
+
+    public function cancelDelete()
+    {
+        $this->deleteConfirmModal = false;
+        $this->listingIdToDelete = null;
     }
 
     public function removeExistingImage($type, $id)
@@ -637,10 +517,7 @@ class Listing extends Component
         if ($type === 'menu_images') {
             $this->existing_menu_images = collect($this->existing_menu_images)
                 ->reject(function ($image) use ($id) {
-                    if (is_array($image)) {
-                        return $image['id'] == $id;
-                    }
-                    return false;
+                    return is_array($image) && ($image['id'] ?? null) == $id;
                 })
                 ->values()
                 ->all();
@@ -651,10 +528,7 @@ class Listing extends Component
         } elseif ($type === 'sub_images') {
             $this->existing_sub_images = collect($this->existing_sub_images)
                 ->reject(function ($image) use ($id) {
-                    if (is_array($image)) {
-                        return $image['id'] == $id;
-                    }
-                    return false;
+                    return is_array($image) && ($image['id'] ?? null) == $id;
                 })
                 ->values()
                 ->all();
@@ -681,27 +555,11 @@ class Listing extends Component
     public function resetForm()
     {
         $this->reset([
-            'name',
-            'description',
-            'location',
-            'active',
-            'disabled',
-            'listingIdToEdit',
-            'specificCategoryId',
-            'hours',
-            'formName',
-            'venueName',
-            'typeofservice',
-            'contractWhatsapp',
-            'hasForm',
-            'menu_images',
-            'sub_images',
-            'main_image',
-            'existing_main_image',
-            'existing_menu_images',
-            'existing_sub_images',
-            'removed_existing_image_ids',
-            'fromName'
+            'name', 'description', 'location', 'active', 'disabled', 'listingIdToEdit',
+            'specificCategoryId', 'hours', 'formName', 'venueName', 'typeofservice',
+            'contractWhatsapp', 'hasForm', 'menu_images', 'sub_images', 'main_image',
+            'existing_main_image', 'existing_menu_images', 'existing_sub_images',
+            'removed_existing_image_ids', 'fromName'
         ]);
     }
 
@@ -710,6 +568,19 @@ class Listing extends Component
         $this->editListingModal = false;
         $this->listingDetailsModal = false;
         $this->resetForm();
+    }
+
+    public function applyFilters()
+    {
+        $this->fetchListings(1);
+    }
+
+    // Pagination methods
+    public function gotoPage($page)
+    {
+        if ($page !== '...') {
+            $this->fetchListings($page);
+        }
     }
 
     public function previousPage()
@@ -787,7 +658,6 @@ class Listing extends Component
                     $this->privileges = $listing['member_privileges'] ?? [];
                     $this->description = $listing['description'] ?? '';
                     $this->listingHours = $listing['hours'] ?? '';
-                    $this->specificCategoryId = $listing['specificCategoryId']['name'] ?? null;
                     $this->isActive = $listing['isActive'] ?? false;
                     $this->menuImages = $listing['menuImages'] ?? [];
                     $this->listingTypeofServices = $listing['typeofservice'] ?? '';
@@ -803,6 +673,11 @@ class Listing extends Component
         }
     }
 
+    public function specificCategories()
+    {
+        return $this->specificCategories;
+    }
+
     public function render()
     {
         $pages = $this->getPaginationPages();
@@ -815,7 +690,7 @@ class Listing extends Component
                 'pages' => $pages,
                 'hasPrevious' => $hasPrevious,
                 'hasNext' => $hasNext,
-                'categories' => $this->specificCategories(),
+                'categories' => $this->specificCategories,
             ]
         );
     }

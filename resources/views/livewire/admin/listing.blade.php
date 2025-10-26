@@ -354,7 +354,7 @@
                                         <flux:icon name="pencil-square" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Edit
                                     </button>
-                                    <button wire:click="deleteListing('{{ encrypt($listing['id']) }}')"
+                                    <button wire:click="confirmDelete('{{ encrypt($listing['id']) }}')"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
                                         <flux:icon name="trash" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Delete
@@ -915,6 +915,59 @@
                         </button>
                     </div>
                 </form>
+            </div>
+        </div>
+
+        <!-- Delete Confirmation Modal -->
+        <div x-data="{ open: @entangle('deleteConfirmModal') }" x-show="open" x-cloak x-init="$watch('open', value => document.body.classList.toggle('overflow-hidden', value));"
+            x-on:click.self="$wire.cancelDelete()"
+            class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 transition-opacity duration-300 ease-in-out"
+            x-transition:enter="opacity-0" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+            x-transition:leave="opacity-100" x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0">
+
+            <div x-show="open" x-transition:enter="ease-out duration-300"
+                x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave="ease-in duration-200"
+                x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                class="bg-white w-full max-w-md mx-auto rounded-lg p-6 relative">
+
+                <!-- Close Button -->
+                <button wire:click="cancelDelete"
+                    class="absolute top-4 right-4 text-gray-600 cursor-pointer hover:text-gray-900 text-2xl font-bold">&times;</button>
+
+                <!-- Icon -->
+                <div class="flex items-center justify-center mb-4">
+                    <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
+                        <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Title -->
+                <h2 class="text-2xl font-bold text-gray-900 text-center mb-2">Delete Listing</h2>
+
+                <!-- Message -->
+                <p class="text-gray-600 text-center mb-6">
+                    Are you sure you want to delete this listing? This action cannot be undone.
+                </p>
+
+                <!-- Buttons -->
+                <div class="flex gap-3">
+                    <button type="button" wire:click="cancelDelete"
+                        class="flex-1 px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors font-medium">
+                        Cancel
+                    </button>
+                    <button type="button" wire:click="deleteListing"
+                        class="flex-1 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors font-medium">
+                        Delete
+                    </button>
+                </div>
             </div>
         </div>
     </div>
