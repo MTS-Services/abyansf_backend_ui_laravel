@@ -154,13 +154,13 @@ class Listing extends Component
         }
     }
 
-    public function applyFilters(){
+    public function applyFilters()
+    {
 
-       $this->fetchListings($this->currentPage);
-
+        $this->fetchListings($this->currentPage);
     }
 
-    public function specificCategories()  
+    public function specificCategories()
     {
 
         $token = api_token();
@@ -172,9 +172,7 @@ class Listing extends Component
             $data = $response->json();
 
             return $data['data']['specificCategories'] ?? [];
-
         }
-
     }
     public function fetchListings($page = 1)
     {
@@ -251,7 +249,7 @@ class Listing extends Component
             'sub_images.*' => 'nullable|image|max:2048',
         ];
 
-        // Add conditional validation when contractWhatsapp is 0 (No)
+        // Add conditional validation when contractWhatsapp is false (No)
         if ($this->contractWhatsapp == 'false') {
             $rules['fromName'] = 'nullable|string|max:255';
             $rules['hasForm'] = 'required|in:true,false';
@@ -283,52 +281,72 @@ class Listing extends Component
             $payload['hours'] = json_encode([$this->hours]);
         }
 
-        // Add conditional fields only when contractWhatsapp is 0 (No)
+        // Add conditional fields only when contractWhatsapp is false (No)
         if ($this->contractWhatsapp == 'false') {
             if (!empty($this->fromName)) {
                 $payload['fromName'] = $this->fromName;
             }
 
-            // hasForm is required when contractWhatsapp is 0
+            // hasForm is required when contractWhatsapp is false
             $payload['hasForm'] = $this->hasForm ? 'true' : 'false';
         }
 
-        // Initialize multipart request
-        $request = Http::withToken($token)->asMultipart();
-
-        // Attach main image (required)
-        if ($this->main_image) {
-            $request->attach(
-                'main_image',
-                file_get_contents($this->main_image->getRealPath()),
-                $this->main_image->getClientOriginalName()
-            );
-        }
-
-        // Attach menu images (optional)
-        if (!empty($this->menu_images)) {
-            foreach ($this->menu_images as $index => $menuImage) {
-                $request->attach(
-                    "menuImages[{$index}]",
-                    file_get_contents($menuImage->getRealPath()),
-                    $menuImage->getClientOriginalName()
-                );
-            }
-        }
-
-        // Attach sub images (optional)
-        if (!empty($this->sub_images)) {
-            foreach ($this->sub_images as $index => $subImage) {
-                $request->attach(
-                    "sub_images[{$index}]",
-                    file_get_contents($subImage->getRealPath()),
-                    $subImage->getClientOriginalName()
-                );
-            }
-        }
-
         try {
+            // Initialize multipart request
+            $request = Http::withToken($token)->asMultipart();
+
+            // Attach main image (required)
+            if ($this->main_image) {
+                $request->attach(
+                    'main_image',
+                    file_get_contents($this->main_image->getRealPath()),
+                    $this->main_image->getClientOriginalName()
+                );
+            }
+
+            // Attach menu images (optional) - Use 'menuImages' without array notation
+            if (!empty($this->menu_images)) {
+                // Ensure it's an array and filter out null values
+                $menuImagesArray = is_array($this->menu_images) ? $this->menu_images : [$this->menu_images];
+
+                foreach ($menuImagesArray as $menuImage) {
+                    if ($menuImage && is_object($menuImage) && method_exists($menuImage, 'getRealPath')) {
+                        $request->attach(
+                            'menuImages',
+                            file_get_contents($menuImage->getRealPath()),
+                            $menuImage->getClientOriginalName()
+                        );
+                    }
+                }
+            }
+
+            // Attach sub images (optional) - Use 'sub_images' without array notation
+            if (!empty($this->sub_images)) {
+                // Ensure it's an array and filter out null values
+                $subImagesArray = is_array($this->sub_images) ? $this->sub_images : [$this->sub_images];
+
+                foreach ($subImagesArray as $subImage) {
+                    if ($subImage && is_object($subImage) && method_exists($subImage, 'getRealPath')) {
+                        $request->attach(
+                            'sub_images',
+                            file_get_contents($subImage->getRealPath()),
+                            $subImage->getClientOriginalName()
+                        );
+                    }
+                }
+            }
+
+            // Log the request for debugging
+            Log::info('Sending listing data', [
+                'payload' => $payload,
+                'has_main_image' => !empty($this->main_image),
+                'menu_images_count' => !empty($this->menu_images) ? count($this->menu_images) : 0,
+                'sub_images_count' => !empty($this->sub_images) ? count($this->sub_images) : 0
+            ]);
+
+            // REMOVE THE dd() STATEMENT - it stops execution!
             $response = $request->post(api_base_url() . '/listings', $payload);
+
             if ($response->successful()) {
                 $this->dispatch('sweetalert2', type: 'success', message: 'Listing created successfully!');
 
@@ -366,6 +384,7 @@ class Listing extends Component
             }
         } catch (\Exception $e) {
             Log::error('Error creating listing: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
             $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred: ' . $e->getMessage());
         }
     }
