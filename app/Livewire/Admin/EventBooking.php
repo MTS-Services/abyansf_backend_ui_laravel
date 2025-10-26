@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
 
-class Attendance extends Component
+class EventBooking extends Component
 {
 
     public $events = [];
@@ -43,14 +43,14 @@ class Attendance extends Component
             return $this->redirectRoute('login', navigate: true);
         }
 
-        $response = Http::withToken($token)->get(api_base_url() . '/events', [
+        $response = Http::withToken($token)->get(api_base_url() . '/events/booking/admin', [
             'page' => $page
         ]);
 
         if ($response->successful()) {
             $data = $response->json();
             // $this->dispatch('sweetalert2', type: 'success', message: 'attendances loaded successfully.');
-            $this->events = $data['data']['events'] ?? [];
+            $this->events = $data['data']['bookings'] ?? [];
             $this->pagination = $data['data']['pagination'] ?? [];
             $this->currentPage = $page;
         } else {
@@ -170,7 +170,7 @@ public function deleteEvent($eventId)
             $hasPrevious = $this->currentPage > 1;
             $hasNext = $this->currentPage < ($this->pagination['pages'] ??
 1);
-        return view('livewire.admin.attendance', [
+        return view('livewire.admin.event-booking', [
             'pages' => $pages,
             'hasPrevious' => $hasPrevious,
             'hasNext' => $hasNext,
