@@ -187,7 +187,7 @@ class Listing extends Component
         $response = Http::withToken($token)->get(api_base_url() . '/listings', [
             'page' => $page,
             'specificCategoryId' => $this->specificCategoryId ?? '',
-            'listingName' => $this->formName ?? '',
+            'name' => $this->formName ?? '',
             'location' => $this->location ?? '',
 
         ]);
@@ -254,7 +254,7 @@ class Listing extends Component
         // Add conditional validation when contractWhatsapp is 0 (No)
         if ($this->contractWhatsapp == 'false') {
             $rules['fromName'] = 'nullable|string|max:255';
-            $rules['hasForm'] = 'required|in:0,1';
+            $rules['hasForm'] = 'required|in:true,false';
         }
 
         $this->validate($rules);
@@ -329,7 +329,6 @@ class Listing extends Component
 
         try {
             $response = $request->post(api_base_url() . '/listings', $payload);
-            dd($response->json());
             if ($response->successful()) {
                 $this->dispatch('sweetalert2', type: 'success', message: 'Listing created successfully!');
 
