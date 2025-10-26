@@ -15,6 +15,7 @@
 
             <form wire:submit.prevent="saveListing" class="space-y-6">
 
+                <!-- Row 1: Category, Name, Location -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Specific Category *</label>
@@ -30,7 +31,7 @@
                         @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-1 font-playfair">Name *</label>
+                        <label class="block text-sm font-medium mb-2 font-playfair">Name *</label>
                         <input wire:model="name" type="text" placeholder="Name"
                             class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
                         @error('name')
@@ -38,7 +39,7 @@
                         @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-1 font-playfair">Location *</label>
+                        <label class="block text-sm font-medium mb-2 font-playfair">Location *</label>
                         <input wire:model="location" type="text" placeholder="Location"
                             class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
                         @error('location')
@@ -47,33 +48,74 @@
                     </div>
                 </div>
 
+                <!-- Description -->
                 <div>
-                    <label class="block text-sm font-medium mb-1 font-playfair">Description</label>
+                    <label class="block text-sm font-medium mb-2 font-playfair">Description</label>
                     <textarea wire:model="description" placeholder="Enter description"
-                        class="w-full border border-[#C7AE6A] rounded p-2 h-[264px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]"></textarea>
+                        class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[120px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]"></textarea>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Row 2: Hours, Contact WhatsApp -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div>
-                        <label class="block text-sm font-medium mb-1 font-playfair">Hours</label>
+                        <label class="block text-sm font-medium mb-2 font-playfair">Hours</label>
                         <input wire:model="hours" type="text" placeholder="e.g., Sunday:6:00 AM - 11:00 PM"
                             class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
                     </div>
+
                     <div>
-                        <label class="block text-sm font-medium mb-1 font-playfair">Form Name</label>
-                        <input wire:model="formName" type="text" placeholder="Form Name"
-                            class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
+                        <label class="block text-sm font-medium mb-2 font-playfair">Contact WhatsApp *</label>
+                        <div class="flex items-center space-x-4 h-[50px]">
+                            <label class="inline-flex items-center">
+                                <input wire:model.live="contractWhatsapp" type="radio" value="true"
+                                    class="form-radio text-[#C7AE6A] h-4 w-4">
+                                <span class="ml-2 text-gray-700">Yes</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input wire:model.live="contractWhatsapp" type="radio" value="false"
+                                    class="form-radio text-[#C7AE6A] h-4 w-4">
+                                <span class="ml-2 text-gray-700">No</span>
+                            </label>
+                        </div>
+                        @error('contractWhatsapp')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
                     </div>
+                    <!-- Conditional Fields: From Name and Has Form (shown only when Contract WhatsApp is No/0) -->
+                    @if ($contractWhatsapp === 'false' || $contractWhatsapp === false)
+                        <div>
+                            <label class="block text-sm font-medium mb-2 font-playfair">From Name</label>
+                            <input wire:model="fromName" type="text" placeholder="From Name"
+                                class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
+                            @error('fromName')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-2 font-playfair">Has Form *</label>
+                            <div class="flex items-center space-x-4 h-[50px]">
+                                <label class="inline-flex items-center">
+                                    <input wire:model="hasForm" type="radio" value="true"
+                                        class="form-radio text-[#C7AE6A] h-4 w-4">
+                                    <span class="ml-2 text-gray-700">Yes</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input wire:model="hasForm" type="radio" value="false"
+                                        class="form-radio text-[#C7AE6A] h-4 w-4">
+                                    <span class="ml-2 text-gray-700">No</span>
+                                </label>
+                            </div>
+                            @error('hasForm')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
+                        </div>
+                    @endif
                 </div>
 
-                <div class="grid grid-cols-1 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium mb-1 font-playfair">Contract Whatsapp</label>
-                        <input wire:model="contractWhatsapp" type="text" placeholder="Whatsapp number"
-                            class="w-full border border-[#C7AE6A] bg-[#F8F6EE] rounded p-2 h-[50px] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]" />
-                    </div>
-                </div>
 
+
+                <!-- Image Upload Section -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <!-- Main Image -->
                     <div x-data="{
@@ -102,9 +144,9 @@
                                             d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
                                     </svg>
                                 </div>
-                                <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop it here</p>
+                                <p class="text-sm font-bold text-gray-800">Choose a file or drag & drop it here</p>
                                 <button type="button"
-                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 text-sm">
                                     Browse File
                                 </button>
                             </div>
@@ -114,7 +156,7 @@
                                 <img :src="mainImage ? URL.createObjectURL(mainImage) : ''"
                                     class="w-full h-32 object-cover rounded-md border" alt="Preview">
                                 <button type="button" @click="mainImage = null; @this.set('main_image', null)"
-                                    class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">×</button>
+                                    class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 text-sm flex items-center justify-center hover:bg-red-600">×</button>
                             </div>
                         </div>
                         @error('main_image')
@@ -149,9 +191,9 @@
                                             d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
                                     </svg>
                                 </div>
-                                <p class="text-lg font-bold text-gray-800">Choose files or drag & drop them here</p>
+                                <p class="text-sm font-bold text-gray-800">Choose files or drag & drop them here</p>
                                 <button type="button"
-                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 text-sm">
                                     Browse Files
                                 </button>
                             </div>
@@ -163,7 +205,7 @@
                                         <img :src="URL.createObjectURL(img)"
                                             class="w-full h-32 object-cover rounded-md border" alt="Preview">
                                         <button type="button" @click="menuImages.splice(index, 1); uploadToWire()"
-                                            class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">×</button>
+                                            class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 text-sm flex items-center justify-center hover:bg-red-600">×</button>
                                     </div>
                                 </template>
                             </div>
@@ -197,9 +239,9 @@
                                             d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
                                     </svg>
                                 </div>
-                                <p class="text-lg font-bold text-gray-800">Choose files or drag & drop them here</p>
+                                <p class="text-sm font-bold text-gray-800">Choose files or drag & drop them here</p>
                                 <button type="button"
-                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 text-sm">
                                     Browse Files
                                 </button>
                             </div>
@@ -211,7 +253,7 @@
                                         <img :src="URL.createObjectURL(img)"
                                             class="w-full h-32 object-cover rounded-md border" alt="Preview">
                                         <button type="button" @click="subImages.splice(index, 1); uploadToWire()"
-                                            class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">×</button>
+                                            class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 text-sm flex items-center justify-center hover:bg-red-600">×</button>
                                     </div>
                                 </template>
                             </div>
@@ -219,22 +261,7 @@
                     </div>
                 </div>
 
-                <div>
-                    <label class="block text-sm font-medium mb-1">Has Form *</label>
-                    <div class="flex items-center space-x-4">
-                        <label class="inline-flex items-center">
-                            <input wire:model="hasForm" type="radio" value="1"
-                                class="form-radio text-[#C7AE6A] h-4 w-4">
-                            <span class="ml-2 text-gray-700">Yes</span>
-                        </label>
-                        <label class="inline-flex items-center">
-                            <input wire:model="hasForm" type="radio" value="0"
-                                class="form-radio text-[#C7AE6A] h-4 w-4">
-                            <span class="ml-2 text-gray-700">No</span>
-                        </label>
-                    </div>
-                </div>
-
+                <!-- Submit Button -->
                 <div class="flex justify-center md:justify-start pt-6">
                     <button type="submit"
                         class="px-8 py-2 bg-[#C7AE6A] text-black rounded-md hover:bg-opacity-90 transition-colors font-medium">

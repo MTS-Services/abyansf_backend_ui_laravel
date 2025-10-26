@@ -211,19 +211,26 @@ class Listing extends Component
 
     public function saveListing()
     {
-        $this->validate([
+        // Dynamic validation rules based on contractWhatsapp value
+        $rules = [
             'specificCategoryId' => 'required|integer',
             'name' => 'required|string|max:255',
             'location' => 'required|string|max:255',
             'description' => 'nullable|string',
             'hours' => 'nullable|string',
-            'formName' => 'nullable|string',
-            'contractWhatsapp' => 'nullable|string',
-            'hasForm' => 'required|boolean',
+            'contractWhatsapp' => 'required|in:true,false',
             'main_image' => 'required|image|max:2048',
             'menu_images.*' => 'nullable|image|max:2048',
             'sub_images.*' => 'nullable|image|max:2048',
-        ]);
+        ];
+
+        // Add conditional validation when contractWhatsapp is 0 (No)
+        if ($this->contractWhatsapp == 'false') {
+            $rules['fromName'] = 'nullable|string|max:255';
+            $rules['hasForm'] = 'required|in:0,1';
+        }
+
+        $this->validate($rules);
 
         $token = api_token();
         if (!$token) {
@@ -231,13 +238,12 @@ class Listing extends Component
             return;
         }
 
-        // Build payload with only checked fields
+        // Build base payload with required fields
         $payload = [
             'specificCategoryId' => $this->specificCategoryId,
             'name' => $this->name,
             'location' => $this->location,
             'contractWhatsapp' => $this->contractWhatsapp,
-            'hasForm' => $this->hasForm ? 'true' : 'false',
         ];
 
         // Add optional fields if they exist
@@ -245,22 +251,25 @@ class Listing extends Component
             $payload['description'] = $this->description;
         }
 
-        if (!empty($this->formName)) {
-            $payload['formName'] = $this->formName;
-        }
-
-        if (!empty($this->fromName)) {
-            $payload['fromName'] = $this->fromName;
-        }
-
-        // Add hours as JSON array format
+        // Add hours as JSON array format if provided
         if (!empty($this->hours)) {
             $payload['hours'] = json_encode([$this->hours]);
         }
 
+        // Add conditional fields only when contractWhatsapp is 0 (No)
+        if ($this->contractWhatsapp == 'false') {
+            if (!empty($this->fromName)) {
+                $payload['fromName'] = $this->fromName;
+            }
+
+            // hasForm is required when contractWhatsapp is 0
+            $payload['hasForm'] = $this->hasForm ? 'true' : 'false';
+        }
+
+        // Initialize multipart request
         $request = Http::withToken($token)->asMultipart();
 
-        // Attach main image
+        // Attach main image (required)
         if ($this->main_image) {
             $request->attach(
                 'main_image',
@@ -269,7 +278,7 @@ class Listing extends Component
             );
         }
 
-        // Attach menu images
+        // Attach menu images (optional)
         if (!empty($this->menu_images)) {
             foreach ($this->menu_images as $index => $menuImage) {
                 $request->attach(
@@ -280,7 +289,7 @@ class Listing extends Component
             }
         }
 
-        // Attach sub images
+        // Attach sub images (optional)
         if (!empty($this->sub_images)) {
             foreach ($this->sub_images as $index => $subImage) {
                 $request->attach(
@@ -293,35 +302,47 @@ class Listing extends Component
 
         try {
             $response = $request->post(api_base_url() . '/listings', $payload);
-
+            dd($response->json());
             if ($response->successful()) {
                 $this->dispatch('sweetalert2', type: 'success', message: 'Listing created successfully!');
+
+                // Reset all form fields
                 $this->reset([
                     'specificCategoryId',
                     'name',
                     'location',
                     'description',
                     'hours',
-                    'formName',
+                    'fromName',
                     'contractWhatsapp',
                     'hasForm',
                     'main_image',
                     'menu_images',
                     'sub_images'
                 ]);
+
                 $this->switchAddListingModal();
                 $this->fetchListings();
             } else {
                 $errorMessage = $response->json()['message'] ?? 'Failed to create listing.';
+                $errors = $response->json()['errors'] ?? [];
+
+                // Log detailed error for debugging
                 Log::error('API Error Response: ' . $response->body());
-                $this->dispatch('sweetalert2', type: 'error', message: $errorMessage);
+
+                // Show user-friendly error message
+                if (!empty($errors)) {
+                    $errorList = collect($errors)->flatten()->implode(', ');
+                    $this->dispatch('sweetalert2', type: 'error', message: $errorMessage . ': ' . $errorList);
+                } else {
+                    $this->dispatch('sweetalert2', type: 'error', message: $errorMessage);
+                }
             }
         } catch (\Exception $e) {
             Log::error('Error creating listing: ' . $e->getMessage());
             $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred: ' . $e->getMessage());
         }
     }
-
     public function updateListing()
     {
         $this->validate();
