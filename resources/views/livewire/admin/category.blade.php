@@ -34,9 +34,6 @@
                 <input type="text" x-model="categoryTitle" placeholder="Enter your title here"
                     class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C7AE6A] focus:border-[#C7AE6A] outline-none transition-colors ">
             </div>
-
-
-
             <!-- Save Button -->
             <button @click="saveCategory()"
                 class="w-full md:w-auto px-8 py-3 bg-[#C7AE6A]  text-white font-medium  cursor-pointer rounded-lg transition-colors  outline-none">
@@ -47,7 +44,7 @@
 
     </div>
 
-    <div class="bg-white rounded-lg overflow-hidden mt-14 mb-5">
+    <div class="bg-white rounded-lg overflow-y-visible mt-14 mb-5">
 
         <table class="min-w-full w-auto border-collapse">
             <thead>

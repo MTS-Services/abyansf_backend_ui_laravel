@@ -336,7 +336,7 @@
     {{-- End Sub Category Edit Modal --}}
 
     <!-- Sub Categories Table -->
-    <div class="bg-white rounded-lg overflow-hidden mt-14 mb-5">
+    <div class="bg-white rounded-lg overflow-y-visible mt-14 mb-5">
         <table class="min-w-full table-auto border-collapse">
             <thead>
                 <tr class="bg-[#E7E7E7] hidden md:table-row">
