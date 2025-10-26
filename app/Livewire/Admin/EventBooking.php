@@ -6,10 +6,11 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
 
-class Attendance extends Component
+class EventBooking extends Component
 {
 
-     public $events = [];
+    public $events = [];
+
     public $pagination = [];
 
     public $openActions = null;
@@ -42,14 +43,14 @@ class Attendance extends Component
             return $this->redirectRoute('login', navigate: true);
         }
 
-        $response = Http::withToken($token)->get(api_base_url() . '/events', [
+        $response = Http::withToken($token)->get(api_base_url() . '/events/booking/admin', [
             'page' => $page
         ]);
 
         if ($response->successful()) {
             $data = $response->json();
             // $this->dispatch('sweetalert2', type: 'success', message: 'attendances loaded successfully.');
-            $this->events = $data['data']['events'] ?? [];
+            $this->events = $data['data']['bookings'] ?? [];
             $this->pagination = $data['data']['pagination'] ?? [];
             $this->currentPage = $page;
         } else {
@@ -72,17 +73,68 @@ class Attendance extends Component
             $this->openActions = $userId;
         }
     }
-public function deleteEvent($eventId)
+
+    /**
+     * Activate event booking (set status to Approved/Confirmed)
+     */
+    public function activateEvent($bookingId)
     {
-        $response = Http::withToken(api_token())->delete(api_base_url() . '/events/' . decrypt($eventId));
+        
+        $token = Session::get('api_token');
+
+        if (!$token) {
+            return $this->redirectRoute('login', navigate: true);
+        }
+
+        $response = Http::withToken($token)->put(api_base_url() . '/events/update/' . decrypt($bookingId), [
+            'status' => 'Confirmed'
+        ]);
 
         if ($response->successful()) {
-            // $this->dispatch('sweetalert2', type: 'success', message: 'booking deleted successfully.');
+            $this->dispatch('sweetalert2', type: 'success', message: 'Booking confirmed successfully.');
+            $this->fetchUsers($this->currentPage);
+        } else {
+            $errorMessage = $response->json()['message'] ?? 'Failed to confirm booking.';
+            $this->dispatch('sweetalert2', type: 'error', message: $errorMessage);
+        }
+    }
+
+    /**
+     * Deactivate event booking (set status to Pending)
+     */
+    public function deactivateEvent($bookingId)
+    {
+        $token = Session::get('api_token');
+
+        if (!$token) {
+            return $this->redirectRoute('login', navigate: true);
+        }
+
+        $response = Http::withToken($token)->put(api_base_url() . '/events/update/' . decrypt($bookingId), [
+            'status' => 'Pending'
+        ]);
+
+        if ($response->successful()) {
+            $this->dispatch('sweetalert2', type: 'success', message: 'Booking marked as pending.');
+            $this->fetchUsers($this->currentPage);
+        } else {
+            $errorMessage = $response->json()['message'] ?? 'Failed to update booking status.';
+            $this->dispatch('sweetalert2', type: 'error', message: $errorMessage);
+        }
+    }
+
+    public function deleteEvent($eventId)
+    {
+        $response = Http::withToken(api_token())->delete(api_base_url() . '/events/booking/' . decrypt($eventId));
+
+        if ($response->successful()) {
+            $this->dispatch('sweetalert2', type: 'success', message: 'booking deleted successfully.');
             $this->fetchUsers($this->currentPage);
         } else {
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to delete user.');
         }
     }
+
     public function gotoPage($page)
     {
         if ($page >= 1 && $page <= ($this->pagination['pages'] ?? 1)) {
@@ -160,13 +212,17 @@ public function deleteEvent($eventId)
         return $pages;
     }
 
+    public function editEvent($id)
+    {
+        dd($id);
+    }
+
     public function render()
     {
-            $pages = $this->getPaginationPages();
-            $hasPrevious = $this->currentPage > 1;
-            $hasNext = $this->currentPage < ($this->pagination['pages'] ??
-1);
-        return view('livewire.admin.attendance', [
+        $pages = $this->getPaginationPages();
+        $hasPrevious = $this->currentPage > 1;
+        $hasNext = $this->currentPage < ($this->pagination['pages'] ?? 1);
+        return view('livewire.admin.event-booking', [
             'pages' => $pages,
             'hasPrevious' => $hasPrevious,
             'hasNext' => $hasNext,

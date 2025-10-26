@@ -1,10 +1,10 @@
 <?php
 
 use App\Livewire\Admin\AllNotification;
-use App\Livewire\Admin\Attendance;
 use App\Livewire\Admin\Booking;
 use App\Livewire\Admin\Category;
 use App\Livewire\Admin\Event;
+use App\Livewire\Admin\EventBooking;
 use App\Livewire\Admin\EventManagement\Index as EventIndex;
 use App\Livewire\Admin\EventManagement\Create as EventCreate;
 use App\Livewire\Admin\EventManagement\Update as EventUpdate;
@@ -14,6 +14,7 @@ use App\Livewire\Admin\ListingManagement\Create as ListingCreate;
 use App\Livewire\Admin\ListingManagement\Update as ListingUpdate;
 use App\Livewire\Admin\User;
 use App\Livewire\Admin\Notification;
+use App\Livewire\Admin\SpecificCategory;
 use App\Livewire\Admin\SubCategory;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +25,7 @@ Route::name('admin.')->middleware(['api.auth'])->group(function () {
 
     Route::get('category', Category::class)->name('category');
     Route::get('sub-category', SubCategory::class)->name('sub-category');
+    Route::get('/specific-category', SpecificCategory::class)->name('specific-category');
    
 
 
@@ -36,7 +38,7 @@ Route::name('admin.')->middleware(['api.auth'])->group(function () {
     Route::get('event/create', EventCreate::class)->name('event.create');
     Route::get('event/{id}/update', EventUpdate::class)->name('event.update');
 
-    Route::get('attendance', Attendance::class)->name('attendance');
+    Route::get('event-booking', EventBooking::class)->name('event-booking');
     Route::get('events', Event::class)->name('event-list');
     Route::get('listings', Listing::class)->name('listing-list');
 });

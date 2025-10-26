@@ -4,9 +4,9 @@ namespace App\Livewire\Admin;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Livewire\Features\SupportFileUploads\WithFileUploads;
-use Livewire\WithPagination;
 
 class User extends Component
 {
@@ -22,7 +22,8 @@ class User extends Component
     public $whatsapp;
     public $password;
     public $image;
-    
+    public $existing_image;
+
     public $profileImg;
     public $role;
     public $package;
@@ -76,6 +77,7 @@ class User extends Component
             Session::flash('error', 'Failed to load users from the API.');
         }
     }
+    
 
     public function toggleActions($userId)
     {
@@ -145,50 +147,76 @@ class User extends Component
                 $this->email     = $user['email'] ?? '';
                 $this->whatsapp  = $user['whatsapp'] ?? '';
                 $this->password  = $user['password'] ?? '';
-                $this->image = $user['profile_pic'] ?? null;
+                $this->existing_image = $user['profile_pic'] ?? null; // Changed from $this->image
+                $this->image = null; // Add this line
             }
         } else {
-            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch event details.');
+            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to fetch user details.');
         }
     }
     public function updateUser()
     {
-        $data = [
-            'name' => $this->name,
-            'email' => $this->email,
-            'whatsapp' => $this->whatsapp,
-            'password' => $this->password,
-        ];
-        $request = Http::withToken(api_token());
+        try {
+            $data = [
+                'name' => $this->name,
+                // 'email' => $this->email,
+                // 'whatsapp' => $this->whatsapp,
+            ];
+            if (!empty($this->password)) {
+                $data['password'] = $this->password;
+            }
+            $token = Session::get('api_token');
+            if (!$token) {
+                Log::error('Update User - No API token found');
+                return $this->redirectRoute('login', navigate: true);
+            }
 
-        // You MUST re-add the attach part to send the image
-        if ($this->image && !filter_var($this->image, FILTER_VALIDATE_URL)) {
-            $request->attach(
-                'profile_pic',
-                file_get_contents($this->image->getRealPath()),
-                $this->image->getClientOriginalName()
-            );
-        }
+            $request = Http::withToken($token);
 
+            // Attach image if a new one is uploaded
+            if ($this->image && !filter_var($this->image, FILTER_VALIDATE_URL)) {
+                $request->attach(
+                    'image',
+                    file_get_contents($this->image->getRealPath()),
+                    $this->image->getClientOriginalName()
+                );
+            } else {
+                Log::info('Update User - No new image to attach');
+            }
 
-        // Use post() with the _method field.
-        $response = $request->put(api_base_url() . '/users/' . decrypt($this->userId), $data);
+            $apiUrl = api_base_url() . '/users/' . decrypt($this->userId);
+            $response = $request->put($apiUrl, $data);
+            if ($response->successful()) {
+                $this->reset([
+                    'name',
+                    'email',
+                    'whatsapp',
+                    'password',
+                    'image',
+                    'existing_image',
+                    'userId'
+                ]);
 
-
-        if ($response->successful()) {
-            $this->reset([
-                'name',
-                'email',
-                'whatsapp',
-                'password',
-                'profile_pic',
+                $this->userEditModal = false;
+                $this->dispatch('sweetalert2', type: 'success', message: 'User updated successfully.');
+                $this->fetchUsers($this->currentPage);
+            } else {
+                Log::error('Update User - Failed:', [
+                    'status' => $response->status(),
+                    'body' => $response->body()
+                ]);
+                
+                $this->dispatch('sweetalert2', type: 'error', message: 'Failed to update user. Please try again.');
+            }
+        } catch (\Exception $e) {
+            Log::error('Update User - Exception:', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
             ]);
-
-            $this->userEditModal = false; // Close the modal();
-            $this->dispatch('sweetalert2', type: 'success', message: 'User updated successfully.');
-            $this->fetchUsers();
-        } else {
-            $this->dispatch('sweetalert2', type: 'error', message: 'Failed to update user. Please try again.');
+            
+            $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred: ' . $e->getMessage());
         }
     }
 
@@ -245,17 +273,9 @@ class User extends Component
             // Find the user from the current fetched users array
             $user = collect($this->users)->firstWhere('id', $userId);
 
-            if (! $user || ! ($user['is_operational'] ?? false)) {
-                $this->dispatch('sweetalert2', type: 'error', message: 'This user is not operational. Payment link not available.');
-                return;
-            }
-
-            $response = Http::withToken(config('services.payment.token'))
-                ->post(api_base_url() . '/send-payment-link', ['userId' => $user['id']]);
+            $response = Http::withToken(api_token())->post(api_base_url() . "/users/{$user['id']}/send-payment-link");
 
             if ($response->successful()) {
-                // Assuming you have a way to update the local state without a full reload
-                // For a more robust solution, you could refetch the single user or the whole list
                 $this->fetchUsers($this->currentPage);
                 $this->dispatch('sweetalert2', type: 'success', message: 'Payment link sent successfully!');
             } else {
@@ -273,7 +293,7 @@ class User extends Component
             return $this->redirectRoute('login', navigate: true);
         }
 
-        $response = Http::withToken($token)->delete(api_base_url() . '/users/' . $userId);
+        $response = Http::withToken(api_token())->delete(api_base_url() . '/users/' . $userId);
 
         if ($response->successful()) {
             $this->dispatch('sweetalert2', type: 'success', message: 'User deleted successfully.');

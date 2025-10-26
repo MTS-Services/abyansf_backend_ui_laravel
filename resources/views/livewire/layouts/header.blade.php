@@ -44,7 +44,7 @@
         </div>
 
         <div class="flex items-center space-x-2">
-              @if (api_is_authenticated())
+            @if (api_is_authenticated())
                 @livewire('layouts.notification')
             @endif
             <div class="relative">
@@ -99,8 +99,8 @@
                     class="py-2 px-4 text-center font-semibold rounded-md {{ request()->routeIs('admin.listing-list') ? 'bg-gray-200 text-gray-800' : 'text-gray-700 hover:bg-gray-100' }}">Listings</a>
                 <a href="{{ route('admin.event-list') }}"
                     class="py-2 px-4 text-center font-semibold rounded-md {{ request()->routeIs('admin.event-list') ? 'bg-gray-200 text-gray-800' : 'text-gray-700 hover:bg-gray-100' }}">Event</a>
-                <a href="{{ route('admin.attendance') }}"
-                    class="py-2 px-4 text-center font-semibold rounded-md {{ request()->routeIs('admin.attendance') ? 'bg-gray-200 text-gray-800' : 'text-gray-700 hover:bg-gray-100' }}">Attendance</a>
+                <a href="{{ route('admin.event-booking') }}"
+                    class="py-2 px-4 text-center font-semibold rounded-md {{ request()->routeIs('admin.event-booking') ? 'bg-gray-200 text-gray-800' : 'text-gray-700 hover:bg-gray-100' }}">Attendance</a>
             </div>
         </div>
     </div>
