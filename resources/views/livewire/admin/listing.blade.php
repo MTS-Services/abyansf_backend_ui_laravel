@@ -588,9 +588,16 @@
                             <select wire:model="specificCategoryId"
                                 class="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md bg-[#F8F6EE] focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
                                 <option value="">Select a category</option>
-                                @foreach ($specificCategories as $category)
-                                    <option value="{{ $category['id'] }}">{{ $category['name'] }}</option>
-                                @endforeach
+                                @if (!empty($specificCategories))
+                                    @foreach ($specificCategories as $category)
+                                        <option value="{{ $category['id'] }}"
+                                            @if ($specificCategoryId == $category['id']) selected @endif>
+                                            {{ $category['name'] }}
+                                        </option>
+                                    @endforeach
+                                @else
+                                    <option value="" disabled>No categories available</option>
+                                @endif
                             </select>
                             @error('specificCategoryId')
                                 <span class="text-red-500 text-sm">{{ $message }}</span>
