@@ -699,7 +699,8 @@
                                     <img src="{{ $existing_main_image }}"
                                         class="w-full h-full object-cover rounded-md border"
                                         alt="Existing Main Image">
-                                    <button type="button" wire:click="removeExistingImage('main_image', '')"
+                                    <button type="button"
+                                        wire:click="removeExistingImage('main_image', '{{ $existing_main_image }}')"
                                         class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold hover:bg-red-600">&times;</button>
                                 </div>
                             @endif
@@ -796,14 +797,13 @@
                                                         $imageUrl = is_array($image)
                                                             ? $image['url'] ?? ($image['image'] ?? '')
                                                             : $image;
-                                                        $imageId = is_array($image) ? $image['id'] ?? '' : '';
                                                     @endphp
                                                     @if ($imageUrl)
                                                         <img src="{{ $imageUrl }}"
                                                             class="w-full h-32 object-cover rounded-md border"
                                                             alt="Existing Menu Image">
                                                         <button type="button"
-                                                            wire:click="removeExistingImage('menu_images', '{{ $imageId }}')"
+                                                            wire:click="removeExistingImage('menu_images', '{{ $imageUrl }}')"
                                                             class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold hover:bg-red-600">&times;</button>
                                                     @endif
                                                 </div>
@@ -871,14 +871,13 @@
                                                         $imageUrl = is_array($image)
                                                             ? $image['url'] ?? ($image['image'] ?? '')
                                                             : $image;
-                                                        $imageId = is_array($image) ? $image['id'] ?? '' : '';
                                                     @endphp
                                                     @if ($imageUrl)
                                                         <img src="{{ $imageUrl }}"
                                                             class="w-full h-32 object-cover rounded-md border"
                                                             alt="Existing Sub Image">
                                                         <button type="button"
-                                                            wire:click="removeExistingImage('sub_images', '{{ $imageId }}')"
+                                                            wire:click="removeExistingImage('sub_images', '{{ $imageUrl }}')"
                                                             class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold hover:bg-red-600">&times;</button>
                                                     @endif
                                                 </div>

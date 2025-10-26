@@ -193,7 +193,7 @@ class Listing extends Component
             $this->name = $data['name'] ?? '';
             $this->description = $data['description'] ?? '';
             $this->location = $data['location'] ?? '';
-            
+
             // Get category ID from multiple possible keys
             if (isset($data['specific_category_id'])) {
                 $this->specificCategoryId = $data['specific_category_id'];
@@ -212,14 +212,14 @@ class Listing extends Component
             }
 
             // Convert boolean to string for radio buttons
-            $this->contractWhatsapp = isset($data['contract_whatsapp']) 
-                ? ($data['contract_whatsapp'] ? 'true' : 'false') 
+            $this->contractWhatsapp = isset($data['contract_whatsapp'])
+                ? ($data['contract_whatsapp'] ? 'true' : 'false')
                 : 'true';
 
             $this->fromName = $data['from_name'] ?? '';
-            
-            $this->hasForm = isset($data['has_form']) 
-                ? ($data['has_form'] ? 'true' : 'false') 
+
+            $this->hasForm = isset($data['has_form'])
+                ? ($data['has_form'] ? 'true' : 'false')
                 : 'false';
 
             // Images
@@ -330,8 +330,17 @@ class Listing extends Component
             if ($response->successful()) {
                 $this->dispatch('sweetalert2', type: 'success', message: 'Listing created successfully!');
                 $this->reset([
-                    'specificCategoryId', 'name', 'location', 'description', 'hours',
-                    'fromName', 'contractWhatsapp', 'hasForm', 'main_image', 'menu_images', 'sub_images'
+                    'specificCategoryId',
+                    'name',
+                    'location',
+                    'description',
+                    'hours',
+                    'fromName',
+                    'contractWhatsapp',
+                    'hasForm',
+                    'main_image',
+                    'menu_images',
+                    'sub_images'
                 ]);
                 $this->switchAddListingModal();
                 $this->fetchListings();
@@ -512,32 +521,93 @@ class Listing extends Component
         $this->listingIdToDelete = null;
     }
 
-    public function removeExistingImage($type, $id)
+    public function removeExistingImage($type, $imageUrl)
     {
+
         if ($type === 'menu_images') {
+            // Remove from UI
             $this->existing_menu_images = collect($this->existing_menu_images)
-                ->reject(function ($image) use ($id) {
-                    return is_array($image) && ($image['id'] ?? null) == $id;
+                ->reject(function ($image) use ($imageUrl) {
+                    $url = is_array($image) ? ($image['url'] ?? $image['image'] ?? '') : $image;
+                    return $url === $imageUrl;
                 })
                 ->values()
                 ->all();
 
-            if (!empty($id)) {
-                $this->removed_existing_image_ids[] = $id;
+            // Delete from backend
+            if (!empty($imageUrl)) {
+                try {
+                    $response = Http::withToken(api_token())
+                        ->post(api_base_url() . '/listings/delete-image', [
+                            'listingId' => $this->listingIdToEdit,
+                            'imageUrl' => $imageUrl
+                        ]);
+
+                    if ($response->successful()) {
+                        $this->dispatch('sweetalert2', type: 'success', message: 'Menu image deleted successfully!');
+                    } else {
+                        $errorMessage = $response->json()['message'] ?? 'Failed to delete menu image.';
+                        $this->dispatch('sweetalert2', type: 'error', message: $errorMessage);
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Error deleting menu image: ' . $e->getMessage());
+                    $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred while deleting the image.');
+                }
             }
         } elseif ($type === 'sub_images') {
+            // Remove from UI
             $this->existing_sub_images = collect($this->existing_sub_images)
-                ->reject(function ($image) use ($id) {
-                    return is_array($image) && ($image['id'] ?? null) == $id;
+                ->reject(function ($image) use ($imageUrl) {
+                    $url = is_array($image) ? ($image['url'] ?? $image['image'] ?? '') : $image;
+                    return $url === $imageUrl;
                 })
                 ->values()
                 ->all();
 
-            if (!empty($id)) {
-                $this->removed_existing_image_ids[] = $id;
+            // Delete from backend
+            if (!empty($imageUrl)) {
+                try {
+                    $response = Http::withToken(api_token())
+                        ->post(api_base_url() . '/listings/delete-image', [
+                            'listingId' => $this->listingIdToEdit,
+                            'imageUrl' => $imageUrl
+                        ]);
+
+                    if ($response->successful()) {
+                        $this->dispatch('sweetalert2', type: 'success', message: 'Sub image deleted successfully!');
+                    } else {
+                        $errorMessage = $response->json()['message'] ?? 'Failed to delete sub image.';
+                        $this->dispatch('sweetalert2', type: 'error', message: $errorMessage);
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Error deleting sub image: ' . $e->getMessage());
+                    $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred while deleting the image.');
+                }
             }
         } elseif ($type === 'main_image') {
+            $imageUrl = $this->existing_main_image;
+
             $this->existing_main_image = null;
+
+            if (!empty($imageUrl)) {
+                try {
+                    $response = Http::withToken(api_token())
+                        ->post(api_base_url() . '/listings/delete-image', [
+                            'listingId' => $this->listingIdToEdit,
+                            'imageUrl' => $imageUrl
+                        ]);
+
+                    if ($response->successful()) {
+                        $this->dispatch('sweetalert2', type: 'success', message: 'Main image deleted successfully!');
+                    } else {
+                        $errorMessage = $response->json()['message'] ?? 'Failed to delete main image.';
+                        $this->dispatch('sweetalert2', type: 'error', message: $errorMessage);
+                    }
+                } catch (\Exception $e) {
+                    Log::error('Error deleting main image: ' . $e->getMessage());
+                    $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred while deleting the image.');
+                }
+            }
         }
     }
 
@@ -555,11 +625,27 @@ class Listing extends Component
     public function resetForm()
     {
         $this->reset([
-            'name', 'description', 'location', 'active', 'disabled', 'listingIdToEdit',
-            'specificCategoryId', 'hours', 'formName', 'venueName', 'typeofservice',
-            'contractWhatsapp', 'hasForm', 'menu_images', 'sub_images', 'main_image',
-            'existing_main_image', 'existing_menu_images', 'existing_sub_images',
-            'removed_existing_image_ids', 'fromName'
+            'name',
+            'description',
+            'location',
+            'active',
+            'disabled',
+            'listingIdToEdit',
+            'specificCategoryId',
+            'hours',
+            'formName',
+            'venueName',
+            'typeofservice',
+            'contractWhatsapp',
+            'hasForm',
+            'menu_images',
+            'sub_images',
+            'main_image',
+            'existing_main_image',
+            'existing_menu_images',
+            'existing_sub_images',
+            'removed_existing_image_ids',
+            'fromName'
         ]);
     }
 
