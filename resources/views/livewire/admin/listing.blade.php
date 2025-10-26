@@ -304,7 +304,7 @@
                         <div class="flex flex-col md:flex-row w-full md:w-auto items-start md:items-center">
                             <td class="p-4 text-left font-normal text-base block md:table-cell" data-label="SL">
                                 <span class="font-medium text-gray-500 md:hidden">SL: </span>
-                                <p class="text-black whitespace-nowrap inline-block md:block">{{ $listing['id'] }}</p>
+                                <p class="text-black whitespace-nowrap inline-block md:block">{{ $loop->iteration  }}</p>
                             </td>
                             <td class="flex items-start md:items-center space-x-3 md:space-x-4">
                                 <p
