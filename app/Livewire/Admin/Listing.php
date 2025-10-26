@@ -207,26 +207,41 @@ class Listing extends Component
     {
         if ($this->listingData) {
             $data = $this->listingData['data'] ?? [];
+
+            // Basic fields - same as create form
             $this->name = $data['name'] ?? '';
             $this->description = $data['description'] ?? '';
             $this->location = $data['location'] ?? '';
             $this->specificCategoryId = $data['specific_category_id'] ?? null;
-            $this->hours = $data['hours'] ?? '';
-            $this->formName = $data['form_name'] ?? '';
-            $this->venueName = $data['venue_name'] ?? '';
-            $this->typeofservice = $data['typeofservice'] ?? '';
-            $this->contractWhatsapp = $data['contract_whatsapp'] ?? '';
-            $this->hasForm = $data['has_form'] ?? false;
-            $status = $data['status'] ?? '';
-            $this->active = ($status === 'active');
-            $this->disabled = ($status === 'disabled');
+
+            // Hours field
+            $hours = $data['hours'] ?? [];
+            if (is_array($hours) && !empty($hours)) {
+                $this->hours = $hours[0] ?? '';
+            } else {
+                $this->hours = is_string($hours) ? $hours : '';
+            }
+
+            // Contract WhatsApp field
+            $this->contractWhatsapp = isset($data['contract_whatsapp'])
+                ? ($data['contract_whatsapp'] ? 'true' : 'false')
+                : 'true';
+
+            // Conditional fields - only load if contractWhatsapp is false
+            $this->fromName = $data['from_name'] ?? '';
+            $this->hasForm = isset($data['has_form'])
+                ? ($data['has_form'] ? 'true' : 'false')
+                : 'false';
 
             // Set existing images
             $this->existing_main_image = $data['main_image'] ?? null;
-            $this->existing_menu_images = $data['menu_images'] ?? [];
+
+            // Menu images - check both 'menu_images' and 'menuImages' keys
+            $this->existing_menu_images = $data['menu_images'] ?? $data['menuImages'] ?? [];
+
             $this->existing_sub_images = $data['sub_images'] ?? [];
 
-            // Clear temporary properties - SET TO NULL, NOT THE URL
+            // Clear temporary properties - SET TO NULL
             $this->main_image = null;
             $this->menu_images = [];
             $this->sub_images = [];
@@ -390,7 +405,26 @@ class Listing extends Component
     }
     public function updateListing()
     {
-        $this->validate();
+        // Dynamic validation rules - same as create
+        $rules = [
+            'specificCategoryId' => 'required|integer',
+            'name' => 'required|string|max:255',
+            'location' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'hours' => 'nullable|string',
+            'contractWhatsapp' => 'required|in:true,false',
+            'main_image' => 'nullable|image|max:2048',
+            'menu_images.*' => 'nullable|image|max:2048',
+            'sub_images.*' => 'nullable|image|max:2048',
+        ];
+
+        // Add conditional validation when contractWhatsapp is false (No)
+        if ($this->contractWhatsapp == 'false') {
+            $rules['fromName'] = 'nullable|string|max:255';
+            $rules['hasForm'] = 'required|in:true,false';
+        }
+
+        $this->validate($rules);
 
         $token = api_token();
         if (!$token) {
@@ -398,34 +432,93 @@ class Listing extends Component
             return;
         }
 
+        // Build base payload - exactly same as create
         $payload = [
+            'specificCategoryId' => $this->specificCategoryId,
             'name' => $this->name,
-            'description' => $this->description,
             'location' => $this->location,
-            'specific_category_id' => $this->specificCategoryId,
-            'hours' => $this->hours,
-            'form_name' => $this->formName,
-            'venue_name' => $this->venueName,
-            'typeofservice' => $this->typeofservice,
-            'contract_whatsapp' => $this->contractWhatsapp,
-            'has_form' => $this->hasForm,
-            'status' => $this->active ? 'active' : 'disabled',
-            'removed_existing_image_ids' => json_encode($this->removed_existing_image_ids),
+            'contractWhatsapp' => $this->contractWhatsapp,
         ];
 
+        // Add optional fields if they exist
+        if (!empty($this->description)) {
+            $payload['description'] = $this->description;
+        }
+
+        // Add hours as JSON array format if provided
+        if (!empty($this->hours)) {
+            $payload['hours'] = json_encode([$this->hours]);
+        }
+
+        // Add conditional fields only when contractWhatsapp is false (No)
+        if ($this->contractWhatsapp == 'false') {
+            if (!empty($this->fromName)) {
+                $payload['fromName'] = $this->fromName;
+            }
+
+            // hasForm is required when contractWhatsapp is false
+            $payload['hasForm'] = $this->hasForm ? 'true' : 'false';
+        }
+
+        // Add removed image IDs if any
+        if (!empty($this->removed_existing_image_ids)) {
+            $payload['removed_existing_image_ids'] = json_encode($this->removed_existing_image_ids);
+        }
+
         try {
+            // Initialize multipart request
             $request = Http::withToken($token)->asMultipart();
 
+            // Attach main image if uploaded (optional for update)
             if ($this->main_image) {
-                $request->attach('main_image', file_get_contents($this->main_image->getRealPath()), $this->main_image->getClientOriginalName());
-            }
-            foreach ($this->menu_images as $index => $menuImage) {
-                $request->attach("menu_images[{$index}]", file_get_contents($menuImage->getRealPath()), $menuImage->getClientOriginalName());
-            }
-            foreach ($this->sub_images as $index => $subImage) {
-                $request->attach("sub_images[{$index}]", file_get_contents($subImage->getRealPath()), $subImage->getClientOriginalName());
+                $request->attach(
+                    'main_image',
+                    file_get_contents($this->main_image->getRealPath()),
+                    $this->main_image->getClientOriginalName()
+                );
             }
 
+            // Attach menu images (optional) - Use 'menuImages' without array notation
+            if (!empty($this->menu_images)) {
+                $menuImagesArray = is_array($this->menu_images) ? $this->menu_images : [$this->menu_images];
+
+                foreach ($menuImagesArray as $menuImage) {
+                    if ($menuImage && is_object($menuImage) && method_exists($menuImage, 'getRealPath')) {
+                        $request->attach(
+                            'menuImages',
+                            file_get_contents($menuImage->getRealPath()),
+                            $menuImage->getClientOriginalName()
+                        );
+                    }
+                }
+            }
+
+            // Attach sub images (optional) - Use 'sub_images' without array notation
+            if (!empty($this->sub_images)) {
+                $subImagesArray = is_array($this->sub_images) ? $this->sub_images : [$this->sub_images];
+
+                foreach ($subImagesArray as $subImage) {
+                    if ($subImage && is_object($subImage) && method_exists($subImage, 'getRealPath')) {
+                        $request->attach(
+                            'sub_images',
+                            file_get_contents($subImage->getRealPath()),
+                            $subImage->getClientOriginalName()
+                        );
+                    }
+                }
+            }
+
+            // Log the request for debugging
+            Log::info('Updating listing data', [
+                'listing_id' => $this->listingIdToEdit,
+                'payload' => $payload,
+                'has_main_image' => !empty($this->main_image),
+                'menu_images_count' => !empty($this->menu_images) ? count($this->menu_images) : 0,
+                'sub_images_count' => !empty($this->sub_images) ? count($this->sub_images) : 0,
+                'removed_image_ids' => $this->removed_existing_image_ids
+            ]);
+
+            // Send PUT request
             $response = $request->post(api_base_url() . '/listings/' . $this->listingIdToEdit . '?_method=PUT', $payload);
 
             if ($response->successful()) {
@@ -433,13 +526,26 @@ class Listing extends Component
                 $this->closeEditModal();
                 $this->fetchListings($this->currentPage);
             } else {
-                $this->dispatch('sweetalert2', type: 'error', message: 'Failed to update listing.');
+                $errorMessage = $response->json()['message'] ?? 'Failed to update listing.';
+                $errors = $response->json()['errors'] ?? [];
+
+                // Log detailed error for debugging
+                Log::error('API Error Response: ' . $response->body());
+
+                // Show user-friendly error message
+                if (!empty($errors)) {
+                    $errorList = collect($errors)->flatten()->implode(', ');
+                    $this->dispatch('sweetalert2', type: 'error', message: $errorMessage . ': ' . $errorList);
+                } else {
+                    $this->dispatch('sweetalert2', type: 'error', message: $errorMessage);
+                }
             }
         } catch (\Exception $e) {
-            $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred while updating the listing.');
+            Log::error('Error updating listing: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
+            $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred: ' . $e->getMessage());
         }
     }
-
     public function removeExistingImage($type, $id)
     {
         if ($type === 'menu_images') {
