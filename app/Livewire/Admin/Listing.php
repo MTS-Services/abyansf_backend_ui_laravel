@@ -21,6 +21,7 @@ class Listing extends Component
     public $name;
     public $description;
     public $location;
+    public $listing_name;
     public $active;
     public $disabled;
 
@@ -153,6 +154,28 @@ class Listing extends Component
         }
     }
 
+    public function applyFilters(){
+
+       $this->fetchListings($this->currentPage);
+
+    }
+
+    public function specificCategories()  
+    {
+
+        $token = api_token();
+
+        $response = Http::withToken($token)->get(api_base_url() . '/categories/specific');
+
+        if ($response->successful()) {
+
+            $data = $response->json();
+
+            return $data['data']['specificCategories'] ?? [];
+
+        }
+
+    }
     public function fetchListings($page = 1)
     {
         $token = Session::get('api_token');
@@ -162,7 +185,11 @@ class Listing extends Component
         }
 
         $response = Http::withToken($token)->get(api_base_url() . '/listings', [
-            'page' => $page
+            'page' => $page,
+            'specificCategoryId' => $this->specificCategoryId ?? '',
+            'listingName' => $this->formName ?? '',
+            'location' => $this->location ?? '',
+
         ]);
 
         if ($response->successful()) {
@@ -554,6 +581,7 @@ class Listing extends Component
                 'pages' => $pages,
                 'hasPrevious' => $hasPrevious,
                 'hasNext' => $hasNext,
+                'categories' => $this->specificCategories(),
             ]
         );
     }

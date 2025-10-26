@@ -1,6 +1,8 @@
 <section class="mx-auto max-w-[1200px]  font-playfair">
     <h2 class="font-medium text-3xl text-black mb-4">Listing Management</h2>
-    <x-admin.searchbar page="Add Listing" livewire_method="switchAddListingModal" />
+
+    <x-admin.searchbar page="Add Listing" livewire_method="switchAddListingModal" filter_method="applyFilters" :categories="$categories" />
+
     <div x-data x-init="$watch('$wire.addListingModal', value => document.body.classList.toggle('overflow-hidden', value))"
         class="fixed inset-0 bg-black/70 {{ $addListingModal ? 'block' : 'hidden' }} z-50 overflow-auto flex items-center justify-center p-4">
         <div class="bg-white w-full max-w-[1200px] mx-auto rounded-lg p-6 relative max-h-[90vh] overflow-y-auto">
