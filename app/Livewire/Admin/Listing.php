@@ -124,7 +124,7 @@ class Listing extends Component
             $response = Http::withToken($token)->get(api_base_url() . '/listings', [
                 'page' => $page,
                 'specificCategoryId' => $this->specificCategoryId ?? '',
-                'name' => $this->formName ?? '',
+                'listingName' => $this->formName ?? '',
                 'location' => $this->location ?? '',
             ]);
 
