@@ -93,14 +93,14 @@
             <div class="flex flex-col p-4 space-y-2">
                 <a href="{{ route('admin.users') }}"
                     class="py-2 px-4 text-center font-semibold rounded-md {{ request()->routeIs('admin.users') ? 'bg-gray-200 text-gray-800' : 'text-gray-700 hover:bg-gray-100' }}">Users</a>
-                <a href="{{ route('admin.bookings') }}"
-                    class="py-2 px-4 text-center font-semibold rounded-md {{ request()->routeIs('admin.bookings') ? 'bg-gray-200 text-gray-800' : 'text-gray-700 hover:bg-gray-100' }}">Bookings</a>
+                {{-- <a href="{{ route('admin.bookings') }}"
+                    class="py-2 px-4 text-center font-semibold rounded-md {{ request()->routeIs('admin.bookings') ? 'bg-gray-200 text-gray-800' : 'text-gray-700 hover:bg-gray-100' }}">Bookings</a> --}}
                 <a href="{{ route('admin.listing-list') }}"
                     class="py-2 px-4 text-center font-semibold rounded-md {{ request()->routeIs('admin.listing-list') ? 'bg-gray-200 text-gray-800' : 'text-gray-700 hover:bg-gray-100' }}">Listings</a>
                 <a href="{{ route('admin.event-list') }}"
                     class="py-2 px-4 text-center font-semibold rounded-md {{ request()->routeIs('admin.event-list') ? 'bg-gray-200 text-gray-800' : 'text-gray-700 hover:bg-gray-100' }}">Event</a>
                 <a href="{{ route('admin.event-booking') }}"
-                    class="py-2 px-4 text-center font-semibold rounded-md {{ request()->routeIs('admin.event-booking') ? 'bg-gray-200 text-gray-800' : 'text-gray-700 hover:bg-gray-100' }}">Attendance</a>
+                    class="py-2 px-4 text-center font-semibold rounded-md {{ request()->routeIs('admin.event-booking') ? 'bg-gray-200 text-gray-800' : 'text-gray-700 hover:bg-gray-100' }}">Event Booking</a>
             </div>
         </div>
     </div>
