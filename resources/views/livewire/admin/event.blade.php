@@ -32,6 +32,8 @@
                 class="block font-semibold  font-playfair text-sm w-full lg:max-w-[600px] md:text-base px-4 py-3 pl-14 text-gray-700 bg-[#F4F4F4]    rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] custom-shadow" />
         </div>
 
+        
+
         <!-- Location Bar -->
         <div class="relative flex-grow mb-4 md:mb-0 max-w-full rounded-sm ">
             <div class="absolute inset-y-0 left-0 flex items-center pl-5 pointer-events-none">

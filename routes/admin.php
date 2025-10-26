@@ -14,6 +14,7 @@ use App\Livewire\Admin\ListingManagement\Create as ListingCreate;
 use App\Livewire\Admin\ListingManagement\Update as ListingUpdate;
 use App\Livewire\Admin\User;
 use App\Livewire\Admin\Notification;
+use App\Livewire\Admin\SpecificCategory;
 use App\Livewire\Admin\SubCategory;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +25,7 @@ Route::name('admin.')->middleware(['api.auth'])->group(function () {
 
     Route::get('category', Category::class)->name('category');
     Route::get('sub-category', SubCategory::class)->name('sub-category');
+    Route::get('/specific-category', SpecificCategory::class)->name('specific-category');
    
 
 

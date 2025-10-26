@@ -62,7 +62,9 @@ class Event extends Component
     public function applyFilters()
     {
 
+        //   dd($this->eventName, $this->eventLocation, $this->eventStatus);
         $response =  $this->fetchEvents($this->currentPage);
+      
     }
 
     public function fetchEvents($page = 1)
@@ -71,13 +73,13 @@ class Event extends Component
         if (!$token) {
             return $this->redirectRoute('login', navigate: true);
         }
+      
         $response = Http::withToken($token)->get(api_base_url() . '/events', [
             'page' => $page,
-            'name' => $this->eventName,
+            'title' => $this->eventName,
             'location' => $this->eventLocation,
             'status' => $this->eventStatus,
         ]);
-
 
         if ($response->successful()) {
             $data = $response->json();
@@ -141,7 +143,6 @@ class Event extends Component
 
     public function switchEditEventModal($eventId = null)
     {
-
         $this->editEventModal = !$this->editEventModal;
         if ($this->editEventModal && $eventId) {
             $this->event($eventId);
