@@ -122,6 +122,26 @@ class EventBooking extends Component
             $this->dispatch('sweetalert2', type: 'error', message: $errorMessage);
         }
     }
+    public function rejectEvent($bookingId)
+    {
+        $token = Session::get('api_token');
+
+        if (!$token) {
+            return $this->redirectRoute('login', navigate: true);
+        }
+
+        $response = Http::withToken($token)->put(api_base_url() . '/events/update/' . decrypt($bookingId), [
+            'status' => 'Rejected'
+        ]);
+
+        if ($response->successful()) {
+            $this->dispatch('sweetalert2', type: 'success', message: 'Booking marked as pending.');
+            $this->fetchUsers($this->currentPage);
+        } else {
+            $errorMessage = $response->json()['message'] ?? 'Failed to update booking status.';
+            $this->dispatch('sweetalert2', type: 'error', message: $errorMessage);
+        }
+    }
 
     public function deleteEvent($eventId)
     {

@@ -35,6 +35,8 @@
                                     @if ($event['status'] == 'Confirmed') bg-green-100 text-green-800
                                     @elseif($event['status'] == 'Pending') 
                                         bg-yellow-100 text-yellow-800
+                                    @elseif($event['status'] == 'Rejected') 
+                                        bg-red-100 text-red-800
                                     @else 
                                         bg-gray-100 text-gray-800 @endif">
                                 {{ $event['status'] ?? 'Unknown' }}
@@ -65,16 +67,27 @@
                                         <flux:icon name="pencil-square" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Edit
                                     </button> --}}
+                                    <!-- Confirm -->
                                     <button wire:click="activateEvent('{{ encrypt($event['id']) }}')"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
-                                        <flux:icon name="check" class="text-[#6D6D6D] mr-2 h-4 w-4" />
+                                        <flux:icon name="check-circle" class="text-green-600 mr-2 h-4 w-4" />
                                         Confirm
                                     </button>
+
+                                    <!-- Pending -->
                                     <button wire:click="deactivateEvent('{{ encrypt($event['id']) }}')"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
-                                        <flux:icon name="x-circle" class="text-[#6D6D6D] mr-2 h-4 w-4" />
-                                        Pendding
+                                        <flux:icon name="clock" class="text-yellow-500 mr-2 h-4 w-4" />
+                                        Pending
                                     </button>
+
+                                    <!-- Reject -->
+                                    <button wire:click="rejectEvent('{{ encrypt($event['id']) }}')"
+                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
+                                        <flux:icon name="x-circle" class="text-red-600 mr-2 h-4 w-4" />
+                                        Reject
+                                    </button>
+
                                     <button wire:click="deleteEvent('{{ encrypt($event['id']) }}')"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
                                         <flux:icon name="trash" class="text-[#6D6D6D] mr-2 h-4 w-4" />
