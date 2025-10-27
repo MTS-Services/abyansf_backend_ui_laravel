@@ -332,6 +332,32 @@ class SubCategory extends Component
 
     public function render()
     {
+
+        // Serach Component
+        $dropdowns = [
+            [
+                'name' => 'main_category_id',
+                'default' => 'Category',
+                'options' => $this->categories,
+            ],
+        ];
+
+        $buttons = [
+            [
+                'method' => 'applyFilters',
+                'text' => 'Filter',
+                'icon' => 'plus',
+                'id' => 'filter_button',
+            ],
+            [
+                'method' => 'switchAddSubCategoryModal',
+                'text' => 'Add',
+                'icon' => 'plus',
+                'id' => 'add_category_button',
+            ],
+        ];
+
+        // End Serach Component
         $pages = $this->getPaginationPages();
         $hasPrevious = $this->currentPage > 1;
         $hasNext = $this->currentPage < ($this->pagination['pages'] ?? 1);
@@ -342,7 +368,9 @@ class SubCategory extends Component
             'hasNext' => $hasNext,
             'subCategoreis' => $this->subCategoreis,
             'subCategory'   => $this->subCategory,
-            'categories'    => $this->categories,
+            'dropdowns' => $dropdowns,
+            'buttons' => $buttons
+
         ]);
     }
 }

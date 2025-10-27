@@ -8,7 +8,7 @@
         @include('livewire.admin.category-management.navbar')
     </nav>
 
-    {{-- <x-admin.searchbar page="Add" livewire_method="switchAddCategoryModal" /> --}}
+    <x-admin.searchbar />
 
     <!--Add Category Modal-->
     <div x-data="{ open: @entangle('addCategoryModal') }" x-show="open"
@@ -28,20 +28,25 @@
                 <h1 class="text-4xl font-semibold text-gray-900">Add Category</h1>
             </div>
 
-            <!-- Form Content -->
-            <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-900 mb-2 font-playfair">Category Title</label>
-                <input type="text" x-model="categoryTitle" placeholder="Enter your title here"
-                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C7AE6A] focus:border-[#C7AE6A] outline-none transition-colors ">
-            </div>
+            <form action="" wire:submit.prevent="saveCategory">
+                <!-- Form Content -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-900 mb-2 font-playfair">Category Title</label>
+                    <input type="text" wire:model="category_title" x-model="categoryTitle" placeholder="Enter your title here"
+                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C7AE6A] focus:border-[#C7AE6A] outline-none transition-colors ">
+                        @error('category_title')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
 
 
 
-            <!-- Save Button -->
-            <button @click="saveCategory()"
-                class="w-full md:w-auto px-8 py-3 bg-[#C7AE6A]  text-white font-medium  cursor-pointer rounded-lg transition-colors  outline-none">
-                Save Category
-            </button>
+                <!-- Save Button -->
+                <button wire:click="saveCategory"
+                    class="w-full md:w-auto px-8 py-3 bg-[#C7AE6A]  text-white font-medium  cursor-pointer rounded-lg transition-colors  outline-none">
+                    Save Category
+                </button>
+            </form>
         </div>
     </div>
 
@@ -49,76 +54,12 @@
 
     <div class="bg-white rounded-lg overflow-hidden mt-14 mb-5">
 
-        <table class="min-w-full w-auto border-collapse">
-            <thead>
-                <tr class="bg-[#e7e7e7] text-black font-medium">
-                    <th class="p-4 text-left font-medium text-base">SL</th>
-                    <th class="p-4 text-left font-medium text-base">Catygory Name</th>
-                    <th class="p-4 text-right font-medium text-base">Action</th>
-                </tr>
-            </thead>
-
-            <tbody class="w-full">
-                @foreach ($mainCategories as $category)
-                    <tr wire:key="booking-{{ $category['id'] }}" x-data="{ dropdownOpen: false }"
-                        class="border-b border-gray-200">
-                        <td class="p-4 text-left font-playfair text-base">
-                            <p class="text-black whitespace-nowrap">{{ $category['id'] }}</p>
-                        </td>
-                        <td class="p-4 text-left font-playfair text-base">
-                            <p class="text-black whitespace-nowrap">{{ $category['name'] }}</p>
-                        </td>
-
-                        <td class="py-3 px-6 text-right">
-                            <!-- Actions -->
-                            <div class="relative inline-block text-left" x-data="{ open: false }"
-                                x-on:click.outside="open = false">
-                                <button x-on:click="open = ! open"
-                                    class="-mt-1 text-[#AD8945] rounded-full focus:outline-none" title="Settings">
-                                    <flux:icon name="cog-6-tooth" class="text-[#C7AE6A]" />
-                                </button>
-
-                                <div x-show="open" x-transition:enter="transition ease-out duration-100"
-                                    x-transition:enter-start="transform opacity-0 scale-95"
-                                    x-transition:enter-end="transform opacity-100 scale-100"
-                                    x-transition:leave="transition ease-in duration-75"
-                                    x-transition:leave-start="transform opacity-100 scale-100"
-                                    x-transition:leave-end="transform opacity-0 scale-95"
-                                    class="absolute right-3 -mt-1 p-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
-
-                                    <button wire:click="openEditCategoryModal('{{ encrypt($category['id']) }}')"
-                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
-                                        <flux:icon name="pencil-square" class="text-[#6D6D6D] mr-2 h-4 w-4" />
-                                        Edit
-                                    </button>
+        {{-- Start the data table --}}
+        <x-admin.data-table :items="$items" :columns="$columns" :actions="$actions" />
+        {{-- End The Data Table --}}
 
 
-                                    <button
-                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
-                                        <flux:icon name="check" class="text-[#6D6D6D] mr-2 h-4 w-4" />
-                                        Active
-                                    </button>
 
-                                    <button
-                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
-                                        <flux:icon name="x-circle" class="text-[#6D6D6D] mr-2 h-4 w-4" />
-                                        Deactivate
-                                    </button>
-
-                                    <button wire:click="deleteCategory('{{ encrypt($category['id']) }}')"
-                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
-                                        <flux:icon name="trash" class="text-[#6D6D6D] mr-2 h-4 w-4" />
-                                        Delete
-                                    </button>
-                                </div>
-
-                            </div>
-                        </td>
-
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
         <div x-data="{ open: @entangle('editCategoryModal') }" x-show="open"
             class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 bg-opacity-50" x-cloak>
             <div class="relative max-w-[1200px] mx-auto w-full bg-white rounded-lg shadow-lg border border-gray-200 p-6 md:p-8 
@@ -133,17 +74,19 @@
                     <h1 class="text-4xl font-semibold text-gray-900">Edit Category</h1>
                 </div>
 
-                <div class="mb-6">
+               <form action="" wire:submit.prevent="updateCategory">
+                 <div class="mb-6">
                     <label class="block text-sm font-medium text-gray-900 mb-2 font-playfair">Category
                         Title</label>
-                    <input type="text" wire:model.defer="name" placeholder="Enter your title here"
+                    <input type="text" wire:model.defer="category_title" placeholder="Enter your title here"
                         class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C7AE6A] focus:border-[#C7AE6A] outline-none transition-colors ">
                 </div>
 
-                <button wire:click="saveCategory"
+                <button wire:click="updateCategory"
                     class="w-full md:w-auto px-8 py-3 bg-[#C7AE6A] text-white font-medium cursor-pointer rounded-lg transition-colors outline-none">
-                    Save Category
+                    Update Category
                 </button>
+               </form>
             </div>
         </div>
     </div>

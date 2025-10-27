@@ -6,8 +6,7 @@
     </nav>
 
 
-    <x-admin.searchbar livewire_method="switchAddSubCategoryModal" :categories="$categories" filter_method="applyFilters"
-        :search=false :location=false />
+    <x-admin.searchbar  :dropdowns="$dropdowns" :buttons="$buttons" />
 
     <!-- Add Sub Category Modal -->
     <div x-data="{ show: @entangle('addSubCategoryModal') }" x-show="show" x-cloak x-effect="document.body.classList.toggle('overflow-hidden', show)"
