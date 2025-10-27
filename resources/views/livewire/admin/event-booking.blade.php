@@ -30,13 +30,23 @@
                         </td>
                         <td class="p-4 text-left font-normal text-base border-b md:border-b-0" data-label="Status">
                             <span class="font-medium md:hidden text-gray-500">Status: </span>
-                            {{ $event['status'] ? 'Confirmed' : 'Pending' }}
+                            <span
+                                class="px-2 py-1 text-xs font-semibold rounded-full 
+                                    @if ($event['status'] == 'Confirmed') bg-green-100 text-green-800
+                                    @elseif($event['status'] == 'Pending') 
+                                        bg-yellow-100 text-yellow-800
+                                    @elseif($event['status'] == 'Rejected') 
+                                        bg-red-100 text-red-800
+                                    @else 
+                                        bg-gray-100 text-gray-800 @endif">
+                                {{ $event['status'] ?? 'Unknown' }}
+                            </span>
                         </td>
                         <td class="p-4 text-left font-normal text-base border-b md:border-b-0" data-label="Join Date">
                             <span class="font-medium md:hidden text-gray-500">Join Date: </span>
                             {{ \Carbon\Carbon::parse($event['createdAt'])->format('d/m/Y') }}
                         </td>
-                        
+
                         <td class="py-3 px-6 text-right" data-label="Action">
                             <span class="font-medium md:hidden text-gray-500">Action: </span>
                             <div class="relative inline-block text-left" x-data="{ open: false }"
@@ -52,22 +62,33 @@
                                     x-transition:leave-start="transform opacity-100 scale-100"
                                     x-transition:leave-end="transform opacity-0 scale-95"
                                     class="absolute right-3 -mt-1 p-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
-                                    <button wire:click="editEvent('{{ $event['id'] }}')"
+                                    {{-- <button wire:click="editEvent('{{ $event['id'] }}')"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
                                         <flux:icon name="pencil-square" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Edit
-                                    </button>
-                                    <button wire:click="activateEvent('{{ $event['id'] }}')"
+                                    </button> --}}
+                                    <!-- Confirm -->
+                                    <button wire:click="activateEvent('{{ encrypt($event['id']) }}')"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
-                                        <flux:icon name="check" class="text-[#6D6D6D] mr-2 h-4 w-4" />
+                                        <flux:icon name="check-circle" class="text-green-600 mr-2 h-4 w-4" />
                                         Confirm
                                     </button>
+
+                                    <!-- Pending -->
                                     <button wire:click="deactivateEvent('{{ encrypt($event['id']) }}')"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
-                                        <flux:icon name="x-circle" class="text-[#6D6D6D] mr-2 h-4 w-4" />
-                                        Pendding
+                                        <flux:icon name="clock" class="text-yellow-500 mr-2 h-4 w-4" />
+                                        Pending
                                     </button>
-                                    <button wire:click="deleteEvent('{{ $event['id'] }}')"
+
+                                    <!-- Reject -->
+                                    <button wire:click="rejectEvent('{{ encrypt($event['id']) }}')"
+                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
+                                        <flux:icon name="x-circle" class="text-red-600 mr-2 h-4 w-4" />
+                                        Reject
+                                    </button>
+
+                                    <button wire:click="deleteEvent('{{ encrypt($event['id']) }}')"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
                                         <flux:icon name="trash" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Delete

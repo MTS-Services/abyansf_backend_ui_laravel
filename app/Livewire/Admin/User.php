@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Livewire\Features\SupportFileUploads\WithFileUploads;
-use Livewire\WithPagination;
 
 class User extends Component
 {

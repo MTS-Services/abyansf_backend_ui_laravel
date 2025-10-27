@@ -52,7 +52,7 @@
 
     </div>
 
-    <div class="bg-white rounded-lg overflow-hidden mt-14 mb-5">
+    <div class="bg-white rounded-lg overflow-y-visible mt-14 mb-5">
 
         {{-- Start the data table --}}
         <x-admin.data-table :items="$items" :columns="$columns" :actions="$actions" />
