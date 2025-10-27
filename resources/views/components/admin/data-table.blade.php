@@ -19,12 +19,13 @@
               @foreach ($items as $index => $item)
                   <tr wire:key="main-{{ $item['id'] }}" x-data="{ dropdownOpen: false }" class="border-b border-gray-200">
                       <td class="p-4 text-left font-playfair text-base">
-                          <p class="text-black whitespace-nowrap">{{ $index+1 }}</p>
+                          <p class="text-black whitespace-nowrap">{{ $index + 1 }}</p>
                       </td>
                         @foreach ($columns as $column )
                               <td class="p-4 text-left font-playfair text-base">
 
                                    <p class="text-black whitespace-nowrap">
+                                   
                                     {{ 
                                        isset($column['format']) ? $column['format']($item[$column['key']]) : $item[$column['key']];
                                     }}

@@ -350,7 +350,7 @@ class Category extends Component
           $actions = [
             [
                 'key' => 'id',
-                'label' => 'Edit',
+                'label' => 'Details',
                 'method' => 'openEditCategoryModal',
                 'icon' => 'pencil',
             ],

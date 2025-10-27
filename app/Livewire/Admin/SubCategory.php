@@ -25,7 +25,7 @@ class SubCategory extends Component
     // Form Data
     public $name = '';
     public $description = '';
-    public $mainCategoryId = '';
+    public $main_category_id = '';
     public $hasSpecificCategory = false;
 
     public $hasForm = false;
@@ -51,7 +51,7 @@ class SubCategory extends Component
         $this->reset([
             'name',
             'description',
-            'mainCategoryId',
+            'main_category_id',
             'hasSpecificCategory',
             'hasForm',
             'hasMiniSubCategory',
@@ -94,6 +94,12 @@ class SubCategory extends Component
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to load category details.');
             Session::flash('error', 'Failed to load category details.');
         }
+    }
+
+    public function saveSubCategory(){
+
+
+        dd("It is Okay !!");
     }
 
     public function SubCategoryDetails($id)
@@ -150,7 +156,7 @@ class SubCategory extends Component
 
         $response = Http::withToken($token)->get(api_base_url() . '/categories/sub', [
             'page' => $page,
-            'mainCategoryId' => $this->specificCategoryId,
+            'mainCategoryId' => $this->main_category_id,
         ]);
 
         if ($response->successful()) {
@@ -199,7 +205,7 @@ class SubCategory extends Component
         $this->heroImage = $this->subCategory['heroImage'] ?? '';
 
         // $this->description = $this->subCategory['description'] ?? '';
-        // $this->mainCategoryId = $this->subCategory['mainCategoryId'] ?? '';
+        // $this->main_category_id = $this->subCategory['main_category_id'] ?? '';
         // $this->hasForm = $this->subCategory['hasForm'] ?? false;
         // $this->hasMiniSubCategory = $this->subCategory['hasMiniSubCategory'] ?? false;
         // $this->fromName = $this->subCategory['fromName'] ?? '';
@@ -357,7 +363,65 @@ class SubCategory extends Component
             ],
         ];
 
+        $fields = [
+              [
+                'name' => 'location',
+                'placeholder' => 'Search by Location',
+            ],
+            [
+                'name' => 'title',
+                'placeholder' => 'Search by Title',
+            ],
+        ];
         // End Serach Component
+
+        // Data Table
+        $columns = [
+            [
+             'key' => 'name',
+             'label' => 'Sub category name',
+            ],
+            [
+                'key' => 'mainCategory',
+                'label' => 'Main Category',
+                'format' => fn($item) => $item['name'],
+            ],
+            [
+                'key' => 'specificCategories',
+                'label' => 'Specific Category',
+                'format' => fn($item) => isset($item[0]['name']) ? $item[0]['name'] : '',
+            ],
+            [
+                'key' => 'createdAt',
+                'label' => 'Created At',
+                'format' => fn($item) => format_date_time($item),
+            ]
+        ];
+
+        $actions = [
+            [
+                'key' => 'id',
+                'label' => 'Details',
+                'method' => 'SubCategoryDetails',
+                'icon' => 'eye',
+            ],
+             [
+                'key' => 'id',
+                'label' => 'Edit',
+                'method' => 'switchEditSubCategoryModal',
+                'icon' => 'pencil-square',
+            ],
+            [
+                'key' => 'id',
+                'label' => 'Delete',
+                'method' => 'deleteSubCategory',
+                'icon' => 'trash',
+            ],
+        ];
+        // End Data Table
+
+
+
         $pages = $this->getPaginationPages();
         $hasPrevious = $this->currentPage > 1;
         $hasNext = $this->currentPage < ($this->pagination['pages'] ?? 1);
@@ -366,10 +430,22 @@ class SubCategory extends Component
             'pages' => $pages,
             'hasPrevious' => $hasPrevious,
             'hasNext' => $hasNext,
-            'subCategoreis' => $this->subCategoreis,
+            
             'subCategory'   => $this->subCategory,
+
+            // Serach Component
             'dropdowns' => $dropdowns,
-            'buttons' => $buttons
+            'buttons' => $buttons,
+            'fields' => $fields,
+            // End Serach Component
+
+            // Data Table
+            'items' => $this->subCategoreis,
+            'columns' => $columns,
+            'actions' => $actions,
+
+            // End Data Table
+
 
         ]);
     }

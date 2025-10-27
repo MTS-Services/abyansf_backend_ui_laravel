@@ -5,9 +5,9 @@
         @include('livewire.admin.category-management.navbar')
     </nav>
 
-
-    <x-admin.searchbar  :dropdowns="$dropdowns" :buttons="$buttons" />
-
+    <div class="bg-white rounded-lg overflow-y-visible mt-14 mb-5">
+        <x-admin.searchbar :dropdowns="$dropdowns" :buttons="$buttons" />
+    </div>
     <!-- Add Sub Category Modal -->
     <div x-data="{ show: @entangle('addSubCategoryModal') }" x-show="show" x-cloak x-effect="document.body.classList.toggle('overflow-hidden', show)"
         x-transition.opacity>
@@ -30,106 +30,164 @@
                             </svg>
                         </button>
                     </div>
+                    <form action="" wire:submit.prevent="saveSubCategory">
+                        <div class="p-6 bg-white rounded-lg max-w-5xl mx-auto my-10 font-playfair">
+                            <div class="mb-6">
+                                <label for="category-title" class="block text-sm font-medium text-gray-700 mb-2">Category
+                                    Title</label>
+                                <input type="text" id="category-title" placeholder="Enter your title here"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
+                            </div>
 
-                    <div class="p-6 bg-white rounded-lg max-w-5xl mx-auto my-10 font-playfair">
-                        <div class="mb-6">
-                            <label for="category-title" class="block text-sm font-medium text-gray-700 mb-2">Category
-                                Title</label>
-                            <input type="text" id="category-title" placeholder="Enter your title here"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
-                        </div>
+                            <div class="mb-6">
+                                <label for="category-description"
+                                    class="block text-sm font-medium text-gray-700 mb-2">Category Description</label>
+                                <textarea id="category-description" rows="4" placeholder="Enter your description here"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] resize-none"></textarea>
+                            </div>
 
-                        <div class="mb-6">
-                            <label for="category-description"
-                                class="block text-sm font-medium text-gray-700 mb-2">Category Description</label>
-                            <textarea id="category-description" rows="4" placeholder="Enter your description here"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] resize-none"></textarea>
-                        </div>
+                            <div class="mb-6 space-y-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Hero Image</label>
+                                    <div x-data="{ heroImage: null, dragOver: false }" class="space-y-4">
+                                        <div class="h-64 rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
+                                            @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
+                                            @drop.prevent="heroImage = $event.dataTransfer.files[0]"
+                                            @click="$refs.mainImageInput.click()"
+                                            :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
 
-                        <div class="mb-6 space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Hero Image</label>
-                                <div
-                                    class="flex items-center justify-center h-48 border-4 border-dashed border-[#C7AE6A] rounded-md p-6 text-center transition-colors">
-                                    <div>
-                                        <svg class="mx-auto h-12 w-12 text-gray-400" xmlns="http://www.w3.org/2000/svg"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                                        </svg>
-                                        <p class="mt-1 text-sm text-gray-600">Choose a file or drag & drop it here</p>
-                                        <button type="button"
-                                            class="mt-2 px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-100">
-                                            Browse File
-                                        </button>
+                                            <input type="file" x-ref="mainImageInput" wire:model="heroImage"
+                                                class="hidden" @change="heroImage = $event.target.files[0]">
+
+                                            <div class="text-center px-2">
+                                                <div class="mb-4 flex items-center justify-center">
+                                                    <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg"
+                                                        fill="none" viewBox="0 0 20 16">
+                                                        <path stroke="currentColor" stroke-linecap="round"
+                                                            stroke-linejoin="round" stroke-width="2"
+                                                            d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                                    </svg>
+                                                </div>
+                                                <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop
+                                                    it
+                                                    here</p>
+                                                <button type="button"
+                                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100">Browse
+                                                    File</button>
+                                            </div>
+
+                                        </div>
+                                        @error('heroImage')
+                                            <span class="text-red-500">{{ $message }}</span>
+                                        @enderror
+
+                                        <div x-show="heroImage" class="mt-3">
+                                            <div class="relative w-32 flex-shrink-0">
+                                                <img :src="URL.createObjectURL(heroImage)"
+                                                    class="w-full h-32 object-cover rounded-md border" alt="Preview">
+                                                <button type="button" @click="heroImage = null"
+                                                    class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">×</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                                {{-- Category Image --}}
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Category Image</label>
+                                    <div x-data="{ image: null, dragOver: false }" class="space-y-4">
+                                        <div class="h-64 rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
+                                            @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
+                                            @drop.prevent="image = $event.dataTransfer.files[0]"
+                                            @click="$refs.categoryImageInput.click()"
+                                            :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
+
+                                            <input type="file" x-ref="categoryImageInput" wire:model="image"
+                                                class="hidden" @change="image = $event.target.files[0]">
+
+                                            <div class="text-center px-2">
+                                                <div class="mb-4 flex items-center justify-center">
+                                                    <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg"
+                                                        fill="none" viewBox="0 0 20 16">
+                                                        <path stroke="currentColor" stroke-linecap="round"
+                                                            stroke-linejoin="round" stroke-width="2"
+                                                            d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                                    </svg>
+                                                </div>
+                                                <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop
+                                                    it
+                                                    here</p>
+                                                <button type="button"
+                                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100">Browse
+                                                    File</button>
+                                            </div>
+                                        </div>
+                                        @error('image')
+                                            <span class="text-red-500">{{ $message }}</span>
+                                        @enderror
+                                        <div x-show="image" class="mt-3">
+                                            <div class="relative w-32 flex-shrink-0">
+                                                <img :src="URL.createObjectURL(image)"
+                                                    class="w-full h-32 object-cover rounded-md border" alt="Preview">
+                                                <button type="button" @click="image = null"
+                                                    class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">×</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                            <div class="mb-6 space-y-4">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-medium text-gray-700">hasSpecificCategory</span>
+                                    <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]"
+                                        x-data="{ on: true }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
+                                        <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
+                                            :class="{ 'translate-x-6': on, 'translate-x-0': !on }"></div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-medium text-gray-700">contactWhatsapp</span>
+                                    <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]"
+                                        x-data="{ on: true }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
+                                        <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
+                                            :class="{ 'translate-x-6': on, 'translate-x-0': !on }"></div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-medium text-gray-700">Create Mini-Category</span>
+                                    <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]"
+                                        x-data="{ on: true }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
+                                        <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
+                                            :class="{ 'translate-x-6': on, 'translate-x-0': !on }"></div>
                                     </div>
                                 </div>
                             </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Category Image</label>
-                                <div
-                                    class="flex items-center justify-center h-48 border-4 border-dashed border-[#C7AE6A] rounded-md p-6 text-center transition-colors">
-                                    <div>
-                                        <svg class="mx-auto h-12 w-12 text-gray-400" xmlns="http://www.w3.org/2000/svg"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                                        </svg>
-                                        <p class="mt-1 text-sm text-gray-600">Choose a file or drag & drop it here</p>
-                                        <button type="button"
-                                            class="mt-2 px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-100">
-                                            Browse File
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="mb-6 space-y-4">
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm font-medium text-gray-700">hasSpecificCategory</span>
-                                <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]"
-                                    x-data="{ on: true }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
-                                    <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
-                                        :class="{ 'translate-x-6': on, 'translate-x-0': !on }"></div>
-                                </div>
+                            <div class="mb-6">
+                                <label for="parent-categories" class="block text-sm font-medium text-gray-700 mb-2">Parent
+                                    Categories</label>
+                                <select id="parent-categories"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] ">
+                                    <option>Select your parent categories</option>
+                                    @foreach ($items as $item)
+                                        <option value="{{ $item['id'] }}"> {{ $item['name'] }} </option>
+                                    @endforeach
+                                </select>
                             </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm font-medium text-gray-700">contactWhatsapp</span>
-                                <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]"
-                                    x-data="{ on: true }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
-                                    <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
-                                        :class="{ 'translate-x-6': on, 'translate-x-0': !on }"></div>
-                                </div>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm font-medium text-gray-700">Create Mini-Category</span>
-                                <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]"
-                                    x-data="{ on: true }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
-                                    <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
-                                        :class="{ 'translate-x-6': on, 'translate-x-0': !on }"></div>
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="mb-6">
-                            <label for="parent-categories" class="block text-sm font-medium text-gray-700 mb-2">Parent
-                                Categories</label>
-                            <select id="parent-categories"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] ">
-                                <option>Select your parent categories</option>
-                                <option>Category 1</option>
-                                <option>Category 2</option>
-                            </select>
+                            <div class="flex justify-center">
+                                <button wire:click="saveSubCategory"
+                                    class="px-6 py-2 bg-[#C7AE6A] text-white font-medium rounded-md shadow-sm hover:bg-opacity-90 transition-colors">
+                                    Save Sub Category
+                                </button>
+                            </div>
                         </div>
-
-                        <div class="flex justify-center">
-                            <button wire:click="closeAddModal"
-                                class="px-6 py-2 bg-[#C7AE6A] text-white font-medium rounded-md shadow-sm hover:bg-opacity-90 transition-colors">
-                                Save Category
-                            </button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -334,100 +392,9 @@
 
     {{-- End Sub Category Edit Modal --}}
 
-    <!-- Sub Categories Table -->
-    <div class="bg-white rounded-lg overflow-y-visible mt-14 mb-5">
-        <table class="min-w-full table-auto border-collapse">
-            <thead>
-                <tr class="bg-[#E7E7E7] hidden md:table-row">
-                    <th class="p-4 text-left font-medium text-base w-[5%]">SL</th>
-                    <th class="p-4 text-left font-semibold text-black font-playfair text-base md:text-lg w-[20%]">
-                        Category Image
-                    </th>
-                    <th class="p-4 text-left font-semibold text-black font-playfair text-base md:text-lg w-[25%]">
-                        Category Name
-                    </th>
-                    <th class="p-4 text-left font-semibold text-black font-playfair text-base md:text-lg w-[25%]">
-                        Parent-Category
-                    </th>
-                    <th class="p-4 text-right font-semibold text-black font-playfair text-base md:text-lg w-[25%]">
-                        Action
-                    </th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200">
-                @forelse ($subCategoreis as $index => $subcategory_item)
-                    <tr class="md:table-row grid grid-cols-1 md:grid-cols-none items-center transition">
-                        <!-- SL -->
-                        <td class="p-4 text-left font-normal text-base">
-                            <p class="text-black whitespace-nowrap">
-                                {{ $index + 1 }}
-                            </p>
-                        </td>
 
-                        <!-- Category Image -->
-                        <td class="p-4">
-                            <div class="w-20 h-20 overflow-hidden rounded shadow-sm">
-                                <img src="{{ $subcategory_item['img'] }}" alt="{{ $subcategory_item['name'] }}"
-                                    class="object-cover w-full h-full">
-                            </div>
-                        </td>
 
-                        <!-- Category Name -->
-                        <td class="p-4 text-left font-normal text-base">
-                            <p class="text-black font-medium">
-                                {{ $subcategory_item['name'] }}
-                            </p>
-                        </td>
-
-                        <!-- Parent Category -->
-                        <td class="p-4 text-left font-normal text-base">
-                            <p class="text-gray-600">
-                                {{ $subcategory_item['mainCategory']['name'] ?? 'N/A' }}
-                            </p>
-                        </td>
-
-                        <!-- Action -->
-                        <td class="p-4 text-right">
-                            <div class="relative inline-block text-left" x-data="{ open: false }"
-                                x-on:click.outside="open = false">
-                                <button x-on:click="open = !open"
-                                    class="text-[#AD8945] rounded-full focus:outline-none" title="Settings">
-                                    <flux:icon name="cog-6-tooth" class="text-[#C7AE6A]" />
-                                </button>
-
-                                <!-- Dropdown -->
-                                <div x-show="open" x-transition x-cloak
-                                    class="absolute right-3 mt-2 p-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
-
-                                    <button
-                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer"
-                                        wire:click="SubCategoryDetails('{{ encrypt($subcategory_item['id']) }}')">
-                                        <flux:icon name="eye" class="text-[#6D6D6D] mr-2 h-4 w-4" /> Details
-                                    </button>
-
-                                    <button
-                                        wire:click="switchEditSubCategoryModal('{{ encrypt($subcategory_item['id']) }}')"
-                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
-                                        <flux:icon name="pencil-square" class="text-[#6D6D6D] mr-2 h-4 w-4" /> Edit
-                                    </button>
-                                    <button
-                                        class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer"
-                                        wire:click="deleteSubCategory('{{ encrypt($subcategory_item['id']) }}')"
-                                        >
-                                        <flux:icon name="trash" class="text-[#6D6D6D] mr-2 h-4 w-4" /> Delete
-                                    </button>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="5" class="p-4 text-center">No categories found</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+    <x-admin.data-table :items="$items" :columns="$columns" :actions="$actions" />
 
     <!-- Sub Category Details Modal -->
     <div x-data="{ show: @entangle('SubCategoryDetailsModal') }" x-show="show" x-cloak
