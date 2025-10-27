@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -27,6 +28,7 @@ class SubCategory extends Component
     public $description = '';
     public $main_category_id = '';
     public $hasSpecificCategory = false;
+    public $contactWhatsapp = false;
 
     public $hasForm = false;
     public $hasMiniSubCategory = false;
@@ -55,11 +57,11 @@ class SubCategory extends Component
             'hasSpecificCategory',
             'hasForm',
             'hasMiniSubCategory',
-            'fromName',
             'heroImage',
             'image',
             'specificCategoryId',
             'editCategoryId',
+            'contactWhatsapp',
         ]);
     }
 
@@ -96,10 +98,63 @@ class SubCategory extends Component
         }
     }
 
-    public function saveSubCategory(){
+    public function saveSubCategory()
+    {
 
+        $this->validate([
+            'name' => 'required',
+            'description' => 'nullable',
+            'main_category_id' => 'required',
+            'heroImage' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
 
-        dd("It is Okay !!");
+        try {
+            $token = api_token();
+            if (!$token) {
+                $this->dispatch('sweetalert2', type: 'error', message: 'Authentication token not found.');
+                return;
+            }
+
+            $payload = [
+                'name' => $this->name,
+                'mainCategoryId' => $this->main_category_id,
+                'hasSpecificCategory' => $this->hasSpecificCategory,
+                'contractWhatsapp' => $this->contactWhatsapp,
+                'hasForm' => $this->hasForm,
+                'hasMiniSubCategory' => $this->hasMiniSubCategory,
+                'description' => $this->description,
+            ];
+
+            $request = Http::withToken($token);
+
+            if ($this->heroImage && !filter_var($this->heroImage, FILTER_VALIDATE_URL)) {
+                $request->attach(
+                    'heroImage',
+                    file_get_contents($this->heroImage->getRealPath()),
+                    $this->heroImage->getClientOriginalName()
+                );
+            }
+            if ($this->image && !filter_var($this->image, FILTER_VALIDATE_URL)) {
+                $request->attach(
+                    'image',
+                    file_get_contents($this->image->getRealPath()),
+                    $this->image->getClientOriginalName()
+                );
+            }
+
+            $response = $request->post(api_base_url() . '/categories/sub/', $payload);
+
+            if ($response->successful()) {
+                $this->dispatch('sweetalert2', type: 'success', message: 'sub category created successfully!');
+                $this->switchAddSubCategoryModal();
+                $this->fetchSubCategories($this->currentPage);
+            } else {
+                $this->dispatch('sweetalert2', type: 'error', message: 'Failed to create Sub Cateogry.');
+            }
+        } catch (\Exception $e) {
+           Log::error('Failed to create sub category: ' . $e->getMessage());
+        }
     }
 
     public function SubCategoryDetails($id)
@@ -238,14 +293,16 @@ class SubCategory extends Component
             if ($this->heroImage && !filter_var($this->heroImage, FILTER_VALIDATE_URL)) {
                 $request->attach(
                     'heroImage',
-                     file_get_contents($this->heroImage->getRealPath()),
-                      $this->heroImage->getClientOriginalName());
+                    file_get_contents($this->heroImage->getRealPath()),
+                    $this->heroImage->getClientOriginalName()
+                );
             }
             if ($this->image && !filter_var($this->image, FILTER_VALIDATE_URL)) {
                 $request->attach(
                     'image',
-                     file_get_contents($this->image->getRealPath()),
-                     $this->image->getClientOriginalName());
+                    file_get_contents($this->image->getRealPath()),
+                    $this->image->getClientOriginalName()
+                );
             }
             $response = $request->put(api_base_url() . '/categories/sub/' . $this->editCategoryId, $payload);
 
@@ -256,11 +313,11 @@ class SubCategory extends Component
             } else {
                 $this->dispatch('sweetalert2', type: 'error', message: 'Failed to update Sub Cateogry.');
             }
-
         } catch (\Exception $e) {
             dd('error' . $e->getMessage());
         }
     }
+
 
     public function getPaginationPages()
     {
@@ -364,7 +421,7 @@ class SubCategory extends Component
         ];
 
         $fields = [
-              [
+            [
                 'name' => 'location',
                 'placeholder' => 'Search by Location',
             ],
@@ -378,8 +435,8 @@ class SubCategory extends Component
         // Data Table
         $columns = [
             [
-             'key' => 'name',
-             'label' => 'Sub category name',
+                'key' => 'name',
+                'label' => 'Sub category name',
             ],
             [
                 'key' => 'mainCategory',
@@ -405,7 +462,7 @@ class SubCategory extends Component
                 'method' => 'SubCategoryDetails',
                 'icon' => 'eye',
             ],
-             [
+            [
                 'key' => 'id',
                 'label' => 'Edit',
                 'method' => 'switchEditSubCategoryModal',
@@ -430,7 +487,7 @@ class SubCategory extends Component
             'pages' => $pages,
             'hasPrevious' => $hasPrevious,
             'hasNext' => $hasNext,
-            
+
             'subCategory'   => $this->subCategory,
 
             // Serach Component

@@ -35,16 +35,23 @@
                             <div class="mb-6">
                                 <label for="category-title" class="block text-sm font-medium text-gray-700 mb-2">Category
                                     Title</label>
-                                <input type="text" id="category-title" placeholder="Enter your title here"
+                                <input wire:model="name" type="text" id="category-title"  placeholder="Enter your title here"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
+                                @error('name')
+                                    <span class="text-red-500">{{ $message }}</span>
+                                @enderror
                             </div>
 
                             <div class="mb-6">
                                 <label for="category-description"
                                     class="block text-sm font-medium text-gray-700 mb-2">Category Description</label>
-                                <textarea id="category-description" rows="4" placeholder="Enter your description here"
+                                <textarea wire:model="description"
+                                 id="category-description" rows="4" placeholder="Enter your description here"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] resize-none"></textarea>
-                            </div>
+                                        @error('description')
+                                    <span class="text-red-500">{{ $message }}</span>
+                                @enderror
+                                </div>
 
                             <div class="mb-6 space-y-4">
                                 <div>
@@ -145,7 +152,7 @@
                                 <div class="flex items-center justify-between">
                                     <span class="text-sm font-medium text-gray-700">hasSpecificCategory</span>
                                     <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]"
-                                        x-data="{ on: true }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
+                                        x-data="{  on: $wire.entangle('hasSpecificCategory') }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
                                         <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
                                             :class="{ 'translate-x-6': on, 'translate-x-0': !on }"></div>
                                     </div>
@@ -153,7 +160,7 @@
                                 <div class="flex items-center justify-between">
                                     <span class="text-sm font-medium text-gray-700">contactWhatsapp</span>
                                     <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]"
-                                        x-data="{ on: true }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
+                                        x-data="{  on: $wire.entangle('contactWhatsapp') }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
                                         <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
                                             :class="{ 'translate-x-6': on, 'translate-x-0': !on }"></div>
                                     </div>
@@ -161,7 +168,15 @@
                                 <div class="flex items-center justify-between">
                                     <span class="text-sm font-medium text-gray-700">Create Mini-Category</span>
                                     <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]"
-                                        x-data="{ on: true }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
+                                        x-data="{  on: $wire.entangle('hasMiniSubCategory') }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
+                                        <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
+                                            :class="{ 'translate-x-6': on, 'translate-x-0': !on }"></div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-medium text-gray-700">Has Form</span>
+                                    <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]"
+                                        x-data="{  on: $wire.entangle('hasForm') }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
                                         <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
                                             :class="{ 'translate-x-6': on, 'translate-x-0': !on }"></div>
                                     </div>
@@ -171,13 +186,16 @@
                             <div class="mb-6">
                                 <label for="parent-categories" class="block text-sm font-medium text-gray-700 mb-2">Parent
                                     Categories</label>
-                                <select id="parent-categories"
+                                <select id="parent-categories" wire:model="main_category_id"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] ">
                                     <option>Select your parent categories</option>
                                     @foreach ($items as $item)
                                         <option value="{{ $item['id'] }}"> {{ $item['name'] }} </option>
                                     @endforeach
                                 </select>
+                                @error('main_category_id')
+                                    <span class="text-red-500">{{ $message }}</span>
+                                @enderror
                             </div>
 
                             <div class="flex justify-center">
