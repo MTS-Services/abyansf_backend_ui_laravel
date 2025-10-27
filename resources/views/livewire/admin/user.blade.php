@@ -17,13 +17,6 @@
             </thead>
             <tbody class="text-balck text-sm">
                 @forelse ($users as $index => $user)
-                    {{-- @if ($user['isVerified'] == 'ADMIN')
-                        @continue
-                    @endif
-                    @if ($user['isVerified'] == false)
-                        @continue
-                    @endif --}}
-
                     <tr wire:key="user-{{ $user['id'] }}">
                         <td class="p-4 text-left whitespace-nowrap font-playfair">
                             {{ ($pagination['page'] - 1) * $pagination['limit'] + $index + 1 }}</td>

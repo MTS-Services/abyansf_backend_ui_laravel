@@ -23,12 +23,12 @@
                         </a>
 
 
-                        <!-- Tab Item for Bookings -->
+                        {{-- <!-- Tab Item for Bookings -->
                         <a href="{{ route('admin.bookings') }}" wire:navigate
                             class=" flex-1 py-3 text-center font-medium  {{ request()->routeIs('admin.bookings') ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-700 hover:bg-gray-200' }} rounded-lg focus:outline-none transition-colors duration-200 ease-in-out">
                             Bookings
-                        </a>
-                         <!-- Tab Item for category -->
+                        </a> --}}
+                        <!-- Tab Item for category -->
                         <a href="{{ route('admin.category') }}" wire:navigate
                             class=" flex-1 py-3 text-center font-medium  {{ request()->routeIs('admin.category') ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-700 hover:bg-gray-200' }} rounded-lg focus:outline-none transition-colors duration-200 ease-in-out">
                             Category
@@ -47,16 +47,15 @@
                         </a>
 
                         <!-- Tab Item for Attendance -->
-                        <a href="{{ route('admin.attendance') }}" wire:navigate
+                        <a href="{{ route('admin.event-booking') }}" wire:navigate
                             class="flex-1 py-3 text-center font-medium rounded-sm focus:outline-none transition-colors duration-200 ease-in-out
-                           {{ request()->routeIs('admin.attendance') ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-700 hover:bg-gray-200' }}">
-                           Event Booking
+                           {{ request()->routeIs('admin.event-booking') ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-700 hover:bg-gray-200' }}">
+                            Event Booking
                         </a>
                     </div>
                 </div>
             </div>
         </nav>
-        
+
     </main>
 </div>
-
