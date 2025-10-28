@@ -251,12 +251,7 @@
                                 @enderror
                             </div>
 
-                            {{-- <div class="mb-6">
-                            <label for="category-description"
-                                class="block text-sm font-medium text-gray-700 mb-2">Category Description</label>
-                            <textarea id="category-description" rows="4" placeholder="Enter your description here"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] resize-none"></textarea>
-                        </div> --}}
+                           
 
                             <div class="mb-6 space-y-4">
 

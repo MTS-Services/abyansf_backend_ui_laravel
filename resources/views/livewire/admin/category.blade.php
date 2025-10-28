@@ -18,7 +18,7 @@
                max-h-[90vh] overflow-y-auto"
             @click.away="open = false">
             <!-- Close Button -->
-            <button wire:click="switchAddCategoryModal"
+            <button wire:click="closeAddModal"
                 class="absolute top-4 right-4 text-gray-600 hover:text-gray-900 text-2xl font-bold">
                 &times;
             </button>

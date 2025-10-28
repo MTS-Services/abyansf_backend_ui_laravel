@@ -97,7 +97,7 @@ class Category extends Component
         $response = Http::withToken(api_token())->delete(api_base_url() . '/categories/main/' . decrypt($categoryId));
 
         if ($response->successful()) {
-            // $this->dispatch('sweetalert2', type: 'success', message: 'booking deleted successfully.');
+            $this->dispatch('sweetalert2', type: 'success', message: 'Category deleted successfully.');
             $this->fetchCategories($this->currentPage);
         } else {
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to delete user.');
@@ -288,49 +288,20 @@ class Category extends Component
         $this->editCategoryModal = !$this->editCategoryModal;
     }
 
+// Modal Actions Status
+
+public function closeAddModal(){
+    $this->addCategoryModal = false;
+    $this->resetFrom();
+}
+
+
+
+
     public function render()
     {
 
-        // Start of serach components
-        $buttons = [
-            [
-                'method' => 'applyFilters',
-                'text' => 'Filter',
-                'icon' => 'plus',
-                'id' => 'filter_button',
-            ],
-            [
-                'method' => 'switchAddCategoryModal',
-                'text' => 'Add',
-                'icon' => 'plus',
-                'id' => 'add_category_button',
-            ],
-        ];
-
-        $fields = [
-            [
-                'name' => 'location',
-                'placeholder' => 'Search by Location',
-            ],
-            [
-                'name' => 'title',
-                'placeholder' => 'Search by Title',
-            ],
-        ];
-
-        $dropdowns = [
-            [
-                'name' => 'status',
-                'default' => 'Status',
-                'options' => [
-                    ['label' => 'All', 'value' => ''],
-                    ['label' => 'Active', 'value' => 'active'],
-                    ['label' => 'Inactive', 'value' => 'inactive'],
-                ],
-            ],
-        ];
-
-        // End of serach components
+    
 
 
         // Data Table
@@ -350,7 +321,7 @@ class Category extends Component
           $actions = [
             [
                 'key' => 'id',
-                'label' => 'Details',
+                'label' => 'Edit',
                 'method' => 'openEditCategoryModal',
                 'icon' => 'pencil',
             ],
@@ -372,10 +343,6 @@ class Category extends Component
             'hasPrevious' => $hasPrevious,
             'hasNext' => $hasNext,
 
-            // if you need serach components then only pass this
-            // 'buttons' => $buttons,
-            // 'fields' => $fields,
-            // 'dropdowns' => $dropdowns,
 
             // if you need data table then only pass this
 
