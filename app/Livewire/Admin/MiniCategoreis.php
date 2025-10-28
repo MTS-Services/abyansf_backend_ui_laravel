@@ -58,7 +58,7 @@ class MiniCategoreis extends Component
         $this->fetchMiniSubCategories();
     }
 
-    public function fetchMiniSubCategories($page = null)
+    public function fetchMiniSubCategories($page = 1)
     {
 
         $token = session()->get('api_token');
@@ -69,7 +69,7 @@ class MiniCategoreis extends Component
         try {
 
             $response = Http::withToken($token)->get(api_base_url() . '/categories/mini-sub', [
-                
+                'page' => $page,
             ]);
 
             if ($response->successful()) {

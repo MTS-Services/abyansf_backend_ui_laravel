@@ -16,7 +16,7 @@
           </thead>
 
           <tbody class="w-full">
-              @foreach ($items as $index => $item)
+              @forelse ($items as $index => $item)
                   <tr wire:key="main-{{ $item['id'] }}" x-data="{ dropdownOpen: false }" class="border-b border-gray-200">
                       <td class="p-4 text-left font-playfair text-base">
                           <p class="text-black whitespace-nowrap">{{ $index + 1 }}</p>
@@ -67,6 +67,10 @@
                       </td>
 
                   </tr>
-              @endforeach
+              @empty
+                    <tr>
+                        <td colspan="5" class="p-4 text-center">No Items Found</td>
+                    </tr>
+              @endforelse
           </tbody>
       </table>
