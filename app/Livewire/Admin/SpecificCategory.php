@@ -119,6 +119,7 @@ class SpecificCategory extends Component
             return ['name' => $name];
         }, $names);
 
+     
         try {
 
             $token = api_token();
