@@ -189,7 +189,7 @@
                                 <select id="parent-categories" wire:model="main_category_id"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] ">
                                     <option>Select your parent categories</option>
-                                    @foreach ($items as $item)
+                                    @foreach ($categories as $item)
                                         <option value="{{ $item['id'] }}"> {{ $item['name'] }} </option>
                                     @endforeach
                                 </select>
@@ -218,7 +218,7 @@
         x-effect="document.body.classList.toggle('overflow-hidden', show)" x-transition.opacity>
         <div class="fixed max-auto inset-0 z-50 overflow-y-auto bg-black/70 bg-opacity-50">
             <div class="flex min-h-full items-center justify-center p-4">
-                <div x-show="show" @click.away="$wire.closeAddModal()" x-transition:enter="ease-out duration-300"
+                <div x-show="show" @click.away="$wire.closeEditModal()" x-transition:enter="ease-out duration-300"
                     x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                     x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
                     x-transition:leave="ease-in duration-200"
@@ -365,37 +365,10 @@
                                             :class="{ 'translate-x-6': on, 'translate-x-0': !on }"></div>
                                     </div>
                                 </div>
-                                {{-- <div class="flex items-center justify-between">
-                                <span class="text-sm font-medium text-gray-700">contactWhatsapp</span>
-                                <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]"
-                                    x-data="{ on: true }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
-                                    <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
-                                        :class="{ 'translate-x-6': on, 'translate-x-0': !on }"></div>
-                                </div>
-                            </div> --}}
-                                {{-- <div class="flex items-center justify-between">
-                                <span class="text-sm font-medium text-gray-700">Create Mini-Category</span>
-                                <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]"
-                                    x-data="{ on: true }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
-                                    <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
-                                        :class="{ 'translate-x-6': on, 'translate-x-0': !on }"></div>
-                                </div>
-                            </div> --}}
                             </div>
 
-                            {{-- <div class="mb-6">
-                            <label for="parent-categories" class="block text-sm font-medium text-gray-700 mb-2">Parent
-                                Categories</label>
-                            <select id="parent-categories"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] ">
-                                <option>Select your parent categories</option>
-                                <option>Category 1</option>
-                                <option>Category 2</option>
-                            </select>
-                        </div> --}}
-
                             <div class="flex justify-center">
-                                <button wire:click="closeAddModal"
+                                <button wire:click="updateSubCategory"
                                     class="px-6 py-2 bg-[#C7AE6A] text-white font-medium rounded-md shadow-sm hover:bg-opacity-90 transition-colors">
                                     Update Sub Category
                                 </button>
@@ -541,7 +514,7 @@
 
     <!-- Pagination -->
     @if (!empty($pagination) && ($pagination['pages'] ?? 1) > 1)
-        <div class="flex items-center justify-center space-x-2 py-3 my-3 flex-wrap border-t border-slate-200">
+        <div class="flex items-center justify-center space-x-2 py-3 my-3 flex-wrap border-t border-slate-200 border-none">
             <button wire:click="previousPage" @disabled(!$hasPrevious) @class([
                 'flex items-center justify-center w-8 h-8 rounded border border-slate-300',
                 'bg-slate-100 text-slate-400 cursor-not-allowed' => !$hasPrevious,

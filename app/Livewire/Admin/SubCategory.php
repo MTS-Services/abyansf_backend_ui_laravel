@@ -36,7 +36,7 @@ class SubCategory extends Component
     public $heroImage;
     public $image;
 
-    // End Form Data
+    // End Form 
 
     public function switchAddSubCategoryModal()
     {
@@ -126,6 +126,8 @@ class SubCategory extends Component
                 'description' => $this->description,
             ];
 
+           
+
             $request = Http::withToken($token);
 
             if ($this->heroImage && !filter_var($this->heroImage, FILTER_VALIDATE_URL)) {
@@ -144,10 +146,11 @@ class SubCategory extends Component
             }
 
             $response = $request->post(api_base_url() . '/categories/sub/', $payload);
-
+     
             if ($response->successful()) {
                 $this->dispatch('sweetalert2', type: 'success', message: 'sub category created successfully!');
                 $this->switchAddSubCategoryModal();
+                $this->resetForm();
                 $this->fetchSubCategories($this->currentPage);
             } else {
                 $this->dispatch('sweetalert2', type: 'error', message: 'Failed to create Sub Cateogry.');
@@ -175,12 +178,14 @@ class SubCategory extends Component
     {
         $this->SubCategoryDetailsModal = false;
         $this->reset(['subCategory']);
+        $this->resetForm();
     }
 
     public function closeAddModal()
     {
         $this->addSubCategoryModal = false;
         $this->editSubCategoryModal = false;
+        $this->resetForm();
     }
 
     public function fetchCategoryById($id)
