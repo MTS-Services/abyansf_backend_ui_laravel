@@ -363,7 +363,50 @@ class Event extends Component
     }
 
     public function render()
-    {
+    {   
+        // Serachbar
+            $dropdowns = [
+                
+                [
+                    'name' => 'eventStatus',
+                    'default' => 'All',
+                    'options' => [
+                       [
+                        'label' => 'Active',
+                       ],
+                       [
+                        'label' => 'Inactive',
+                       ]
+                    ]
+                ]
+            ];
+            $buttons = [
+                [
+                    'method' => 'applyFilters',
+                    'text' => 'Filter',
+                    'icon' => 'plus',
+                    'id' => 'filter_button',
+                ],
+                [
+                    'method' => 'switchAddListingModal',
+                    'text' => 'Add Listing',
+                    'icon' => 'plus',
+                    'id' => 'add_listing_button',
+                ],
+            ];
+
+             $fields = [
+                [
+                    'name' => 'eventName',
+                    'placeholder' => 'Search by Name',
+                ],
+                [
+                    'name' => 'eventLocation',
+                    'placeholder' => 'Search by Location',
+                ],
+            ];
+        //End Serachbar
+
         $this->currentPage = request()->query('page', 1);
         $this->fetchEvents($this->currentPage);
         $pages = $this->getPaginationPages();
@@ -375,6 +418,13 @@ class Event extends Component
                 'pages' => $pages,
                 'hasPrevious' => $hasPrevious,
                 'hasNext' => $hasNext,
+
+                //Serachbar
+
+                'dropdowns' => $dropdowns,
+                'buttons' => $buttons,
+                'fields' => $fields,
+                //End Serachbar
             ]
         );
     }
