@@ -75,18 +75,29 @@
 
                             <div class="mb-6 space-y-4">
 
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2"> Image</label>
-                                    <div x-data="{ image: null, dragOver: false }" class="space-y-4">
-                                        <div class="h-64 rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
-                                            @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
-                                            @drop.prevent="image = $event.dataTransfer.files[0]"
-                                            @click="$refs.mainImageInput.click()"
-                                            :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
 
-                                            <input type="file" x-ref="mainImageInput" wire:model="image"
-                                                class="hidden" @change="image = $event.target.files[0]">
+                                <div x-data="{ dragOver: false }" class="space-y-4">
+                                    <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
+                                        @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
+                                        @drop.prevent="dragOver = false; $wire.upload('image', event.dataTransfer.files[0])"
+                                        @click="$refs.fileInputs.click()"
+                                        :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
 
+                                        <input wire:model="image" type="file" x-ref="fileInputs" class="hidden"
+                                            accept="image/*">
+
+                                        @if ($image)
+                                            <div class="relative w-full h-full">
+                                                <img src="{{ $image->temporaryUrl() }}"
+                                                    class="w-full h-full object-cover rounded-md" alt="Preview">
+
+                                                <button type="button"
+                                                    @click.stop="$wire.set('image', null); $refs.fileInputs.value = '';"
+                                                    class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">
+                                                    &times;
+                                                </button>
+                                            </div>
+                                        @else
                                             <div class="text-center px-2">
                                                 <div class="mb-4 flex items-center justify-center">
                                                     <svg class="w-8 h-8 text-gray-500"
@@ -98,28 +109,14 @@
                                                     </svg>
                                                 </div>
                                                 <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop
-                                                    it
-                                                    here</p>
+                                                    it here</p>
                                                 <button type="button"
-                                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100">Browse
-                                                    File</button>
+                                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                                                    Browse File
+                                                </button>
                                             </div>
-
-                                        </div>
-                                        @error('image')
-                                            <span class="text-red-500">{{ $message }}</span>
-                                        @enderror
-
-                                        <div x-show="image" class="mt-3">
-                                            <div class="relative w-32 flex-shrink-0">
-                                                <img :src="URL.createObjectURL(image)"
-                                                    class="w-full h-32 object-cover rounded-md border" alt="Preview">
-                                                <button type="button" @click="image = null"
-                                                    class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">×</button>
-                                            </div>
-                                        </div>
+                                        @endif
                                     </div>
-
                                 </div>
 
                             </div>
@@ -231,18 +228,39 @@
 
                             <div class="mb-6 space-y-4">
 
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2"> Image</label>
-                                    <div x-data="{ image: null, dragOver: false }" class="space-y-4">
-                                        <div class="h-64 rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
-                                            @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
-                                            @drop.prevent="image = $event.dataTransfer.files[0]"
-                                            @click="$refs.mainImageInput.click()"
-                                            :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
+                                <div x-data="{ dragOver: false }" class="space-y-4">
+                                    <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
+                                        @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
+                                        @drop.prevent="dragOver = false; $wire.upload('image', event.dataTransfer.files[0])"
+                                        @click="$refs.fileInput.click()"
+                                        :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
 
-                                            <input type="file" x-ref="mainImageInput" wire:model="image"
-                                                class="hidden" @change="image = $event.target.files[0]">
+                                        <input wire:model="image" type="file" x-ref="fileInput" class="hidden"
+                                            accept="image/*">
 
+                                        @if ($image)
+                                            <div class="relative w-full h-full">
+                                                <img src="{{ $image->temporaryUrl() }}"
+                                                    class="w-full h-full object-cover rounded-md" alt="Preview">
+
+                                                <button type="button"
+                                                    @click.stop="$wire.set('image', null); $refs.fileInput.value = '';"
+                                                    class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">
+                                                    &times;
+                                                </button>
+                                            </div>
+                                        @elseif ($existingImage)
+                                            <div class="relative w-full h-full">
+                                                <img src="{{ $existingImage }}"
+                                                    class="w-full h-full object-cover rounded-md" alt="Current Image">
+
+                                                <button type="button"
+                                                    @click.stop="$wire.set('existingImage', null); $refs.fileInput.click();"
+                                                    class="absolute top-2 right-2 bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">
+                                                    Change
+                                                </button>
+                                            </div>
+                                        @else
                                             <div class="text-center px-2">
                                                 <div class="mb-4 flex items-center justify-center">
                                                     <svg class="w-8 h-8 text-gray-500"
@@ -254,28 +272,14 @@
                                                     </svg>
                                                 </div>
                                                 <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop
-                                                    it
-                                                    here</p>
+                                                    it here</p>
                                                 <button type="button"
-                                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100">Browse
-                                                    File</button>
+                                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                                                    Browse File
+                                                </button>
                                             </div>
-
-                                        </div>
-                                        @error('image')
-                                            <span class="text-red-500">{{ $message }}</span>
-                                        @enderror
-
-                                        <div x-show="image" class="mt-3">
-                                            <div class="relative w-32 flex-shrink-0">
-                                                <img :src="URL.createObjectURL(image)"
-                                                    class="w-full h-32 object-cover rounded-md border" alt="Preview">
-                                                <button type="button" @click="image = null"
-                                                    class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">×</button>
-                                            </div>
-                                        </div>
+                                        @endif
                                     </div>
-
                                 </div>
 
                             </div>
@@ -455,7 +459,8 @@
 
     <!-- Pagination -->
     @if (!empty($pagination) && ($pagination['pages'] ?? 1) > 1)
-        <div class="flex items-center justify-center space-x-2 py-3 my-3 flex-wrap border-t border-slate-200 border-none">
+        <div
+            class="flex items-center justify-center space-x-2 py-3 my-3 flex-wrap border-t border-slate-200 border-none">
             <button wire:click="previousPage" @disabled(!$hasPrevious) @class([
                 'flex items-center justify-center w-8 h-8 rounded border border-slate-300',
                 'bg-slate-100 text-slate-400 cursor-not-allowed' => !$hasPrevious,

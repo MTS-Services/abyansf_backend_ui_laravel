@@ -181,8 +181,7 @@
 
                 <!-- Header -->
                 <div class="flex items-center gap-4 border-b border-gray-100 pb-6">
-                    <img src="{{ 'https://via.placeholder.com/150' }}" alt="Category Image"
-                        class="w-20 h-20 rounded-lg object-cover shadow">
+                    
                     <div>
 
                         <h2 class="text-2xl font-semibold text-gray-800">

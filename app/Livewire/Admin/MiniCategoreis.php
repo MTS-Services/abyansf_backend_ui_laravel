@@ -39,6 +39,7 @@ class MiniCategoreis extends Component
     public $hasForm = null;
     public $fromName = null;
     public  $image = null;
+    public $existingImage = null;
     // End Form Data
 
     public function resetForm()
@@ -50,7 +51,8 @@ class MiniCategoreis extends Component
             'hasForm',
             'fromName',
             'image',
-            'subCategories'
+            'subCategories',
+            'existingImage'
         );
     }
     public function mount()
@@ -133,7 +135,7 @@ class MiniCategoreis extends Component
                 'subCategoryId' => $this->subCategoryId,
                 'hasForm' => $this->hasForm
             ];
-
+               
             if ($this->hasForm) $payload['fromName'] = $this->fromName;
 
             $request = Http::withToken($token);
@@ -144,9 +146,11 @@ class MiniCategoreis extends Component
                     file_get_contents($this->image->getRealPath()),
                     $this->image->getClientOriginalName()
                 );
+
+                
             }
 
-            $response = Http::withToken($token)->post(api_base_url() . '/categories/mini-sub/' , $payload);
+            $response = $request->post(api_base_url() . '/categories/mini-sub/' , $payload);
 
             if ($response->successful()) {
 
@@ -227,7 +231,7 @@ class MiniCategoreis extends Component
                 );
             }
 
-            $response = Http::withToken($token)->put(api_base_url() . '/categories/mini-sub/' . $this->editMiniSubCategoryId, $payload);
+            $response = $request->put(api_base_url() . '/categories/mini-sub/' . $this->editMiniSubCategoryId, $payload);
 
             if ($response->successful()) {
 
@@ -250,7 +254,7 @@ class MiniCategoreis extends Component
 
         $id = Decrypt($id);
 
-        $this->fetchMiniSubCategoriesId($id);
+        $this->fetchMiniSubCategoryById($id);
     }
 
 
@@ -289,6 +293,8 @@ class MiniCategoreis extends Component
         $this->hasForm = $this->miniSubCategory['hasForm'] ?? null;
         $this->fromName = $this->miniSubCategory['fromName'] ?? null;
         $this->subCategoryId = $this->miniSubCategory['subCategory']['id'] ?? null;
+        $this->existingImage = $this->miniSubCategory['img'] ?? null;
+        $this->image = null;
     }
 
     public function fetchSubCategoreis()

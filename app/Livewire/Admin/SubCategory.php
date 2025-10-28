@@ -35,6 +35,8 @@ class SubCategory extends Component
     public $fromName = '';
     public $heroImage;
     public $image;
+    public $existingHeroImage;
+    public $existingImage;
 
     // End Form 
 
@@ -62,6 +64,8 @@ class SubCategory extends Component
             'specificCategoryId',
             'editCategoryId',
             'contactWhatsapp',
+            'existingHeroImage',
+            'existingImage'
         ]);
     }
 
@@ -143,6 +147,7 @@ class SubCategory extends Component
                     file_get_contents($this->image->getRealPath()),
                     $this->image->getClientOriginalName()
                 );
+                
             }
 
             $response = $request->post(api_base_url() . '/categories/sub/', $payload);
@@ -259,10 +264,13 @@ class SubCategory extends Component
 
     public function fillUpdateForm()
     {
+     
         $this->name = $this->subCategory['name'] ?? '';
         $this->hasSpecificCategory = $this->subCategory['hasSpecificCategory'] ?? false;
-        $this->image = $this->subCategory['image'] ?? '';
-        $this->heroImage = $this->subCategory['heroImage'] ?? '';
+        $this->existingImage = $this->subCategory['img'] ?? null;
+        $this->image = null;
+        $this->existingHeroImage = $this->subCategory['heroSection']['imageUrl'] ?? '';
+        $this->heroImage =null;
 
         // $this->description = $this->subCategory['description'] ?? '';
         // $this->main_category_id = $this->subCategory['main_category_id'] ?? '';

@@ -33,9 +33,11 @@
                     <form action="" wire:submit.prevent="saveSubCategory">
                         <div class="p-6 bg-white rounded-lg max-w-5xl mx-auto my-10 font-playfair">
                             <div class="mb-6">
-                                <label for="category-title" class="block text-sm font-medium text-gray-700 mb-2">Category
+                                <label for="category-title"
+                                    class="block text-sm font-medium text-gray-700 mb-2">Category
                                     Title</label>
-                                <input wire:model="name" type="text" id="category-title"  placeholder="Enter your title here"
+                                <input wire:model="name" type="text" id="category-title"
+                                    placeholder="Enter your title here"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
                                 @error('name')
                                     <span class="text-red-500">{{ $message }}</span>
@@ -45,114 +47,114 @@
                             <div class="mb-6">
                                 <label for="category-description"
                                     class="block text-sm font-medium text-gray-700 mb-2">Category Description</label>
-                                <textarea wire:model="description"
-                                 id="category-description" rows="4" placeholder="Enter your description here"
+                                <textarea wire:model="description" id="category-description" rows="4" placeholder="Enter your description here"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] resize-none"></textarea>
-                                        @error('description')
+                                @error('description')
                                     <span class="text-red-500">{{ $message }}</span>
                                 @enderror
-                                </div>
+                            </div>
 
                             <div class="mb-6 space-y-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Hero Image</label>
-                                    <div x-data="{ heroImage: null, dragOver: false }" class="space-y-4">
-                                        <div class="h-64 rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
-                                            @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
-                                            @drop.prevent="heroImage = $event.dataTransfer.files[0]"
-                                            @click="$refs.mainImageInput.click()"
-                                            :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
 
-                                            <input type="file" x-ref="mainImageInput" wire:model="heroImage"
-                                                class="hidden" @change="heroImage = $event.target.files[0]">
+                                {{-- Herro Image --}}
 
+
+                                <div x-data="{ dragOver: false }" class="space-y-4">
+                                    <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
+                                        @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
+                                        @drop.prevent="dragOver = false; $wire.upload('heroImage', event.dataTransfer.files[0])"
+                                        @click="$refs.fileInputs.click()"
+                                        :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
+
+                                        <input wire:model="heroImage" type="file" x-ref="fileInputs" class="hidden"
+                                            accept="image/*">
+
+                                        @if ($heroImage)
+                                            <div class="relative w-full h-full">
+                                                <img src="{{ $heroImage->temporaryUrl() }}"
+                                                    class="w-full h-full object-cover rounded-md" alt="Preview">
+
+                                                <button type="button"
+                                                    @click.stop="$wire.set('heroImage', null); $refs.fileInputs.value = '';"
+                                                    class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">
+                                                    &times;
+                                                </button>
+                                            </div>
+                                        @else
                                             <div class="text-center px-2">
                                                 <div class="mb-4 flex items-center justify-center">
-                                                    <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg"
-                                                        fill="none" viewBox="0 0 20 16">
+                                                    <svg class="w-8 h-8 text-gray-500"
+                                                        xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 20 16">
                                                         <path stroke="currentColor" stroke-linecap="round"
                                                             stroke-linejoin="round" stroke-width="2"
                                                             d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
                                                     </svg>
                                                 </div>
                                                 <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop
-                                                    it
-                                                    here</p>
+                                                    it here</p>
                                                 <button type="button"
-                                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100">Browse
-                                                    File</button>
+                                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                                                    Browse File
+                                                </button>
                                             </div>
-
-                                        </div>
-                                        @error('heroImage')
-                                            <span class="text-red-500">{{ $message }}</span>
-                                        @enderror
-
-                                        <div x-show="heroImage" class="mt-3">
-                                            <div class="relative w-32 flex-shrink-0">
-                                                <img :src="URL.createObjectURL(heroImage)"
-                                                    class="w-full h-32 object-cover rounded-md border" alt="Preview">
-                                                <button type="button" @click="heroImage = null"
-                                                    class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">×</button>
-                                            </div>
-                                        </div>
+                                        @endif
                                     </div>
-
                                 </div>
 
 
                                 {{-- Category Image --}}
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Category Image</label>
-                                    <div x-data="{ image: null, dragOver: false }" class="space-y-4">
-                                        <div class="h-64 rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
-                                            @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
-                                            @drop.prevent="image = $event.dataTransfer.files[0]"
-                                            @click="$refs.categoryImageInput.click()"
-                                            :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
 
-                                            <input type="file" x-ref="categoryImageInput" wire:model="image"
-                                                class="hidden" @change="image = $event.target.files[0]">
 
+                                <div x-data="{ dragOver: false }" class="space-y-4">
+                                    <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
+                                        @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
+                                        @drop.prevent="dragOver = false; $wire.upload('image', event.dataTransfer.files[0])"
+                                        @click="$refs.fileInput.click()"
+                                        :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
+
+                                        <input wire:model="image" type="file" x-ref="fileInput" class="hidden"
+                                            accept="image/*">
+
+                                        @if ($image)
+                                            <div class="relative w-full h-full">
+                                                <img src="{{ $image->temporaryUrl() }}"
+                                                    class="w-full h-full object-cover rounded-md" alt="Preview">
+
+                                                <button type="button"
+                                                    @click.stop="$wire.set('image', null); $refs.fileInput.value = '';"
+                                                    class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">
+                                                    &times;
+                                                </button>
+                                            </div>
+                                        @else
                                             <div class="text-center px-2">
                                                 <div class="mb-4 flex items-center justify-center">
-                                                    <svg class="w-8 h-8 text-gray-500" xmlns="http://www.w3.org/2000/svg"
-                                                        fill="none" viewBox="0 0 20 16">
+                                                    <svg class="w-8 h-8 text-gray-500"
+                                                        xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                        viewBox="0 0 20 16">
                                                         <path stroke="currentColor" stroke-linecap="round"
                                                             stroke-linejoin="round" stroke-width="2"
                                                             d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
                                                     </svg>
                                                 </div>
                                                 <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop
-                                                    it
-                                                    here</p>
+                                                    it here</p>
                                                 <button type="button"
-                                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100">Browse
-                                                    File</button>
+                                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                                                    Browse File
+                                                </button>
                                             </div>
-                                        </div>
-                                        @error('image')
-                                            <span class="text-red-500">{{ $message }}</span>
-                                        @enderror
-                                        <div x-show="image" class="mt-3">
-                                            <div class="relative w-32 flex-shrink-0">
-                                                <img :src="URL.createObjectURL(image)"
-                                                    class="w-full h-32 object-cover rounded-md border" alt="Preview">
-                                                <button type="button" @click="image = null"
-                                                    class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">×</button>
-                                            </div>
-                                        </div>
+                                        @endif
                                     </div>
-
                                 </div>
-
                             </div>
 
                             <div class="mb-6 space-y-4">
                                 <div class="flex items-center justify-between">
                                     <span class="text-sm font-medium text-gray-700">hasSpecificCategory</span>
                                     <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]"
-                                        x-data="{  on: $wire.entangle('hasSpecificCategory') }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
+                                        x-data="{ on: $wire.entangle('hasSpecificCategory') }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
                                         <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
                                             :class="{ 'translate-x-6': on, 'translate-x-0': !on }"></div>
                                     </div>
@@ -160,7 +162,7 @@
                                 <div class="flex items-center justify-between">
                                     <span class="text-sm font-medium text-gray-700">contactWhatsapp</span>
                                     <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]"
-                                        x-data="{  on: $wire.entangle('contactWhatsapp') }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
+                                        x-data="{ on: $wire.entangle('contactWhatsapp') }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
                                         <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
                                             :class="{ 'translate-x-6': on, 'translate-x-0': !on }"></div>
                                     </div>
@@ -168,7 +170,7 @@
                                 <div class="flex items-center justify-between">
                                     <span class="text-sm font-medium text-gray-700">Create Mini-Category</span>
                                     <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]"
-                                        x-data="{  on: $wire.entangle('hasMiniSubCategory') }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
+                                        x-data="{ on: $wire.entangle('hasMiniSubCategory') }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
                                         <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
                                             :class="{ 'translate-x-6': on, 'translate-x-0': !on }"></div>
                                     </div>
@@ -176,7 +178,7 @@
                                 <div class="flex items-center justify-between">
                                     <span class="text-sm font-medium text-gray-700">Has Form</span>
                                     <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]"
-                                        x-data="{  on: $wire.entangle('hasForm') }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
+                                        x-data="{ on: $wire.entangle('hasForm') }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
                                         <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
                                             :class="{ 'translate-x-6': on, 'translate-x-0': !on }"></div>
                                     </div>
@@ -184,7 +186,8 @@
                             </div>
 
                             <div class="mb-6">
-                                <label for="parent-categories" class="block text-sm font-medium text-gray-700 mb-2">Parent
+                                <label for="parent-categories"
+                                    class="block text-sm font-medium text-gray-700 mb-2">Parent
                                     Categories</label>
                                 <select id="parent-categories" wire:model="main_category_id"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] ">
@@ -251,22 +254,47 @@
                                 @enderror
                             </div>
 
-                           
+
 
                             <div class="mb-6 space-y-4">
 
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Hero Image</label>
-                                    <div x-data="{ heroImage: null, dragOver: false }" class="space-y-4">
-                                        <div class="h-64 rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
-                                            @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
-                                            @drop.prevent="heroImage = $event.dataTransfer.files[0]"
-                                            @click="$refs.mainImageInput.click()"
-                                            :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
 
-                                            <input type="file" x-ref="mainImageInput" wire:model="heroImage"
-                                                class="hidden" @change="heroImage = $event.target.files[0]">
+                                {{-- Herro Image --}}
 
+
+                                <div x-data="{ dragOver: false }" class="space-y-4">
+                                    <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
+                                        @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
+                                        @drop.prevent="dragOver = false; $wire.upload('heroImage', event.dataTransfer.files[0])"
+                                        @click="$refs.fileInputs.click()"
+                                        :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
+
+                                        <input wire:model="heroImage" type="file" x-ref="fileInputs"
+                                            class="hidden" accept="image/*">
+
+                                        @if ($heroImage)
+                                            <div class="relative w-full h-full">
+                                                <img src="{{ $heroImage->temporaryUrl() }}"
+                                                    class="w-full h-full object-cover rounded-md" alt="Preview">
+
+                                                <button type="button"
+                                                    @click.stop="$wire.set('image', null); $refs.fileInput.value = '';"
+                                                    class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">
+                                                    &times;
+                                                </button>
+                                            </div>
+                                        @elseif ($existingHeroImage)
+                                            <div class="relative w-full h-full">
+                                                <img src="{{ $existingHeroImage }}"
+                                                    class="w-full h-full object-cover rounded-md" alt="Current Image">
+
+                                                <button type="button"
+                                                    @click.stop="$wire.set('existingHeroImage', null); $refs.fileInput.click();"
+                                                    class="absolute top-2 right-2 bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">
+                                                    Change
+                                                </button>
+                                            </div>
+                                        @else
                                             <div class="text-center px-2">
                                                 <div class="mb-4 flex items-center justify-center">
                                                     <svg class="w-8 h-8 text-gray-500"
@@ -278,44 +306,53 @@
                                                     </svg>
                                                 </div>
                                                 <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop
-                                                    it
-                                                    here</p>
+                                                    it here</p>
                                                 <button type="button"
-                                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100">Browse
-                                                    File</button>
+                                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                                                    Browse File
+                                                </button>
                                             </div>
-
-                                        </div>
-                                        @error('heroImage')
-                                            <span class="text-red-500">{{ $message }}</span>
-                                        @enderror
-
-                                        <div x-show="heroImage" class="mt-3">
-                                            <div class="relative w-32 flex-shrink-0">
-                                                <img :src="URL.createObjectURL(heroImage)"
-                                                    class="w-full h-32 object-cover rounded-md border" alt="Preview">
-                                                <button type="button" @click="heroImage = null"
-                                                    class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">×</button>
-                                            </div>
-                                        </div>
+                                        @endif
                                     </div>
-
                                 </div>
 
 
                                 {{-- Category Image --}}
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Category Image</label>
-                                    <div x-data="{ image: null, dragOver: false }" class="space-y-4">
-                                        <div class="h-64 rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
-                                            @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
-                                            @drop.prevent="image = $event.dataTransfer.files[0]"
-                                            @click="$refs.categoryImageInput.click()"
-                                            :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
 
-                                            <input type="file" x-ref="categoryImageInput" wire:model="image"
-                                                class="hidden" @change="image = $event.target.files[0]">
 
+                                <div x-data="{ dragOver: false }" class="space-y-4">
+                                    <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
+                                        @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
+                                        @drop.prevent="dragOver = false; $wire.upload('image', event.dataTransfer.files[0])"
+                                        @click="$refs.fileInput.click()"
+                                        :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
+
+                                        <input wire:model="image" type="file" x-ref="fileInput" class="hidden"
+                                            accept="image/*">
+
+                                        @if ($image)
+                                            <div class="relative w-full h-full">
+                                                <img src="{{ $image->temporaryUrl() }}"
+                                                    class="w-full h-full object-cover rounded-md" alt="Preview">
+
+                                                <button type="button"
+                                                    @click.stop="$wire.set('image', null); $refs.fileInput.value = '';"
+                                                    class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">
+                                                    &times;
+                                                </button>
+                                            </div>
+                                        @elseif ($existingImage)
+                                            <div class="relative w-full h-full">
+                                                <img src="{{ $existingImage }}"
+                                                    class="w-full h-full object-cover rounded-md" alt="Current Image">
+
+                                                <button type="button"
+                                                    @click.stop="$wire.set('existingImage', null); $refs.fileInput.click();"
+                                                    class="absolute top-2 right-2 bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">
+                                                    Change
+                                                </button>
+                                            </div>
+                                        @else
                                             <div class="text-center px-2">
                                                 <div class="mb-4 flex items-center justify-center">
                                                     <svg class="w-8 h-8 text-gray-500"
@@ -327,26 +364,14 @@
                                                     </svg>
                                                 </div>
                                                 <p class="text-lg font-bold text-gray-800">Choose a file or drag & drop
-                                                    it
-                                                    here</p>
+                                                    it here</p>
                                                 <button type="button"
-                                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100">Browse
-                                                    File</button>
+                                                    class="mt-4 px-6 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                                                    Browse File
+                                                </button>
                                             </div>
-                                        </div>
-                                        @error('image')
-                                            <span class="text-red-500">{{ $message }}</span>
-                                        @enderror
-                                        <div x-show="image" class="mt-3">
-                                            <div class="relative w-32 flex-shrink-0">
-                                                <img :src="URL.createObjectURL(image)"
-                                                    class="w-full h-32 object-cover rounded-md border" alt="Preview">
-                                                <button type="button" @click="image = null"
-                                                    class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-4 h-4 text-xs flex items-center justify-center">×</button>
-                                            </div>
-                                        </div>
+                                        @endif
                                     </div>
-
                                 </div>
 
                             </div>
@@ -509,7 +534,8 @@
 
     <!-- Pagination -->
     @if (!empty($pagination) && ($pagination['pages'] ?? 1) > 1)
-        <div class="flex items-center justify-center space-x-2 py-3 my-3 flex-wrap border-t border-slate-200 border-none">
+        <div
+            class="flex items-center justify-center space-x-2 py-3 my-3 flex-wrap border-t border-slate-200 border-none">
             <button wire:click="previousPage" @disabled(!$hasPrevious) @class([
                 'flex items-center justify-center w-8 h-8 rounded border border-slate-300',
                 'bg-slate-100 text-slate-400 cursor-not-allowed' => !$hasPrevious,
