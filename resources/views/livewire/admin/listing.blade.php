@@ -1,8 +1,7 @@
-<section class="mx-auto max-w-[1200px]  font-playfair">
+<section class="mx-auto max-w-[1200px] min-h-[80vh]  font-playfair">
     <h2 class="font-medium text-3xl text-black mb-4">Listing Management</h2>
 
-    <x-admin.searchbar page="Add Listing" livewire_method="switchAddListingModal" filter_method="applyFilters"
-        :categories="$categories" />
+    <x-admin.searchbar :dropdowns="$dropdowns" :buttons="$buttons" :fields="$fields" />
 
     <div x-data x-init="$watch('$wire.addListingModal', value => document.body.classList.toggle('overflow-hidden', value))"
         class="fixed inset-0 bg-black/70 {{ $addListingModal ? 'block' : 'hidden' }} z-50 overflow-auto flex items-center justify-center p-4">
@@ -344,17 +343,17 @@
                                     x-transition:leave-start="transform opacity-100 scale-100"
                                     x-transition:leave-end="transform opacity-0 scale-95"
                                     class="absolute right-3 -mt-1 p-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
-                                    <button wire:click="listingDtls('{{ encrypt($listing['id']) }}')"
+                                    <button wire:click="listingDtls('{{ encrypt($listing['id']) }}')" x-on:click="open = ! open"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
                                         <flux:icon name="eye" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Details
                                     </button>
-                                    <button wire:click="switchEditListingModal('{{ encrypt($listing['id']) }}')"
+                                    <button wire:click="switchEditListingModal('{{ encrypt($listing['id']) }}')" x-on:click="open = ! open"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
                                         <flux:icon name="pencil-square" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Edit
                                     </button>
-                                    <button wire:click="confirmDelete('{{ encrypt($listing['id']) }}')"
+                                    <button wire:click="confirmDelete('{{ encrypt($listing['id']) }}')" x-on:click="open = ! open"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
                                         <flux:icon name="trash" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Delete
@@ -971,7 +970,7 @@
         </div>
     </div>
     @if (!empty($pagination) && ($pagination['pages'] ?? 1) > 1)
-        <div class="flex items-center justify-center space-x-2 py-3 my-3 flex-wrap border-t border-slate-200">
+        <div class="flex items-center justify-center space-x-2 py-3 my-3 flex-wrap border-t border-slate-200 border-none">
             <button wire:click="previousPage" @disabled(!$hasPrevious) @class([
                 'flex items-center justify-center w-8 h-8 rounded border border-slate-300',
                 'bg-slate-100 text-slate-400 cursor-not-allowed' => !$hasPrevious,

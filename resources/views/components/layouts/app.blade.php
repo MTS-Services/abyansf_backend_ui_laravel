@@ -48,7 +48,7 @@
         @livewire('layouts.navbar')
     @endif
 
-    <main class="container max-w-[1200px] w-full mx-auto p-4 mt-5 font-playfair">
+    <main class="bg-white p-4 font-playfair">
         {{ $slot }}
     </main>
 

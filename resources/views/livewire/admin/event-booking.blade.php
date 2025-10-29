@@ -1,4 +1,4 @@
-<section>
+<section class="mx-auto max-w-[1200px] bg-white min-h-[80vh]">
     <h2 class="font-medium text-3xl text-black mb-4">Event Booking Management</h2>
     <div class="overflow-y-visible relative">
         <table class="leading-normal table-auto w-full">
@@ -68,27 +68,27 @@
                                         Edit
                                     </button> --}}
                                     <!-- Confirm -->
-                                    <button wire:click="activateEvent('{{ encrypt($event['id']) }}')"
+                                    <button wire:click="activateEvent('{{ encrypt($event['id']) }}')" x-on:click="open = ! open"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
                                         <flux:icon name="check-circle" class="text-green-600 mr-2 h-4 w-4" />
                                         Confirm
                                     </button>
 
                                     <!-- Pending -->
-                                    <button wire:click="deactivateEvent('{{ encrypt($event['id']) }}')"
+                                    <button wire:click="deactivateEvent('{{ encrypt($event['id']) }}')" x-on:click="open = ! open"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
                                         <flux:icon name="clock" class="text-yellow-500 mr-2 h-4 w-4" />
                                         Pending
                                     </button>
 
                                     <!-- Reject -->
-                                    <button wire:click="rejectEvent('{{ encrypt($event['id']) }}')"
+                                    <button wire:click="rejectEvent('{{ encrypt($event['id']) }}')" x-on:click="open = ! open"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
                                         <flux:icon name="x-circle" class="text-red-600 mr-2 h-4 w-4" />
                                         Reject
                                     </button>
 
-                                    <button wire:click="deleteEvent('{{ encrypt($event['id']) }}')"
+                                    <button wire:click="deleteEvent('{{ encrypt($event['id']) }}')" x-on:click="open = ! open"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
                                         <flux:icon name="trash" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Delete

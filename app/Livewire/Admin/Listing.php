@@ -92,7 +92,7 @@ class Listing extends Component
         $this->fetchSpecificCategories();
     }
 
-    public function fetchSpecificCategories()
+    public function fetchSpecificCategories($limit = 100)
     {
         $token = api_token();
 
@@ -101,7 +101,9 @@ class Listing extends Component
         }
 
         try {
-            $response = Http::withToken($token)->get(api_base_url() . '/categories/specific');
+            $response = Http::withToken($token)->get(api_base_url() . '/categories/specific', [
+                'limit' => $limit
+            ]);
 
             if ($response->successful()) {
                 $data = $response->json();
@@ -119,12 +121,12 @@ class Listing extends Component
         if (!$token) {
             return $this->redirectRoute('login', navigate: true);
         }
-
+       
         try {
             $response = Http::withToken($token)->get(api_base_url() . '/listings', [
                 'page' => $page,
                 'specificCategoryId' => $this->specificCategoryId ?? '',
-                'listingName' => $this->formName ?? '',
+                'listingName' => $this->listing_name ?? '',
                 'location' => $this->location ?? '',
             ]);
 
@@ -658,6 +660,7 @@ class Listing extends Component
 
     public function applyFilters()
     {
+    
         $this->fetchListings(1);
     }
 
@@ -766,6 +769,43 @@ class Listing extends Component
 
     public function render()
     {
+
+        // Serach component datas
+            $dropdowns = [
+                [
+                    'name' => 'specificCategoryId',
+                    'default' => 'Specific Category',
+                    'options' => $this->specificCategories,
+                ]
+            ];
+
+            $buttons = [
+                [
+                    'method' => 'applyFilters',
+                    'text' => 'Filter',
+                    'icon' => 'plus',
+                    'id' => 'filter_button',
+                ],
+                [
+                    'method' => 'switchAddListingModal',
+                    'text' => 'Add Listing',
+                    'icon' => 'plus',
+                    'id' => 'add_listing_button',
+                ],
+            ];
+
+            $fields = [
+                [
+                    'name' => 'listing_name',
+                    'placeholder' => 'Search by Name',
+                ],
+                [
+                    'name' => 'location',
+                    'placeholder' => 'Search by Location',
+                ],
+            ];
+
+        //Serach Components Data End
         $pages = $this->getPaginationPages();
         $hasPrevious = $this->currentPage > 1;
         $hasNext = $this->currentPage < ($this->pagination['pages'] ?? 1);
@@ -776,7 +816,10 @@ class Listing extends Component
                 'pages' => $pages,
                 'hasPrevious' => $hasPrevious,
                 'hasNext' => $hasNext,
-                'categories' => $this->specificCategories,
+                
+                'buttons' => $buttons,
+                'dropdowns' => $dropdowns,
+                'fields' => $fields
             ]
         );
     }

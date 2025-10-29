@@ -14,12 +14,23 @@ class Category extends Component
 
     public $category;
 
-    public $name ;
+    public $name;
+
     public $mainCategories = [];
+
     public $pagination = [];
     public $openActions = null;
     public $parentCategory = null;
-    protected $editCategoryId = null;
+    public $editCategoryId = null;
+
+
+    // Category Form Field
+    public $category_title = '';
+    public $old_category_title = '';
+    // End Category Form Field
+
+
+
 
     // Add this property to sync currentPage with the URL
     public $currentPage = 1;
@@ -37,10 +48,11 @@ class Category extends Component
         $this->fetchCategories($this->currentPage);
     }
 
-    /**
-     * Fetches users from the API.
-     * @param int $page The page number to fetch.
-     */
+    public function resetFrom()
+    {
+       $this->reset('category_title', 'old_category_title' , 'editCategoryId');
+    }
+
     public function fetchCategories($page = 1)
     {
         $token = Session::get('api_token');
@@ -85,7 +97,7 @@ class Category extends Component
         $response = Http::withToken(api_token())->delete(api_base_url() . '/categories/main/' . decrypt($categoryId));
 
         if ($response->successful()) {
-            // $this->dispatch('sweetalert2', type: 'success', message: 'booking deleted successfully.');
+            $this->dispatch('sweetalert2', type: 'success', message: 'Category deleted successfully.');
             $this->fetchCategories($this->currentPage);
         } else {
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to delete user.');
@@ -183,11 +195,41 @@ class Category extends Component
         $this->fetchCategoryById($this->editCategoryId);
     }
 
-   
+
+    public function updateCategory(){
+
+        if($this->category_title == $this->old_category_title){
+             $this->editCategoryModal = false;
+             $this->resetFrom();
+             return ;
+        }
+
+        try {
+          
+            $token = session()->get('api_token');
+            if (!$token) {
+                return $this->redirectRoute('login', navigate: true);
+            }
+            $response = Http::withToken($token)->put(api_base_url() . '/categories/main/' . $this->editCategoryId, [
+                'name' => $this->category_title
+            ]);
+            if ($response->successful()) {
+                $this->dispatch('sweetalert2', type: 'success', message: 'Main category updated successfully.');
+                $this->fetchCategories();
+                $this->resetFrom();
+            } else {
+                $this->dispatch('sweetalert2', type: 'error', message: 'Failed to update main category.');
+            }
+        } catch (\Throwable $th) {
+           Log::error('Main category update Error: '. $th->getMessage());
+        }
+        $this->editCategoryModal = false;
+
+    }
 
     protected function fetchCategoryById($id)
     {
-        try{
+        try {
             $token = session()->get('api_token');
             if (!$token) {
                 return $this->redirectRoute('login', navigate: true);
@@ -196,22 +238,108 @@ class Category extends Component
 
             if ($response->successful()) {
                 $data = $response->json();
-                $this->name = $data['data']['name'] ?? [];
+                $this->category_title = $data['data']['name'] ?? [];
+                $this->old_category_title = $data['data']['name'] ?? [];
+            }else {
+                $this->dispatch('sweetalert2', type: 'error', message: 'Something went wrong.');
             }
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             Log::error('error', $e->getMessage());
         }
     }
 
 
+    public function saveCategory()
+    {
+     
+        $this->validate(
+            [
+                'category_title' => 'required',
+            ]
+        );
+
+        $data = [
+            'name' => $this->category_title
+        ];
+
+       try {
+            $response = Http::withToken(api_token())->post(api_base_url() . '/categories/main', $data);
+
+            if ($response->successful()) {
+                $this->dispatch('sweetalert2', type: 'success', message: 'Category created successfully.');
+                $this->category_title = '';
+                $this->fetchCategories();
+                $this->switchAddCategoryModal();
+                $this->resetFrom();
+            }else {
+                $this->dispatch('sweetalert2', type: 'error', message: 'Failed to create category. Please try again.');
+            }
+
+       } catch (\Throwable $th) {
+
+        Log::error('Error in creating category', $th->getMessage());
+
+       }
+    }
     // This method will close the modal (and can be used by the 'x' button)
     public function switchEditCategoryModel()
     {
+
         $this->editCategoryModal = !$this->editCategoryModal;
     }
 
+// Modal Actions Status
+
+public function closeAddModal(){
+    $this->addCategoryModal = false;
+    $this->resetFrom();
+}
+
+
+
+
     public function render()
     {
+
+    
+
+
+        // Data Table
+
+        $columns = [
+            [    
+                'key' => 'name',
+                'label' => 'Category Name',
+            ],
+            [
+                'key' => 'createdAt',
+                'label' => 'Created At',
+                'format' => fn($item) => format_date_time($item),
+            ],
+            [
+                'key' => 'updatedAt',
+                'label' => 'Updated At',
+                'format' => fn($item) => format_date_time($item),
+            ]
+          ];
+
+          $actions = [
+            [
+                'key' => 'id',
+                'label' => 'Edit',
+                'method' => 'openEditCategoryModal',
+                'icon' => 'pencil',
+            ],
+            [
+                'key' => 'id',
+                'label' => 'Delete',
+                'method' => 'deleteCategory',
+                'icon' => 'trash',
+            ],
+        ];
+
+        //End Data Table
+
         $pages = $this->getPaginationPages();
         $hasPrevious = $this->currentPage > 1;
         $hasNext = $this->currentPage < ($this->pagination['pages'] ?? 1);
@@ -219,6 +347,13 @@ class Category extends Component
             'pages' => $pages,
             'hasPrevious' => $hasPrevious,
             'hasNext' => $hasNext,
+
+
+            // if you need data table then only pass this
+
+            'columns' => $columns,
+            'actions' => $actions,
+            'items' => $this->mainCategories,
         ]);
     }
 }

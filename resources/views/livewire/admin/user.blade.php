@@ -1,4 +1,4 @@
-<section class="font-playfair">
+<section class="font-playfair text-black min-h-[80vh] mx-auto max-w-[1200px] bg-white">
     <h2 class="font-medium text-3xl text-black mb-4">User Management</h2>
     <div>
         <table class="leading-normal table">
@@ -18,18 +18,18 @@
             <tbody class="text-balck text-sm">
                 @forelse ($users as $index => $user)
                     <tr wire:key="user-{{ $user['id'] }}">
-                        <td class="p-4 text-left whitespace-nowrap font-playfair">
+                        <td class="p-4 text-left whitespace-nowrap font-playfair text-black ">
                             {{ ($pagination['page'] - 1) * $pagination['limit'] + $index + 1 }}</td>
-                        <td class="p-4 text-left font-playfair text-base">{{ $user['name'] }}</td>
-                        <td class="p-4 text-left font-playfair text-base">{{ $user['email'] }}</td>
-                        <td class="p-4 text-left font-playfair text-base">{{ $user['whatsapp'] }}</td>
-                        <td class="p-4 text-left font-playfair text-base">
+                        <td class="p-4 text-left font-playfair text-black  text-base">{{ $user['name'] }}</td>
+                        <td class="p-4 text-left font-playfair text-black  text-base">{{ $user['email'] }}</td>
+                        <td class="p-4 text-left font-playfair text-black  text-base">{{ $user['whatsapp'] }}</td>
+                        <td class="p-4 text-left font-playfair text-black  text-base">
                             {{ \Carbon\Carbon::parse($user['createdAt'])->format('d/m/Y') }}</td>
-                        <td class="p-4 text-left font-playfair text-base">
+                        <td class="p-4 text-left font-playfair text-black  text-base">
                             {{ $user['password'] == null ? 'N/A' : '********' }}</td>
-                        <td class="p-4 text-left font-playfair text-base">
+                        <td class="p-4 text-left font-playfair text-black  text-base">
                             {{ $user['isActive'] ? 'Active' : 'Inactive' }}</td>
-                        <td class="p-4 text-left font-playfair text-base">
+                        <td class="p-4 text-left font-playfair text-black  text-base">
                             @if (isset($user['send_payment_link']) && $user['send_payment_link'] == false)
                                 <button type="button" wire:click="sendPaymentLink('{{ $user['id'] }}')"
                                     onclick="event.stopPropagation();"
@@ -56,31 +56,31 @@
                                     x-transition:leave-end="transform opacity-0 scale-95"
                                     class="absolute right-3 -mt-1 p-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
 
-                                    <button wire:click="userDetailsModal('{{ encrypt($user['id']) }}')"
+                                    <button wire:click="userDetailsModal('{{ encrypt($user['id']) }}')" x-on:click="open = ! open"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
                                         <flux:icon name="eye" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Details
                                     </button>
 
-                                    <button wire:click="userEditModall('{{ encrypt($user['id']) }}')"
+                                    <button wire:click="userEditModall('{{ encrypt($user['id']) }}')" x-on:click="open = ! open"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
                                         <flux:icon name="pencil-square" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Edit
                                     </button>
                                     @if ($user['paid'] === false)
-                                        <button wire:click="confirmUserPaid('{{ $user['id'] }}')"
+                                        <button wire:click="confirmUserPaid('{{ $user['id'] }}')" x-on:click="open = ! open"
                                             class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
                                             <flux:icon name="check-circle" class="text-green-600 mr-2 h-4 w-4" />
                                             Confirm
                                         </button>
-                                        <button wire:click="rejectUserPaid('{{ $user['id'] }}')"
+                                        <button wire:click="rejectUserPaid('{{ $user['id'] }}')" x-on:click="open = ! open"
                                             class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
                                             <flux:icon name="x-circle" class="text-red-600 mr-2 h-4 w-4" />
                                             Reject
                                         </button>
                                     @endif
 
-                                    <button wire:click="deleteUser('{{ $user['id'] }}')"
+                                    <button wire:click="deleteUser('{{ $user['id'] }}')" x-on:click="open = ! open"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
                                         <flux:icon name="trash" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Delete

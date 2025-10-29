@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -25,16 +26,19 @@ class SubCategory extends Component
     // Form Data
     public $name = '';
     public $description = '';
-    public $mainCategoryId = '';
+    public $main_category_id = '';
     public $hasSpecificCategory = false;
+    public $contactWhatsapp = false;
 
     public $hasForm = false;
     public $hasMiniSubCategory = false;
     public $fromName = '';
     public $heroImage;
     public $image;
+    public $existingHeroImage;
+    public $existingImage;
 
-    // End Form Data
+    // End Form 
 
     public function switchAddSubCategoryModal()
     {
@@ -51,15 +55,17 @@ class SubCategory extends Component
         $this->reset([
             'name',
             'description',
-            'mainCategoryId',
+            'main_category_id',
             'hasSpecificCategory',
             'hasForm',
             'hasMiniSubCategory',
-            'fromName',
             'heroImage',
             'image',
             'specificCategoryId',
             'editCategoryId',
+            'contactWhatsapp',
+            'existingHeroImage',
+            'existingImage'
         ]);
     }
 
@@ -96,6 +102,69 @@ class SubCategory extends Component
         }
     }
 
+    public function saveSubCategory()
+    {
+
+        $this->validate([
+            'name' => 'required',
+            'description' => 'nullable',
+            'main_category_id' => 'required',
+            'heroImage' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        try {
+            $token = api_token();
+            if (!$token) {
+                $this->dispatch('sweetalert2', type: 'error', message: 'Authentication token not found.');
+                return;
+            }
+
+            $payload = [
+                'name' => $this->name,
+                'mainCategoryId' => $this->main_category_id,
+                'hasSpecificCategory' => $this->hasSpecificCategory,
+                'contractWhatsapp' => $this->contactWhatsapp,
+                'hasForm' => $this->hasForm,
+                'hasMiniSubCategory' => $this->hasMiniSubCategory,
+                'description' => $this->description,
+            ];
+
+           
+
+            $request = Http::withToken($token);
+
+            if ($this->heroImage && !filter_var($this->heroImage, FILTER_VALIDATE_URL)) {
+                $request->attach(
+                    'heroImage',
+                    file_get_contents($this->heroImage->getRealPath()),
+                    $this->heroImage->getClientOriginalName()
+                );
+            }
+            if ($this->image && !filter_var($this->image, FILTER_VALIDATE_URL)) {
+                $request->attach(
+                    'image',
+                    file_get_contents($this->image->getRealPath()),
+                    $this->image->getClientOriginalName()
+                );
+                
+            }
+
+            $response = $request->post(api_base_url() . '/categories/sub/', $payload);
+     
+            if ($response->successful()) {
+                $this->dispatch('sweetalert2', type: 'success', message: 'sub category created successfully!');
+                $this->switchAddSubCategoryModal();
+                $this->resetForm();
+                $this->fetchSubCategories($this->currentPage);
+            } else {
+                $this->dispatch('sweetalert2', type: 'error', message: 'Failed to create Sub Cateogry.');
+            }
+        } catch (\Exception $e) {
+           Log::error('Failed to create sub category: ' . $e->getMessage());
+        }
+    }
+
     public function SubCategoryDetails($id)
     {
 
@@ -114,12 +183,14 @@ class SubCategory extends Component
     {
         $this->SubCategoryDetailsModal = false;
         $this->reset(['subCategory']);
+        $this->resetForm();
     }
 
     public function closeAddModal()
     {
         $this->addSubCategoryModal = false;
         $this->editSubCategoryModal = false;
+        $this->resetForm();
     }
 
     public function fetchCategoryById($id)
@@ -150,7 +221,7 @@ class SubCategory extends Component
 
         $response = Http::withToken($token)->get(api_base_url() . '/categories/sub', [
             'page' => $page,
-            'mainCategoryId' => $this->specificCategoryId,
+            'mainCategoryId' => $this->main_category_id,
         ]);
 
         if ($response->successful()) {
@@ -193,13 +264,16 @@ class SubCategory extends Component
 
     public function fillUpdateForm()
     {
+     
         $this->name = $this->subCategory['name'] ?? '';
         $this->hasSpecificCategory = $this->subCategory['hasSpecificCategory'] ?? false;
-        $this->image = $this->subCategory['image'] ?? '';
-        $this->heroImage = $this->subCategory['heroImage'] ?? '';
+        $this->existingImage = $this->subCategory['img'] ?? null;
+        $this->image = null;
+        $this->existingHeroImage = $this->subCategory['heroSection']['imageUrl'] ?? '';
+        $this->heroImage =null;
 
         // $this->description = $this->subCategory['description'] ?? '';
-        // $this->mainCategoryId = $this->subCategory['mainCategoryId'] ?? '';
+        // $this->main_category_id = $this->subCategory['main_category_id'] ?? '';
         // $this->hasForm = $this->subCategory['hasForm'] ?? false;
         // $this->hasMiniSubCategory = $this->subCategory['hasMiniSubCategory'] ?? false;
         // $this->fromName = $this->subCategory['fromName'] ?? '';
@@ -232,14 +306,16 @@ class SubCategory extends Component
             if ($this->heroImage && !filter_var($this->heroImage, FILTER_VALIDATE_URL)) {
                 $request->attach(
                     'heroImage',
-                     file_get_contents($this->heroImage->getRealPath()),
-                      $this->heroImage->getClientOriginalName());
+                    file_get_contents($this->heroImage->getRealPath()),
+                    $this->heroImage->getClientOriginalName()
+                );
             }
             if ($this->image && !filter_var($this->image, FILTER_VALIDATE_URL)) {
                 $request->attach(
                     'image',
-                     file_get_contents($this->image->getRealPath()),
-                     $this->image->getClientOriginalName());
+                    file_get_contents($this->image->getRealPath()),
+                    $this->image->getClientOriginalName()
+                );
             }
             $response = $request->put(api_base_url() . '/categories/sub/' . $this->editCategoryId, $payload);
 
@@ -250,11 +326,11 @@ class SubCategory extends Component
             } else {
                 $this->dispatch('sweetalert2', type: 'error', message: 'Failed to update Sub Cateogry.');
             }
-
         } catch (\Exception $e) {
             dd('error' . $e->getMessage());
         }
     }
+
 
     public function getPaginationPages()
     {
@@ -332,6 +408,95 @@ class SubCategory extends Component
 
     public function render()
     {
+
+        // Serach Component
+        $dropdowns = [
+            [
+                'name' => 'main_category_id',
+                'default' => 'Category',
+                'options' => $this->categories,
+            ],
+        ];
+
+        $buttons = [
+            [
+                'method' => 'applyFilters',
+                'text' => 'Filter',
+                'icon' => 'plus',
+                'id' => 'filter_button',
+            ],
+            [
+                'method' => 'switchAddSubCategoryModal',
+                'text' => 'Add',
+                'icon' => 'plus',
+                'id' => 'add_category_button',
+            ],
+        ];
+
+        $fields = [
+            [
+                'name' => 'location',
+                'placeholder' => 'Search by Location',
+            ],
+            [
+                'name' => 'title',
+                'placeholder' => 'Search by Title',
+            ],
+        ];
+        // End Serach Component
+
+        // Data Table
+        $columns = [
+            [
+                'key' => 'name',
+                'label' => 'Sub category name',
+            ],
+            [
+                'key' => 'mainCategory',
+                'label' => 'Main Category',
+                'format' => fn($item) => $item['name'],
+            ],
+            [
+                'key' => 'specificCategories',
+                'label' => 'Specific Category',
+                'format' => fn($item) => isset($item[0]['name']) ? $item[0]['name'] : '',
+            ],
+            [
+                'key' => 'miniSubCategory',
+                'label' => 'Mini Sub Category',
+                'format' => fn($item) => isset($item[0]['name']) ? $item[0]['name'] : '',
+            ],
+            [
+                'key' => 'createdAt',
+                'label' => 'Created At',
+                'format' => fn($item) => format_date_time($item),
+            ]
+        ];
+
+        $actions = [
+            [
+                'key' => 'id',
+                'label' => 'Details',
+                'method' => 'SubCategoryDetails',
+                'icon' => 'eye',
+            ],
+            [
+                'key' => 'id',
+                'label' => 'Edit',
+                'method' => 'switchEditSubCategoryModal',
+                'icon' => 'pencil-square',
+            ],
+            [
+                'key' => 'id',
+                'label' => 'Delete',
+                'method' => 'deleteSubCategory',
+                'icon' => 'trash',
+            ],
+        ];
+        // End Data Table
+
+
+
         $pages = $this->getPaginationPages();
         $hasPrevious = $this->currentPage > 1;
         $hasNext = $this->currentPage < ($this->pagination['pages'] ?? 1);
@@ -340,9 +505,23 @@ class SubCategory extends Component
             'pages' => $pages,
             'hasPrevious' => $hasPrevious,
             'hasNext' => $hasNext,
-            'subCategoreis' => $this->subCategoreis,
+
             'subCategory'   => $this->subCategory,
-            'categories'    => $this->categories,
+
+            // Serach Component
+            'dropdowns' => $dropdowns,
+            'buttons' => $buttons,
+            'fields' => $fields,
+            // End Serach Component
+
+            // Data Table
+            'items' => $this->subCategoreis,
+            'columns' => $columns,
+            'actions' => $actions,
+
+            // End Data Table
+
+
         ]);
     }
 }
