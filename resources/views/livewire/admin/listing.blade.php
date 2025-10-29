@@ -343,17 +343,17 @@
                                     x-transition:leave-start="transform opacity-100 scale-100"
                                     x-transition:leave-end="transform opacity-0 scale-95"
                                     class="absolute right-3 -mt-1 p-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-20">
-                                    <button wire:click="listingDtls('{{ encrypt($listing['id']) }}')"
+                                    <button wire:click="listingDtls('{{ encrypt($listing['id']) }}')" x-on:click="open = ! open"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
                                         <flux:icon name="eye" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Details
                                     </button>
-                                    <button wire:click="switchEditListingModal('{{ encrypt($listing['id']) }}')"
+                                    <button wire:click="switchEditListingModal('{{ encrypt($listing['id']) }}')" x-on:click="open = ! open"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
                                         <flux:icon name="pencil-square" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Edit
                                     </button>
-                                    <button wire:click="confirmDelete('{{ encrypt($listing['id']) }}')"
+                                    <button wire:click="confirmDelete('{{ encrypt($listing['id']) }}')" x-on:click="open = ! open"
                                         class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-red-50 cursor-pointer">
                                         <flux:icon name="trash" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                         Delete

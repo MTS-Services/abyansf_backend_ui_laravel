@@ -53,7 +53,7 @@
 
                                     @foreach ( $actions as $action )
 
-                                         <button wire:click="{{ isset($action['method']) ? $action['method'].'(\''.encrypt($item['id']).'\')' : '' }}"
+                                         <button wire:click="{{ isset($action['method']) ? $action['method'].'(\''.encrypt($item['id']).'\')' : '' }}" x-on:click="open = ! open"
                                             class="w-full flex items-center px-3 py-1 rounded text-sm hover:bg-gray-100 cursor-pointer">
                                             <flux:icon name="pencil-square" class="text-[#6D6D6D] mr-2 h-4 w-4" />
                                             {{ $action['label'] }}
