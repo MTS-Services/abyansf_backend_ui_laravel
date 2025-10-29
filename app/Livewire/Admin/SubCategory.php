@@ -462,6 +462,11 @@ class SubCategory extends Component
                 'format' => fn($item) => isset($item[0]['name']) ? $item[0]['name'] : '',
             ],
             [
+                'key' => 'miniSubCategory',
+                'label' => 'Mini Sub Category',
+                'format' => fn($item) => isset($item[0]['name']) ? $item[0]['name'] : '',
+            ],
+            [
                 'key' => 'createdAt',
                 'label' => 'Created At',
                 'format' => fn($item) => format_date_time($item),

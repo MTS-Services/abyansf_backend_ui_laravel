@@ -14,7 +14,7 @@
 
     {{-- Add Mini Category Modal    --}}
 
-    {{-- Edit Mini Category Modal --}}
+
 
     <div x-data="{ show: @entangle('addMiniSubCategoryModal') }" x-show="show" x-cloak x-effect="document.body.classList.toggle('overflow-hidden', show)"
         x-transition.opacity>
@@ -29,7 +29,7 @@
                     class="relative w-full max-w-[1200px] mx-auto rounded-lg shadow-lg bg-white p-6">
 
                     <div class="flex justify-between items-center pb-3">
-                        <h3 class="text-xl font-semibold text-gray-900">Edit Mini Sub Category</h3>
+                        <h3 class="text-xl font-semibold text-gray-900">Add Mini Sub Category</h3>
                         <button wire:click="closeAddModal()"
                             class="text-gray-400 hover:text-gray-600 focus:outline-none">
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -77,6 +77,7 @@
 
 
                                 <div x-data="{ dragOver: false }" class="space-y-4">
+                                       <label for="category-title" class="block text-sm font-medium text-gray-700 mb-2">Image</label>
                                     <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
                                         @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
                                         @drop.prevent="dragOver = false; $wire.upload('image', event.dataTransfer.files[0])"
@@ -150,7 +151,7 @@
                             <div class="flex justify-center">
                                 <button wire:click="SaveMiniCategory"
                                     class="px-6 py-2 bg-[#C7AE6A] text-white font-medium rounded-md shadow-sm hover:bg-opacity-90 transition-colors">
-                                    Update Mini Category
+                                    Add Mini Category
                                 </button>
                             </div>
                         </div>
@@ -161,7 +162,7 @@
         </div>
     </div>
 
-    {{-- Edit Mini Category Modal --}}
+
 
     {{-- End Add Mini Category Modal    --}}
 
@@ -229,6 +230,7 @@
                             <div class="mb-6 space-y-4">
 
                                 <div x-data="{ dragOver: false }" class="space-y-4">
+                                       <label for="category-title" class="block text-sm font-medium text-gray-700 mb-2">Image</label>
                                     <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
                                         @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
                                         @drop.prevent="dragOver = false; $wire.upload('image', event.dataTransfer.files[0])"

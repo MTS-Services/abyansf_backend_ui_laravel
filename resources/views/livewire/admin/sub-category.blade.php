@@ -1,4 +1,4 @@
-<section class="mx-auto max-w-[1200px] p-4 font-playfair">
+<section class="mx-auto max-w-[1200px] min-h-[80vh] bg-white p-4 font-playfair">
     <h2 class="font-medium text-3xl text-black mb-4">Sub Category</h2>
     <nav class="sm:mt-8">
         <!-- Navigation links container -->
@@ -60,6 +60,7 @@
 
 
                                 <div x-data="{ dragOver: false }" class="space-y-4">
+                                    <label for="category-title" class="block text-sm font-medium text-gray-700 mb-2">Hero Image</label>
                                     <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
                                         @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
                                         @drop.prevent="dragOver = false; $wire.upload('heroImage', event.dataTransfer.files[0])"
@@ -107,6 +108,7 @@
 
 
                                 <div x-data="{ dragOver: false }" class="space-y-4">
+                                     <label for="category-title" class="block text-sm font-medium text-gray-700 mb-2">Category Image</label>
                                     <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
                                         @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
                                         @drop.prevent="dragOver = false; $wire.upload('image', event.dataTransfer.files[0])"
@@ -263,6 +265,7 @@
 
 
                                 <div x-data="{ dragOver: false }" class="space-y-4">
+                                    <label for="category-title" class="block text-sm font-medium text-gray-700 mb-2">Hero Imagee</label>
                                     <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
                                         @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
                                         @drop.prevent="dragOver = false; $wire.upload('heroImage', event.dataTransfer.files[0])"
@@ -321,6 +324,7 @@
 
 
                                 <div x-data="{ dragOver: false }" class="space-y-4">
+                                    <label for="category-title" class="block text-sm font-medium text-gray-700 mb-2">Category Image</label>
                                     <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
                                         @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
                                         @drop.prevent="dragOver = false; $wire.upload('image', event.dataTransfer.files[0])"

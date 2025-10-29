@@ -1,4 +1,4 @@
-<section class="mx-auto max-w-[1200px] p-4 font-playfair">
+<section class="mx-auto max-w-[1200px] min-h-[80vh] bg-white p-4 font-playfair">
     <h2 class="font-medium text-3xl text-black mb-4">Specific Category</h2>
     <nav class="sm:mt-8">
         <!-- Navigation links container -->
@@ -20,6 +20,10 @@
                     x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
                     x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                     class="relative w-full max-w-[1200px] mx-auto rounded-lg shadow-lg bg-white p-6">
+                     <button wire:click="closeAddModal"
+                        class="absolute top-4 right-4 text-gray-600 hover:text-gray-900 text-2xl font-bold">
+                        &times;
+                    </button>
                     <form wire:submit.prevent="saveSpecificCategory">
 
                         <div class="p-6 bg-white rounded-lg max-w-5xl mx-auto my-10 font-playfair">

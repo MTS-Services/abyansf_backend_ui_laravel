@@ -24,7 +24,7 @@ class SpecificCategory extends Component
 
     public function mount()
     {
-        $this->fetchSubCategories($this->currentPage);
+        $this->fetchSubCategories();
     }
 
     public function resetForm()
@@ -304,6 +304,11 @@ class SpecificCategory extends Component
             [
                 'key' => 'createdAt',
                 'label' => 'Created At',
+                'format' => fn($item) => format_date_time($item),
+            ],
+            [
+                'key' => 'updatedAt',
+                'label' => 'Updated At',
                 'format' => fn($item) => format_date_time($item),
             ]
         ];
