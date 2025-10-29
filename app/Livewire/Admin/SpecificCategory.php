@@ -42,7 +42,7 @@ class SpecificCategory extends Component
         $this->name = $data['name'];
         $this->sub_category_id = $data['subCategoryId'];
     }
-    public function fetchSubCategories()
+    public function fetchSubCategories($limit = 100)
     {
 
         $token = session()->get('api_token');
@@ -50,7 +50,9 @@ class SpecificCategory extends Component
             return $this->redirectRoute('login', navigate: true);
         }
 
-        $response = Http::withToken($token)->get(api_base_url() . '/categories/sub');
+        $response = Http::withToken($token)->get(api_base_url() . '/categories/sub',[
+            'limit' => $limit
+        ]);
 
         if ($response->successful()) {
             $data = $response->json();

@@ -135,7 +135,7 @@ class MiniCategoreis extends Component
                 'subCategoryId' => $this->subCategoryId,
                 'hasForm' => $this->hasForm
             ];
-               
+
             if ($this->hasForm) $payload['fromName'] = $this->fromName;
 
             $request = Http::withToken($token);
@@ -146,11 +146,9 @@ class MiniCategoreis extends Component
                     file_get_contents($this->image->getRealPath()),
                     $this->image->getClientOriginalName()
                 );
-
-                
             }
 
-            $response = $request->post(api_base_url() . '/categories/mini-sub/' , $payload);
+            $response = $request->post(api_base_url() . '/categories/mini-sub/', $payload);
 
             if ($response->successful()) {
 
@@ -297,7 +295,7 @@ class MiniCategoreis extends Component
         $this->image = null;
     }
 
-    public function fetchSubCategoreis()
+    public function fetchSubCategoreis($limit =100)
     {
 
         $token = session()->get('api_token');
@@ -307,7 +305,9 @@ class MiniCategoreis extends Component
 
         try {
 
-            $response  = Http::withToken($token)->get(api_base_url() . '/categories/sub');
+            $response  = Http::withToken($token)->get(api_base_url() . '/categories/sub', [
+                'limit' => $limit,
+            ]);
 
             if ($response->successful()) {
 
@@ -389,16 +389,19 @@ class MiniCategoreis extends Component
         return $pages;
     }
 
-    public function nextPage(){
+    public function nextPage()
+    {
         $this->currentPage = $this->currentPage + 1;
         $this->fetchMiniSubCategories($this->currentPage);
-    } 
-    public function previousPage(){
+    }
+    public function previousPage()
+    {
         $this->currentPage = $this->currentPage + 1;
         $this->fetchMiniSubCategories($this->currentPage);
     }
 
-    public function gotoPage($page){
+    public function gotoPage($page)
+    {
         $this->currentPage = $page;
         $this->fetchMiniSubCategories($this->currentPage);
     }

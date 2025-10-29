@@ -92,7 +92,7 @@ class Listing extends Component
         $this->fetchSpecificCategories();
     }
 
-    public function fetchSpecificCategories()
+    public function fetchSpecificCategories($limit = 100)
     {
         $token = api_token();
 
@@ -101,7 +101,9 @@ class Listing extends Component
         }
 
         try {
-            $response = Http::withToken($token)->get(api_base_url() . '/categories/specific');
+            $response = Http::withToken($token)->get(api_base_url() . '/categories/specific', [
+                'limit' => $limit
+            ]);
 
             if ($response->successful()) {
                 $data = $response->json();
