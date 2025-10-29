@@ -1,4 +1,4 @@
-<section class="mx-auto max-w-[1200px] p-4 font-playfair">
+<section class="mx-auto max-w-[1200px] bg-white min-h-[80vh] p-4 font-playfair">
     <h2 class="font-medium text-3xl text-black mb-4">Event Management</h2>
 
     {{-- Header Area --}}
@@ -115,7 +115,7 @@
         <table class="min-w-full table-fixed border-collapse">
             <thead>
                 <tr class="hidden md:table-row bg-[#E7E7E7]">
-                    <th class="p-4 text-left font-medium text-base">SL</th>
+                    <th class="p-4 text-left font-medium text-base text-black">SL</th>
                     <th class="py-3 px-2 text-left text-lg md:text-xl font-semibold text-black font-playfair w-[70%]">
                         Service Name
                     </th>

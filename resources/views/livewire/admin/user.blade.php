@@ -1,4 +1,4 @@
-<section class="font-playfair">
+<section class="font-playfair text-black min-h-[80vh] mx-auto max-w-[1200px] bg-white">
     <h2 class="font-medium text-3xl text-black mb-4">User Management</h2>
     <div>
         <table class="leading-normal table">
@@ -18,18 +18,18 @@
             <tbody class="text-balck text-sm">
                 @forelse ($users as $index => $user)
                     <tr wire:key="user-{{ $user['id'] }}">
-                        <td class="p-4 text-left whitespace-nowrap font-playfair">
+                        <td class="p-4 text-left whitespace-nowrap font-playfair text-black ">
                             {{ ($pagination['page'] - 1) * $pagination['limit'] + $index + 1 }}</td>
-                        <td class="p-4 text-left font-playfair text-base">{{ $user['name'] }}</td>
-                        <td class="p-4 text-left font-playfair text-base">{{ $user['email'] }}</td>
-                        <td class="p-4 text-left font-playfair text-base">{{ $user['whatsapp'] }}</td>
-                        <td class="p-4 text-left font-playfair text-base">
+                        <td class="p-4 text-left font-playfair text-black  text-base">{{ $user['name'] }}</td>
+                        <td class="p-4 text-left font-playfair text-black  text-base">{{ $user['email'] }}</td>
+                        <td class="p-4 text-left font-playfair text-black  text-base">{{ $user['whatsapp'] }}</td>
+                        <td class="p-4 text-left font-playfair text-black  text-base">
                             {{ \Carbon\Carbon::parse($user['createdAt'])->format('d/m/Y') }}</td>
-                        <td class="p-4 text-left font-playfair text-base">
+                        <td class="p-4 text-left font-playfair text-black  text-base">
                             {{ $user['password'] == null ? 'N/A' : '********' }}</td>
-                        <td class="p-4 text-left font-playfair text-base">
+                        <td class="p-4 text-left font-playfair text-black  text-base">
                             {{ $user['isActive'] ? 'Active' : 'Inactive' }}</td>
-                        <td class="p-4 text-left font-playfair text-base">
+                        <td class="p-4 text-left font-playfair text-black  text-base">
                             @if (isset($user['send_payment_link']) && $user['send_payment_link'] == false)
                                 <button type="button" wire:click="sendPaymentLink('{{ $user['id'] }}')"
                                     onclick="event.stopPropagation();"

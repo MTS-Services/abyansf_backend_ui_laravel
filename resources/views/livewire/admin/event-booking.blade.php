@@ -1,4 +1,4 @@
-<section>
+<section class="mx-auto max-w-[1200px] bg-white min-h-[80vh]">
     <h2 class="font-medium text-3xl text-black mb-4">Event Booking Management</h2>
     <div class="overflow-y-visible relative">
         <table class="leading-normal table-auto w-full">

@@ -1,4 +1,4 @@
-<header class="w-full relative">
+<header class="w-full relative bg-white">
     <div class="hidden sm:flex items-center justify-between container mx-auto max-w-[1200px] h-28 sm:h-32 px-4">
         <div>
             <a href="{{ route('login') }}" wire:navigate>

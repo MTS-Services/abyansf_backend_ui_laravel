@@ -11,3 +11,4 @@ if(! function_exists('format_date_time')) {
         return Carbon::parse($dateTime)->format('m-d-Y - H:i:s , a');
     }
 }
+

@@ -1,4 +1,4 @@
-<section class="mx-auto max-w-[1200px]  font-playfair">
+<section class="mx-auto max-w-[1200px] min-h-[80vh] bg-white  font-playfair">
     <h2 class="font-medium text-3xl text-black mb-4">Category Management</h2>
 
     <nav class=" sm:mt-8 ">

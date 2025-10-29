@@ -11,7 +11,7 @@
     'dropdowns' => [],
 ])
 
-<div class="flex flex-col  justify-end md:flex-row md:items-center md:space-x-4 mt-10 px-4 md:px-0 font-playfair">
+<div class="flex flex-col  justify-end md:flex-row md:items-center bg-white md:space-x-4 mt-10 px-4 md:px-0 font-playfair">
 
     <!-- Dropdown -->
     @foreach ($dropdowns as $dropdown)

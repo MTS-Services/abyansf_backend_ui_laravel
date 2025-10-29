@@ -1,4 +1,4 @@
-<section class="font-playfair">
+<section class="font-playfair mx-auto max-w-[1200px] bg-white min-h-[80vh]">
 
     <h2 class="font-medium mt-6 mb-6 font-playfair text-black text-2xl sm:text-3xl">Booking Management</h2>
 
