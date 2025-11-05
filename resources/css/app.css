@@ -62,16 +62,6 @@
     }
 }
 
-@layer theme {
-    .dark {
-        --color-accent: #C7AE6A;
-        --color-accent-content: var(--color-white);
-        --color-accent-foreground: var(--color-neutral-800);
-        --font-playfair: 'Playfair Display', serif;
-        --font-inter: 'Inter', sans-serif;
-        --font-poppins: 'Poppins', sans-serif;
-    }
-}
 
 @layer base {
 
