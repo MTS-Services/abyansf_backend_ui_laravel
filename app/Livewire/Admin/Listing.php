@@ -372,9 +372,9 @@ class Listing extends Component
             'description' => 'nullable|string',
             'hours' => 'nullable|string',
             'contractWhatsapp' => 'required|in:true,false',
-            'main_image' => 'nullable|image|max:2048',
-            'menu_images.*' => 'nullable|image|max:2048',
-            'sub_images.*' => 'nullable|image|max:2048',
+            'main_image' => 'nullable|image',
+            'menu_images.*' => 'nullable|image',
+            'sub_images.*' => 'nullable|image',
         ];
 
         if ($this->contractWhatsapp == 'false') {

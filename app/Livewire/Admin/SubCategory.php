@@ -109,8 +109,8 @@ class SubCategory extends Component
             'name' => 'required',
             'description' => 'nullable',
             'main_category_id' => 'required',
-            'heroImage' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'heroImage' => 'nullable|image|mimes:jpeg,png,jpg',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg',
         ]);
 
         try {
@@ -286,8 +286,8 @@ class SubCategory extends Component
 
         $this->validate([
             'name' => 'required',
-            'heroImage' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'heroImage' => 'nullable|image|mimes:jpeg,png,jpg',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg',
         ]);
         try {
             $token = api_token();

@@ -119,7 +119,7 @@ class MiniCategoreis extends Component
         $this->validate(
             [
                 'name' => 'required',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg',
                 'subCategoryId' => 'required',
             ]
         );
@@ -200,7 +200,7 @@ class MiniCategoreis extends Component
         $this->validate(
             [
                 'name' => 'required',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg',
                 'subCategoryId' => 'required',
             ]
         );
