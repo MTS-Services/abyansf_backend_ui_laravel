@@ -111,7 +111,7 @@ class Event extends Component
             'location' => 'required|string|max:255',
             'time' => 'required',
             'date' => 'required|date',
-            'image' => 'nullable|image|max:2048',
+            'image' => 'nullable|image',
         ]);
 
         $token = Session::get('api_token');
