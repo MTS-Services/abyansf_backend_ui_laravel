@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth light">
+<html lang="en" class="scroll-smooth light!">
 
 <head>
     <meta charset="utf-8" />
@@ -13,7 +13,6 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    @fluxAppearance()
 
     <style>
         @keyframes bounce-dot {
@@ -48,7 +47,7 @@
         @livewire('layouts.navbar')
     @endif
 
-    <main class="bg-white p-4 font-playfair">
+    <main class="bg-white! p-4 font-playfair">
         {{ $slot }}
     </main>
 

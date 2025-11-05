@@ -1,8 +1,8 @@
-<section class="flex items-center justify-center ">
+<section class="flex items-center bg-white! justify-center ">
 
-    <div class="w-full max-w-sm text-center ">
+    <div class="w-full max-w-sm text-center bg-white!">
         <form wire:submit.prevent="login" class="w-full">
-            <h1 class="text-4xl font-bold mb-2">Login Here</h1>
+            <h1 class="text-4xl font-bold mb-2 text-black">Login Here</h1>
             <p class="text-gray-600 mb-6">Welcome back you’ve <br>been missed!</p>
 
             {{-- This will be the only place the error message is shown --}}
@@ -17,14 +17,14 @@
                 <span class="text-red-500 text-sm">{{ $message }}</span>
             @enderror
             <input type="text" wire:model.live="email" placeholder="Email"
-                class="w-full px-4 p-4 bg-[#F8F6EE] border border-gray-100 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-[#c5a86a]">
+                class="w-full px-4 p-4 bg-[#F8F6EE] text-black border border-gray-100 rounded-md mb-4 focus:outline-none focus:ring-2 focus:ring-[#c5a86a]">
 
             @error('password')
                 <span class="text-red-500 text-sm">{{ $message }}</span>
             @enderror
             <div x-data="{ show: false }" class="relative mb-4">
                 <input :type="show ? 'text' : 'password'" wire:model.live="password" placeholder="Password"
-                    class="w-full px-4 p-4 bg-[#F8F6EE] border border-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c5a86a]">
+                    class="w-full px-4 text-black p-4 bg-[#F8F6EE] border border-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-[#c5a86a]">
 
                 <span
                     class="absolute right-4 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500 hover:text-[#c5a86a]"
