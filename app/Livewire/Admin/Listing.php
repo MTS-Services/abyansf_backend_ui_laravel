@@ -213,16 +213,30 @@ class Listing extends Component
                 $this->hours = is_string($hours) ? $hours : '';
             }
 
-            // Convert boolean to string for radio buttons
-            $this->contractWhatsapp = isset($data['contract_whatsapp'])
-                ? ($data['contract_whatsapp'] ? 'true' : 'false')
-                : 'true';
+            // FIXED: Convert boolean/integer to string for radio buttons
+            // Handle various data types from API (boolean, integer, string)
+            $contractWhatsappValue = $data['contract_whatsapp'] ?? $data['contractWhatsapp'] ?? true;
+            
+            // Convert to boolean first, then to string
+            if (is_string($contractWhatsappValue)) {
+                // If it's already a string like "true" or "false"
+                $this->contractWhatsapp = strtolower($contractWhatsappValue) === 'true' ? 'true' : 'false';
+            } else {
+                // If it's boolean or integer (1/0)
+                $this->contractWhatsapp = $contractWhatsappValue ? 'true' : 'false';
+            }
 
-            $this->fromName = $data['from_name'] ?? '';
+            // FIXED: Get fromName from correct key
+            $this->fromName = $data['from_name'] ?? $data['fromName'] ?? '';
 
-            $this->hasForm = isset($data['has_form'])
-                ? ($data['has_form'] ? 'true' : 'false')
-                : 'false';
+            // FIXED: Convert hasForm to string
+            $hasFormValue = $data['has_form'] ?? $data['hasForm'] ?? false;
+            
+            if (is_string($hasFormValue)) {
+                $this->hasForm = strtolower($hasFormValue) === 'true' ? 'true' : 'false';
+            } else {
+                $this->hasForm = $hasFormValue ? 'true' : 'false';
+            }
 
             // Images
             $this->existing_main_image = $data['main_image'] ?? null;
@@ -234,6 +248,14 @@ class Listing extends Component
             $this->menu_images = [];
             $this->sub_images = [];
             $this->removed_existing_image_ids = [];
+
+            // Debug log
+            Log::info('Form filled with data', [
+                'contractWhatsapp' => $this->contractWhatsapp,
+                'fromName' => $this->fromName,
+                'hasForm' => $this->hasForm
+            ]);
+
         } catch (\Exception $e) {
             Log::error('Error filling form: ' . $e->getMessage());
         }
@@ -479,6 +501,8 @@ class Listing extends Component
         }
     }
 
+    // ... rest of the methods remain the same ...
+    
     public function confirmDelete($listingId)
     {
         $this->listingIdToDelete = decrypt($listingId);
@@ -525,9 +549,7 @@ class Listing extends Component
 
     public function removeExistingImage($type, $imageUrl)
     {
-
         if ($type === 'menu_images') {
-            // Remove from UI
             $this->existing_menu_images = collect($this->existing_menu_images)
                 ->reject(function ($image) use ($imageUrl) {
                     $url = is_array($image) ? ($image['url'] ?? $image['image'] ?? '') : $image;
@@ -536,7 +558,6 @@ class Listing extends Component
                 ->values()
                 ->all();
 
-            // Delete from backend
             if (!empty($imageUrl)) {
                 try {
                     $response = Http::withToken(api_token())
@@ -557,7 +578,6 @@ class Listing extends Component
                 }
             }
         } elseif ($type === 'sub_images') {
-            // Remove from UI
             $this->existing_sub_images = collect($this->existing_sub_images)
                 ->reject(function ($image) use ($imageUrl) {
                     $url = is_array($image) ? ($image['url'] ?? $image['image'] ?? '') : $image;
@@ -566,7 +586,6 @@ class Listing extends Component
                 ->values()
                 ->all();
 
-            // Delete from backend
             if (!empty($imageUrl)) {
                 try {
                     $response = Http::withToken(api_token())
@@ -588,7 +607,6 @@ class Listing extends Component
             }
         } elseif ($type === 'main_image') {
             $imageUrl = $this->existing_main_image;
-
             $this->existing_main_image = null;
 
             if (!empty($imageUrl)) {
@@ -660,11 +678,9 @@ class Listing extends Component
 
     public function applyFilters()
     {
-    
         $this->fetchListings(1);
     }
 
-    // Pagination methods
     public function gotoPage($page)
     {
         if ($page !== '...') {
@@ -769,43 +785,40 @@ class Listing extends Component
 
     public function render()
     {
+        $dropdowns = [
+            [
+                'name' => 'specificCategoryId',
+                'default' => 'Specific Category',
+                'options' => $this->specificCategories,
+            ]
+        ];
 
-        // Serach component datas
-            $dropdowns = [
-                [
-                    'name' => 'specificCategoryId',
-                    'default' => 'Specific Category',
-                    'options' => $this->specificCategories,
-                ]
-            ];
+        $buttons = [
+            [
+                'method' => 'applyFilters',
+                'text' => 'Filter',
+                'icon' => 'plus',
+                'id' => 'filter_button',
+            ],
+            [
+                'method' => 'switchAddListingModal',
+                'text' => 'Add Listing',
+                'icon' => 'plus',
+                'id' => 'add_listing_button',
+            ],
+        ];
 
-            $buttons = [
-                [
-                    'method' => 'applyFilters',
-                    'text' => 'Filter',
-                    'icon' => 'plus',
-                    'id' => 'filter_button',
-                ],
-                [
-                    'method' => 'switchAddListingModal',
-                    'text' => 'Add Listing',
-                    'icon' => 'plus',
-                    'id' => 'add_listing_button',
-                ],
-            ];
+        $fields = [
+            [
+                'name' => 'listing_name',
+                'placeholder' => 'Search by Name',
+            ],
+            [
+                'name' => 'location',
+                'placeholder' => 'Search by Location',
+            ],
+        ];
 
-            $fields = [
-                [
-                    'name' => 'listing_name',
-                    'placeholder' => 'Search by Name',
-                ],
-                [
-                    'name' => 'location',
-                    'placeholder' => 'Search by Location',
-                ],
-            ];
-
-        //Serach Components Data End
         $pages = $this->getPaginationPages();
         $hasPrevious = $this->currentPage > 1;
         $hasNext = $this->currentPage < ($this->pagination['pages'] ?? 1);
