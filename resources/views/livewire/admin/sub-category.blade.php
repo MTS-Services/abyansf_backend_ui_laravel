@@ -33,6 +33,21 @@
                     <form action="" wire:submit.prevent="saveSubCategory">
                         <div class="p-6 bg-white rounded-lg max-w-5xl mx-auto my-10 font-playfair">
                             <div class="mb-6">
+                                <label for="parent-categories"
+                                    class="block text-sm font-medium text-gray-700 mb-2">Parent
+                                    Categories</label>
+                                <select id="parent-categories" wire:model="main_category_id"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] ">
+                                    <option>Select your parent categories</option>
+                                    @foreach ($categories as $item)
+                                        <option value="{{ $item['id'] }}"> {{ $item['name'] }} </option>
+                                    @endforeach
+                                </select>
+                                @error('main_category_id')
+                                    <span class="text-red-500">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            <div class="mb-6">
                                 <label for="category-title"
                                     class="block text-sm font-medium text-gray-700 mb-2">Category
                                     Title</label>
@@ -60,7 +75,8 @@
 
 
                                 <div x-data="{ dragOver: false }" class="space-y-4">
-                                    <label for="category-title" class="block text-sm font-medium text-gray-700 mb-2">Hero Image</label>
+                                    <label for="category-title"
+                                        class="block text-sm font-medium text-gray-700 mb-2">Hero Image</label>
                                     <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
                                         @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
                                         @drop.prevent="dragOver = false; $wire.upload('heroImage', event.dataTransfer.files[0])"
@@ -108,7 +124,8 @@
 
 
                                 <div x-data="{ dragOver: false }" class="space-y-4">
-                                     <label for="category-title" class="block text-sm font-medium text-gray-700 mb-2">Category Image</label>
+                                    <label for="category-title"
+                                        class="block text-sm font-medium text-gray-700 mb-2">Category Image</label>
                                     <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
                                         @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
                                         @drop.prevent="dragOver = false; $wire.upload('image', event.dataTransfer.files[0])"
@@ -153,55 +170,67 @@
                             </div>
 
                             <div class="mb-6 space-y-4">
+                                <!-- hasSpecificCategory -->
                                 <div class="flex items-center justify-between">
                                     <span class="text-sm font-medium text-gray-700">hasSpecificCategory</span>
-                                    <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]"
-                                        x-data="{ on: $wire.entangle('hasSpecificCategory') }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
+                                    <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200"
+                                        x-data="{ on: $wire.entangle('hasSpecificCategory') }" @click="on = !on"
+                                        :class="on ? 'bg-[#C7AE6A]' : 'bg-gray-200'">
                                         <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
-                                            :class="{ 'translate-x-6': on, 'translate-x-0': !on }"></div>
+                                            :class="on ? 'translate-x-6' : 'translate-x-0'"></div>
                                     </div>
                                 </div>
+
+                                <!-- contactWhatsapp -->
                                 <div class="flex items-center justify-between">
                                     <span class="text-sm font-medium text-gray-700">contactWhatsapp</span>
-                                    <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]"
-                                        x-data="{ on: $wire.entangle('contactWhatsapp') }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
+                                    <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200"
+                                        x-data="{
+                                            on: $wire.entangle('contactWhatsapp'),
+                                            hasForm: $wire.entangle('hasForm'),
+                                            toggle() {
+                                                this.on = !this.on;
+                                                if (this.on) this.hasForm = false; // turn off hasForm when this is true
+                                            }
+                                        }" @click="toggle()"
+                                        :class="on ? 'bg-[#C7AE6A]' : 'bg-gray-200'">
                                         <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
-                                            :class="{ 'translate-x-6': on, 'translate-x-0': !on }"></div>
+                                            :class="on ? 'translate-x-6' : 'translate-x-0'"></div>
                                     </div>
                                 </div>
+
+                                <!-- Create Mini-Category -->
                                 <div class="flex items-center justify-between">
                                     <span class="text-sm font-medium text-gray-700">Create Mini-Category</span>
-                                    <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]"
-                                        x-data="{ on: $wire.entangle('hasMiniSubCategory') }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
+                                    <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200"
+                                        x-data="{ on: $wire.entangle('hasMiniSubCategory') }" @click="on = !on"
+                                        :class="on ? 'bg-[#C7AE6A]' : 'bg-gray-200'">
                                         <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
-                                            :class="{ 'translate-x-6': on, 'translate-x-0': !on }"></div>
+                                            :class="on ? 'translate-x-6' : 'translate-x-0'"></div>
                                     </div>
                                 </div>
+
+                                <!-- Has Form -->
                                 <div class="flex items-center justify-between">
                                     <span class="text-sm font-medium text-gray-700">Has Form</span>
-                                    <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]"
-                                        x-data="{ on: $wire.entangle('hasForm') }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
+                                    <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200"
+                                        x-data="{
+                                            on: $wire.entangle('hasForm'),
+                                            contactWhatsapp: $wire.entangle('contactWhatsapp'),
+                                            toggle() {
+                                                this.on = !this.on;
+                                                if (this.on) this.contactWhatsapp = false; // turn off contactWhatsapp when this is true
+                                            }
+                                        }" @click="toggle()"
+                                        :class="on ? 'bg-[#C7AE6A]' : 'bg-gray-200'">
                                         <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
-                                            :class="{ 'translate-x-6': on, 'translate-x-0': !on }"></div>
+                                            :class="on ? 'translate-x-6' : 'translate-x-0'"></div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="mb-6">
-                                <label for="parent-categories"
-                                    class="block text-sm font-medium text-gray-700 mb-2">Parent
-                                    Categories</label>
-                                <select id="parent-categories" wire:model="main_category_id"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] ">
-                                    <option>Select your parent categories</option>
-                                    @foreach ($categories as $item)
-                                        <option value="{{ $item['id'] }}"> {{ $item['name'] }} </option>
-                                    @endforeach
-                                </select>
-                                @error('main_category_id')
-                                    <span class="text-red-500">{{ $message }}</span>
-                                @enderror
-                            </div>
+
+
 
                             <div class="flex justify-center">
                                 <button wire:click="saveSubCategory"
@@ -265,7 +294,8 @@
 
 
                                 <div x-data="{ dragOver: false }" class="space-y-4">
-                                    <label for="category-title" class="block text-sm font-medium text-gray-700 mb-2">Hero Imagee</label>
+                                    <label for="category-title"
+                                        class="block text-sm font-medium text-gray-700 mb-2">Hero Imagee</label>
                                     <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
                                         @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
                                         @drop.prevent="dragOver = false; $wire.upload('heroImage', event.dataTransfer.files[0])"
@@ -324,7 +354,8 @@
 
 
                                 <div x-data="{ dragOver: false }" class="space-y-4">
-                                    <label for="category-title" class="block text-sm font-medium text-gray-700 mb-2">Category Image</label>
+                                    <label for="category-title"
+                                        class="block text-sm font-medium text-gray-700 mb-2">Category Image</label>
                                     <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
                                         @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
                                         @drop.prevent="dragOver = false; $wire.upload('image', event.dataTransfer.files[0])"
