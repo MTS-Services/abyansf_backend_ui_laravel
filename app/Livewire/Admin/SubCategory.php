@@ -20,7 +20,6 @@ class SubCategory extends Component
     public $subCategory = [];
     public $categories = [];
     public $editCategoryId = '';
-    // Due to use  UI component SpecificCategoryId refer to main category id.
     public $specificCategoryId = '';
 
     // Form Data
@@ -29,7 +28,6 @@ class SubCategory extends Component
     public $main_category_id = '';
     public $hasSpecificCategory = false;
     public $contactWhatsapp = false;
-
     public $hasForm = false;
     public $hasMiniSubCategory = false;
     public $fromName = '';
@@ -38,15 +36,14 @@ class SubCategory extends Component
     public $existingHeroImage;
     public $existingImage;
 
-    // End Form 
-
     public function switchAddSubCategoryModal()
     {
         $this->addSubCategoryModal = !$this->addSubCategoryModal;
-        // Close other modals when opening this one
+
         if ($this->addSubCategoryModal) {
             $this->SubCategoryDetailsModal = false;
             $this->editSubCategoryModal = false;
+            $this->resetForm(); // Reset form when opening add modal
         }
     }
 
@@ -73,7 +70,6 @@ class SubCategory extends Component
     {
         $this->currentPage = request()->query('page', 1);
         $this->fetchSubCategories($this->currentPage);
-
         $this->fetchCategories();
     }
 
@@ -81,7 +77,6 @@ class SubCategory extends Component
     {
         $this->fetchSubCategories($this->currentPage);
     }
-
 
     public function fetchCategories()
     {
@@ -94,8 +89,7 @@ class SubCategory extends Component
 
         if ($response->successful()) {
             $data = $response->json();
-
-            return  $this->categories = $data['data']['mainCategories'] ?? [];
+            return $this->categories = $data['data']['mainCategories'] ?? [];
         } else {
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to load category details.');
             Session::flash('error', 'Failed to load category details.');
@@ -104,8 +98,7 @@ class SubCategory extends Component
 
     public function saveSubCategory()
     {
-
-         $this->validate([
+        $this->validate([
             'name' => 'required',
             'description' => 'nullable',
             'main_category_id' => 'required',
@@ -123,20 +116,29 @@ class SubCategory extends Component
                 return;
             }
 
-            $payload = [
-                'name' => $this->name,
-                'mainCategoryId' => $this->main_category_id,
-                'hasSpecificCategory' => $this->hasSpecificCategory,
-                'contractWhatsapp' => $this->contactWhatsapp,
-                'hasForm' => $this->hasForm,
-                'hasMiniSubCategory' => $this->hasMiniSubCategory,
-                'description' => $this->description,
-            ];
-
-           
-
+            // Create the HTTP request with token
             $request = Http::withToken($token);
 
+            // Prepare form data - Multipart needs string "true"/"false"
+            $formData = [
+                'name' => $this->name,
+                'mainCategoryId' => $this->main_category_id,
+                'hasSpecificCategory' => $this->hasSpecificCategory ? 'true' : 'false',
+                'contactWhatsapp' => $this->contactWhatsapp ? 'true' : 'false',
+                'hasForm' => $this->hasForm ? 'true' : 'false',
+                'hasMiniSubCategory' => $this->hasMiniSubCategory ? 'true' : 'false',
+            ];
+
+            // Add description if present
+            if ($this->description) {
+                $formData['description'] = $this->description;
+            }
+
+            // Check if files exist
+            $hasFiles = ($this->heroImage && !filter_var($this->heroImage, FILTER_VALIDATE_URL)) ||
+                ($this->image && !filter_var($this->image, FILTER_VALIDATE_URL));
+
+            // Attach hero image if present
             if ($this->heroImage && !filter_var($this->heroImage, FILTER_VALIDATE_URL)) {
                 $request->attach(
                     'heroImage',
@@ -144,39 +146,44 @@ class SubCategory extends Component
                     $this->heroImage->getClientOriginalName()
                 );
             }
+
+            // Attach category image if present
             if ($this->image && !filter_var($this->image, FILTER_VALIDATE_URL)) {
                 $request->attach(
                     'image',
                     file_get_contents($this->image->getRealPath()),
                     $this->image->getClientOriginalName()
                 );
-                
             }
 
-            $response = $request->post(api_base_url() . '/categories/sub/', $payload);
-     
+            if ($hasFiles) {
+                $response = $request->post(api_base_url() . '/categories/sub/', $formData);
+            } else {
+                $response = $request->asForm()->post(api_base_url() . '/categories/sub/', $formData);
+            }
+
             if ($response->successful()) {
-                $this->dispatch('sweetalert2', type: 'success', message: 'sub category created successfully!');
+                $this->dispatch('sweetalert2', type: 'success', message: 'Sub category created successfully!');
                 $this->switchAddSubCategoryModal();
                 $this->resetForm();
                 $this->fetchSubCategories($this->currentPage);
             } else {
-                $this->dispatch('sweetalert2', type: 'error', message: 'Failed to create Sub Cateogry.');
+                $errorMessage = $response->json()['message'] ?? 'Failed to create Sub Category.';
+                Log::error('API Error:', $response->json());
+                $this->dispatch('sweetalert2', type: 'error', message: $errorMessage);
             }
         } catch (\Exception $e) {
-           Log::error('Failed to create sub category: ' . $e->getMessage());
+            Log::error('Failed to create sub category: ' . $e->getMessage());
+            Log::error('Exception trace: ' . $e->getTraceAsString());
+            $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred while creating sub category.');
         }
     }
-
     public function SubCategoryDetails($id)
     {
-
         $id = Decrypt($id);
 
-        // Close other modals before opening details
         $this->addSubCategoryModal = false;
         $this->editSubCategoryModal = false;
-
         $this->SubCategoryDetailsModal = true;
 
         $this->fetchCategoryById($id);
@@ -207,7 +214,6 @@ class SubCategory extends Component
 
         if ($response->successful()) {
             $data = $response->json();
-
             $this->subCategory = $data['data'] ?? [];
         } else {
             $this->dispatch('sweetalert2', type: 'error', message: 'Failed to load category details.');
@@ -227,6 +233,8 @@ class SubCategory extends Component
             'mainCategoryId' => $this->main_category_id,
         ]);
 
+        // REMOVED dd() - this was preventing data from displaying
+
         if ($response->successful()) {
             $data = $response->json();
             $this->subCategoreis = $data['data']['subCategories'] ?? [];
@@ -240,23 +248,16 @@ class SubCategory extends Component
         }
     }
 
-
-
-
     public function switchEditSubCategoryModal($id)
     {
-        $this->editSubCategoryModal = !$this->editSubCategoryModal;
-
         $this->editCategoryId = Decrypt($id);
 
-        if ($this->editSubCategoryModal) {
-            $this->addSubCategoryModal = false;
-            $this->SubCategoryDetailsModal = false;
-        }
-
         $this->fetchCategoryById($this->editCategoryId);
-
         $this->fillUpdateForm();
+
+        $this->editSubCategoryModal = true;
+        $this->addSubCategoryModal = false;
+        $this->SubCategoryDetailsModal = false;
     }
 
     public function closeEditModal()
@@ -267,31 +268,32 @@ class SubCategory extends Component
 
     public function fillUpdateForm()
     {
-     
         $this->name = $this->subCategory['name'] ?? '';
-        $this->hasSpecificCategory = $this->subCategory['hasSpecificCategory'] ?? false;
+        $this->hasSpecificCategory = ($this->subCategory['hasSpecificCategory'] ?? false) === true;
+        $this->contactWhatsapp = ($this->subCategory['adminWhatsApp'] ?? false) === true;
+        $this->hasForm = ($this->subCategory['hasForm'] ?? false) === true;
+        $this->hasMiniSubCategory = ($this->subCategory['hasMiniSubCategory'] ?? false) === true;
+        $this->description = $this->subCategory['description']['content'] ?? '';
+        $this->main_category_id = $this->subCategory['mainCategory']['id'] ?? '';
+
         $this->existingImage = $this->subCategory['img'] ?? null;
+        $this->existingHeroImage = $this->subCategory['heroSection']['imageUrl'] ?? null;
+
+        // Reset file inputs
         $this->image = null;
-        $this->existingHeroImage = $this->subCategory['heroSection']['imageUrl'] ?? '';
-        $this->heroImage =null;
-
-        // $this->description = $this->subCategory['description'] ?? '';
-        // $this->main_category_id = $this->subCategory['main_category_id'] ?? '';
-        // $this->hasForm = $this->subCategory['hasForm'] ?? false;
-        // $this->hasMiniSubCategory = $this->subCategory['hasMiniSubCategory'] ?? false;
-        // $this->fromName = $this->subCategory['fromName'] ?? '';
-
-
+        $this->heroImage = null;
     }
 
     public function updateSubCategory()
     {
-
         $this->validate([
             'name' => 'required',
+            'description' => 'nullable',
+            'main_category_id' => 'required',
             'heroImage' => 'nullable|image|mimes:jpeg,png,jpg',
             'image' => 'nullable|image|mimes:jpeg,png,jpg',
         ]);
+
         try {
             $token = api_token();
             if (!$token) {
@@ -301,25 +303,34 @@ class SubCategory extends Component
 
             $payload = [
                 'name' => $this->name,
-                'hasSpecificCategory' => $this->hasSpecificCategory,
+                'mainCategoryId' => $this->main_category_id,
+                'hasSpecificCategory' => $this->hasSpecificCategory ? true : false,
+                'contractWhatsapp' => $this->contactWhatsapp ? true : false,
+                'hasForm' => $this->hasForm ? true : false,
+                'hasMiniSubCategory' => $this->hasMiniSubCategory ? true : false,
+                'description' => $this->description,
             ];
 
             $request = Http::withToken($token);
 
-            if ($this->heroImage && !filter_var($this->heroImage, FILTER_VALIDATE_URL)) {
+            // Only attach new hero image if uploaded
+            if ($this->heroImage && is_object($this->heroImage)) {
                 $request->attach(
                     'heroImage',
                     file_get_contents($this->heroImage->getRealPath()),
                     $this->heroImage->getClientOriginalName()
                 );
             }
-            if ($this->image && !filter_var($this->image, FILTER_VALIDATE_URL)) {
+
+            // Only attach new category image if uploaded
+            if ($this->image && is_object($this->image)) {
                 $request->attach(
                     'image',
                     file_get_contents($this->image->getRealPath()),
                     $this->image->getClientOriginalName()
                 );
             }
+
             $response = $request->put(api_base_url() . '/categories/sub/' . $this->editCategoryId, $payload);
 
             if ($response->successful()) {
@@ -327,13 +338,13 @@ class SubCategory extends Component
                 $this->closeEditModal();
                 $this->fetchSubCategories($this->currentPage);
             } else {
-                $this->dispatch('sweetalert2', type: 'error', message: 'Failed to update Sub Cateogry.');
+                $this->dispatch('sweetalert2', type: 'error', message: 'Failed to update Sub Category.');
             }
         } catch (\Exception $e) {
-            dd('error' . $e->getMessage());
+            Log::error('Failed to update sub category: ' . $e->getMessage());
+            $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred while updating sub category.');
         }
     }
-
 
     public function getPaginationPages()
     {
@@ -393,7 +404,6 @@ class SubCategory extends Component
     public function deleteSubCategory($id): void
     {
         $id = Decrypt($id);
-
         $this->delete($id);
     }
 
@@ -411,8 +421,6 @@ class SubCategory extends Component
 
     public function render()
     {
-
-        // Serach Component
         $dropdowns = [
             [
                 'name' => 'main_category_id',
@@ -446,9 +454,7 @@ class SubCategory extends Component
                 'placeholder' => 'Search by Title',
             ],
         ];
-        // End Serach Component
 
-        // Data Table
         $columns = [
             [
                 'key' => 'name',
@@ -496,9 +502,6 @@ class SubCategory extends Component
                 'icon' => 'trash',
             ],
         ];
-        // End Data Table
-
-
 
         $pages = $this->getPaginationPages();
         $hasPrevious = $this->currentPage > 1;
@@ -508,23 +511,13 @@ class SubCategory extends Component
             'pages' => $pages,
             'hasPrevious' => $hasPrevious,
             'hasNext' => $hasNext,
-
-            'subCategory'   => $this->subCategory,
-
-            // Serach Component
+            'subCategory' => $this->subCategory,
             'dropdowns' => $dropdowns,
             'buttons' => $buttons,
             'fields' => $fields,
-            // End Serach Component
-
-            // Data Table
             'items' => $this->subCategoreis,
             'columns' => $columns,
             'actions' => $actions,
-
-            // End Data Table
-
-
         ]);
     }
 }

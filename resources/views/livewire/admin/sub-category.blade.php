@@ -30,8 +30,9 @@
                             </svg>
                         </button>
                     </div>
-                    <form action="" wire:submit.prevent="saveSubCategory">
+                    <form wire:submit.prevent="saveSubCategory">
                         <div class="p-6 bg-white rounded-lg max-w-5xl mx-auto my-10 font-playfair">
+                           
                             <div class="mb-6">
                                 <label for="parent-categories"
                                     class="block text-sm font-medium text-gray-700 mb-2">Parent
@@ -231,9 +232,9 @@
 
 
 
-
                             <div class="flex justify-center">
-                                <button wire:click="saveSubCategory"
+                                <!-- Change to type="submit" and remove wire:click -->
+                                <button type="submit"
                                     class="px-6 py-2 bg-[#C7AE6A] text-white font-medium rounded-md shadow-sm hover:bg-opacity-90 transition-colors">
                                     Save Sub Category
                                 </button>
