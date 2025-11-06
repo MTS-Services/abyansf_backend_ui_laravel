@@ -105,8 +105,9 @@ class SubCategory extends Component
             'heroImage' => 'nullable|image|mimes:jpeg,png,jpg',
             'image' => 'nullable|image|mimes:jpeg,png,jpg',
             'hasSpecificCategory' => 'nullable',
-            'contactWhatsapp'=> 'nullable',
-            'hasMiniSubCategory'=> 'nullable',
+            'contactWhatsapp' => 'nullable',
+            'hasMiniSubCategory' => 'nullable',
+            'hasForm' => 'nullable',
         ]);
 
         try {
@@ -124,7 +125,7 @@ class SubCategory extends Component
                 'name' => $this->name,
                 'mainCategoryId' => $this->main_category_id,
                 'hasSpecificCategory' => $this->hasSpecificCategory ? 'true' : 'false',
-                'contactWhatsapp' => $this->contactWhatsapp ? 'true' : 'false',
+                'contractWhatsapp' => $this->contactWhatsapp ? 'true' : 'false',
                 'hasForm' => $this->hasForm ? 'true' : 'false',
                 'hasMiniSubCategory' => $this->hasMiniSubCategory ? 'true' : 'false',
             ];
@@ -269,10 +270,21 @@ class SubCategory extends Component
     public function fillUpdateForm()
     {
         $this->name = $this->subCategory['name'] ?? '';
-        $this->hasSpecificCategory = ($this->subCategory['hasSpecificCategory'] ?? false) === true;
-        $this->contactWhatsapp = ($this->subCategory['adminWhatsApp'] ?? false) === true;
-        $this->hasForm = ($this->subCategory['hasForm'] ?? false) === true;
-        $this->hasMiniSubCategory = ($this->subCategory['hasMiniSubCategory'] ?? false) === true;
+
+        // Properly convert boolean values - handle both true boolean and string 'true'
+        $this->hasSpecificCategory = ($this->subCategory['hasSpecificCategory'] ?? false) === true ||
+            ($this->subCategory['hasSpecificCategory'] ?? '') === 'true';
+
+        // FIXED: Use 'contractWhatsapp' instead of 'adminWhatsApp'
+        $this->contactWhatsapp = ($this->subCategory['contractWhatsapp'] ?? false) === true ||
+            ($this->subCategory['contractWhatsapp'] ?? '') === 'true';
+
+        $this->hasForm = ($this->subCategory['hasForm'] ?? false) === true ||
+            ($this->subCategory['hasForm'] ?? '') === 'true';
+
+        $this->hasMiniSubCategory = ($this->subCategory['hasMiniSubCategory'] ?? false) === true ||
+            ($this->subCategory['hasMiniSubCategory'] ?? '') === 'true';
+
         $this->description = $this->subCategory['description']['content'] ?? '';
         $this->main_category_id = $this->subCategory['mainCategory']['id'] ?? '';
 
@@ -282,8 +294,16 @@ class SubCategory extends Component
         // Reset file inputs
         $this->image = null;
         $this->heroImage = null;
-    }
 
+        // Debug log to check values
+        Log::info('Fill Update Form Values:', [
+            'hasSpecificCategory' => $this->hasSpecificCategory,
+            'contactWhatsapp' => $this->contactWhatsapp,
+            'hasForm' => $this->hasForm,
+            'hasMiniSubCategory' => $this->hasMiniSubCategory,
+            'raw_contractWhatsapp' => $this->subCategory['contractWhatsapp'] ?? 'not set'
+        ]);
+    }
     public function updateSubCategory()
     {
         $this->validate([
@@ -292,6 +312,10 @@ class SubCategory extends Component
             'main_category_id' => 'required',
             'heroImage' => 'nullable|image|mimes:jpeg,png,jpg',
             'image' => 'nullable|image|mimes:jpeg,png,jpg',
+            'hasSpecificCategory' => 'nullable',
+            'contactWhatsapp' => 'nullable',
+            'hasMiniSubCategory' => 'nullable',
+            'hasForm' => 'nullable',
         ]);
 
         try {
@@ -301,19 +325,30 @@ class SubCategory extends Component
                 return;
             }
 
-            $payload = [
+            // Prepare form data - Multipart needs string "true"/"false"
+            // FIXED: Changed 'contactWhatsapp' to 'contractWhatsapp'
+            $formData = [
                 'name' => $this->name,
                 'mainCategoryId' => $this->main_category_id,
-                'hasSpecificCategory' => $this->hasSpecificCategory ? true : false,
-                'contractWhatsapp' => $this->contactWhatsapp ? true : false,
-                'hasForm' => $this->hasForm ? true : false,
-                'hasMiniSubCategory' => $this->hasMiniSubCategory ? true : false,
-                'description' => $this->description,
+                'hasSpecificCategory' => $this->hasSpecificCategory ? 'true' : 'false',
+                'contractWhatsapp' => $this->contactWhatsapp ? 'true' : 'false',
+                'hasForm' => $this->hasForm ? 'true' : 'false',
+                'hasMiniSubCategory' => $this->hasMiniSubCategory ? 'true' : 'false',
             ];
 
+            // Add description if present
+            if ($this->description) {
+                $formData['description'] = $this->description;
+            }
+
+            // Create the HTTP request with token
             $request = Http::withToken($token);
 
-            // Only attach new hero image if uploaded
+            // Check if new files exist
+            $hasNewFiles = ($this->heroImage && is_object($this->heroImage)) ||
+                ($this->image && is_object($this->image));
+
+            // Attach new hero image if uploaded
             if ($this->heroImage && is_object($this->heroImage)) {
                 $request->attach(
                     'heroImage',
@@ -322,7 +357,7 @@ class SubCategory extends Component
                 );
             }
 
-            // Only attach new category image if uploaded
+            // Attach new category image if uploaded
             if ($this->image && is_object($this->image)) {
                 $request->attach(
                     'image',
@@ -331,17 +366,25 @@ class SubCategory extends Component
                 );
             }
 
-            $response = $request->put(api_base_url() . '/categories/sub/' . $this->editCategoryId, $payload);
+            // Send request based on whether files are attached
+            if ($hasNewFiles) {
+                $response = $request->put(api_base_url() . '/categories/sub/' . $this->editCategoryId, $formData);
+            } else {
+                $response = $request->asForm()->put(api_base_url() . '/categories/sub/' . $this->editCategoryId, $formData);
+            }
 
             if ($response->successful()) {
-                $this->dispatch('sweetalert2', type: 'success', message: 'Category updated successfully!');
+                $this->dispatch('sweetalert2', type: 'success', message: 'Sub Category updated successfully!');
                 $this->closeEditModal();
                 $this->fetchSubCategories($this->currentPage);
             } else {
-                $this->dispatch('sweetalert2', type: 'error', message: 'Failed to update Sub Category.');
+                $errorMessage = $response->json()['message'] ?? 'Failed to update Sub Category.';
+                Log::error('API Error:', $response->json());
+                $this->dispatch('sweetalert2', type: 'error', message: $errorMessage);
             }
         } catch (\Exception $e) {
             Log::error('Failed to update sub category: ' . $e->getMessage());
+            Log::error('Exception trace: ' . $e->getTraceAsString());
             $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred while updating sub category.');
         }
     }

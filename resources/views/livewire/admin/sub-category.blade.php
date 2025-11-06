@@ -32,7 +32,7 @@
                     </div>
                     <form wire:submit.prevent="saveSubCategory">
                         <div class="p-6 bg-white rounded-lg max-w-5xl mx-auto my-10 font-playfair">
-                           
+
                             <div class="mb-6">
                                 <label for="parent-categories"
                                     class="block text-sm font-medium text-gray-700 mb-2">Parent
@@ -246,9 +246,7 @@
         </div>
     </div>
 
-
-    {{-- Edit Category Modal --}}
-
+    {{-- Edit Sub Category Modal --}}
     <div x-data="{ show: @entangle('editSubCategoryModal') }" x-show="show" x-cloak
         x-effect="document.body.classList.toggle('overflow-hidden', show)" x-transition.opacity>
         <div class="fixed max-auto inset-0 z-50 overflow-y-auto bg-black/70 bg-opacity-50">
@@ -263,7 +261,7 @@
 
                     <div class="flex justify-between items-center pb-3">
                         <h3 class="text-xl font-semibold text-gray-900">Edit Sub Category</h3>
-                        <button wire:click="closeAddModal"
+                        <button wire:click="closeEditModal"
                             class="text-gray-400 hover:text-gray-600 focus:outline-none">
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -271,14 +269,34 @@
                             </svg>
                         </button>
                     </div>
-                    <form wire:submit.prevent="updateSubCategory">
 
+                    <form wire:submit.prevent="updateSubCategory">
                         <div class="p-6 bg-white rounded-lg max-w-5xl mx-auto my-10 font-playfair">
+
+                            <!-- Parent Categories -->
                             <div class="mb-6">
-                                <label for="category-title" class="block text-sm font-medium text-gray-700 mb-2">Edit
-                                    Category
-                                    Title</label>
-                                <input wire:model="name" type="text" id="category-title"
+                                <label for="edit-parent-categories"
+                                    class="block text-sm font-medium text-gray-700 mb-2">
+                                    Parent Categories
+                                </label>
+                                <select id="edit-parent-categories" wire:model="main_category_id"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
+                                    <option value="">Select your parent categories</option>
+                                    @foreach ($categories as $item)
+                                        <option value="{{ $item['id'] }}">{{ $item['name'] }}</option>
+                                    @endforeach
+                                </select>
+                                @error('main_category_id')
+                                    <span class="text-red-500">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <!-- Category Title -->
+                            <div class="mb-6">
+                                <label for="edit-category-title" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Category Title
+                                </label>
+                                <input wire:model="name" type="text" id="edit-category-title"
                                     placeholder="Enter your title here"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
                                 @error('name')
@@ -286,33 +304,39 @@
                                 @enderror
                             </div>
 
-
+                            <!-- Category Description -->
+                            <div class="mb-6">
+                                <label for="edit-category-description"
+                                    class="block text-sm font-medium text-gray-700 mb-2">
+                                    Category Description
+                                </label>
+                                <textarea wire:model="description" id="edit-category-description" rows="4"
+                                    placeholder="Enter your description here"
+                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] resize-none"></textarea>
+                                @error('description')
+                                    <span class="text-red-500">{{ $message }}</span>
+                                @enderror
+                            </div>
 
                             <div class="mb-6 space-y-4">
-
-
-                                {{-- Herro Image --}}
-
-
+                                {{-- Hero Image --}}
                                 <div x-data="{ dragOver: false }" class="space-y-4">
-                                    <label for="category-title"
-                                        class="block text-sm font-medium text-gray-700 mb-2">Hero Imagee</label>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Hero Image</label>
                                     <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
                                         @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
                                         @drop.prevent="dragOver = false; $wire.upload('heroImage', event.dataTransfer.files[0])"
-                                        @click="$refs.fileInputs.click()"
+                                        @click="$refs.editHeroImageInput.click()"
                                         :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
 
-                                        <input wire:model="heroImage" type="file" x-ref="fileInputs"
+                                        <input wire:model="heroImage" type="file" x-ref="editHeroImageInput"
                                             class="hidden" accept="image/*">
 
                                         @if ($heroImage)
                                             <div class="relative w-full h-full">
                                                 <img src="{{ $heroImage->temporaryUrl() }}"
                                                     class="w-full h-full object-cover rounded-md" alt="Preview">
-
                                                 <button type="button"
-                                                    @click.stop="$wire.set('image', null); $refs.fileInput.value = '';"
+                                                    @click.stop="$wire.set('heroImage', null); $refs.editHeroImageInput.value = '';"
                                                     class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">
                                                     &times;
                                                 </button>
@@ -321,9 +345,8 @@
                                             <div class="relative w-full h-full">
                                                 <img src="{{ $existingHeroImage }}"
                                                     class="w-full h-full object-cover rounded-md" alt="Current Image">
-
                                                 <button type="button"
-                                                    @click.stop="$wire.set('existingHeroImage', null); $refs.fileInput.click();"
+                                                    @click.stop="$wire.set('existingHeroImage', null); $refs.editHeroImageInput.click();"
                                                     class="absolute top-2 right-2 bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">
                                                     Change
                                                 </button>
@@ -350,29 +373,24 @@
                                     </div>
                                 </div>
 
-
                                 {{-- Category Image --}}
-
-
                                 <div x-data="{ dragOver: false }" class="space-y-4">
-                                    <label for="category-title"
-                                        class="block text-sm font-medium text-gray-700 mb-2">Category Image</label>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Category Image</label>
                                     <div class="h-56 sm:h-72 md:h-[457px] rounded-lg flex flex-col items-center justify-center transition-colors cursor-pointer relative border-4 border-dashed border-[#C7AE6A] p-4"
                                         @dragover.prevent="dragOver = true" @dragleave.prevent="dragOver = false"
                                         @drop.prevent="dragOver = false; $wire.upload('image', event.dataTransfer.files[0])"
-                                        @click="$refs.fileInput.click()"
+                                        @click="$refs.editImageInput.click()"
                                         :class="{ 'border-blue-500': dragOver, 'border-[#C7AE6A]': !dragOver }">
 
-                                        <input wire:model="image" type="file" x-ref="fileInput" class="hidden"
-                                            accept="image/*">
+                                        <input wire:model="image" type="file" x-ref="editImageInput"
+                                            class="hidden" accept="image/*">
 
                                         @if ($image)
                                             <div class="relative w-full h-full">
                                                 <img src="{{ $image->temporaryUrl() }}"
                                                     class="w-full h-full object-cover rounded-md" alt="Preview">
-
                                                 <button type="button"
-                                                    @click.stop="$wire.set('image', null); $refs.fileInput.value = '';"
+                                                    @click.stop="$wire.set('image', null); $refs.editImageInput.value = '';"
                                                     class="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">
                                                     &times;
                                                 </button>
@@ -381,9 +399,8 @@
                                             <div class="relative w-full h-full">
                                                 <img src="{{ $existingImage }}"
                                                     class="w-full h-full object-cover rounded-md" alt="Current Image">
-
                                                 <button type="button"
-                                                    @click.stop="$wire.set('existingImage', null); $refs.fileInput.click();"
+                                                    @click.stop="$wire.set('existingImage', null); $refs.editImageInput.click();"
                                                     class="absolute top-2 right-2 bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-sm font-bold opacity-75 hover:opacity-100 transition-opacity">
                                                     Change
                                                 </button>
@@ -409,28 +426,67 @@
                                         @endif
                                     </div>
                                 </div>
-
                             </div>
 
-                            <div class="mb-6 space-y-4">
+                            <!-- Toggle Switches -->
+                            <div class="mb-6 space-y-4" x-data="{
+                                hasSpecificCategory: $wire.entangle('hasSpecificCategory'),
+                                contactWhatsapp: $wire.entangle('contactWhatsapp'),
+                                hasForm: $wire.entangle('hasForm'),
+                                hasMiniSubCategory: $wire.entangle('hasMiniSubCategory')
+                            }">
+                                <!-- hasSpecificCategory -->
                                 <div class="flex items-center justify-between">
                                     <span class="text-sm font-medium text-gray-700">hasSpecificCategory</span>
-                                    <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200 bg-[#C7AE6A]"
-                                        x-data="{ on: $wire.entangle('hasSpecificCategory') }" @click="on = !on" :class="{ 'bg-gray-200': !on }">
+                                    <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200"
+                                        @click="hasSpecificCategory = !hasSpecificCategory"
+                                        :class="hasSpecificCategory ? 'bg-[#C7AE6A]' : 'bg-gray-200'">
                                         <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
-                                            :class="{ 'translate-x-6': on, 'translate-x-0': !on }"></div>
+                                            :class="hasSpecificCategory ? 'translate-x-6' : 'translate-x-0'"></div>
+                                    </div>
+                                </div>
+
+                                <!-- contactWhatsapp -->
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-medium text-gray-700">contactWhatsapp</span>
+                                    <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200"
+                                        @click="contactWhatsapp = !contactWhatsapp; if(contactWhatsapp) hasForm = false;"
+                                        :class="contactWhatsapp ? 'bg-[#C7AE6A]' : 'bg-gray-200'">
+                                        <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
+                                            :class="contactWhatsapp ? 'translate-x-6' : 'translate-x-0'"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Create Mini-Category -->
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-medium text-gray-700">Create Mini-Category</span>
+                                    <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200"
+                                        @click="hasMiniSubCategory = !hasMiniSubCategory"
+                                        :class="hasMiniSubCategory ? 'bg-[#C7AE6A]' : 'bg-gray-200'">
+                                        <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
+                                            :class="hasMiniSubCategory ? 'translate-x-6' : 'translate-x-0'"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Has Form -->
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm font-medium text-gray-700">Has Form</span>
+                                    <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200"
+                                        @click="hasForm = !hasForm; if(hasForm) contactWhatsapp = false;"
+                                        :class="hasForm ? 'bg-[#C7AE6A]' : 'bg-gray-200'">
+                                        <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
+                                            :class="hasForm ? 'translate-x-6' : 'translate-x-0'"></div>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="flex justify-center">
-                                <button wire:click="updateSubCategory"
+                                <button type="submit"
                                     class="px-6 py-2 bg-[#C7AE6A] text-white font-medium rounded-md shadow-sm hover:bg-opacity-90 transition-colors">
                                     Update Sub Category
                                 </button>
                             </div>
                         </div>
-
                     </form>
                 </div>
             </div>
