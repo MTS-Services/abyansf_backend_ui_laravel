@@ -192,13 +192,19 @@
 
                             <div class="mb-6">
                                 <label for="edit-parent-categories" class="block text-sm font-medium text-gray-700 mb-2">Sub Categories</label>
-                                <select id="edit-parent-categories" wire:model="subCategoryId"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
-                                    <option value="">Select your sub category</option>
-                                    @foreach ($subCategories as $item)
-                                        <option value="{{ $item['id'] }}">{{ $item['name'] }}</option>
-                                    @endforeach
-                                </select>
+                                @if(count($subCategories) > 0)
+                                    <select id="edit-parent-categories" wire:model="subCategoryId"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A]">
+                                        <option value="">Select your sub category</option>
+                                        @foreach ($subCategories as $item)
+                                            <option value="{{ $item['id'] }}">{{ $item['name'] }}</option>
+                                        @endforeach
+                                    </select>
+                                @else
+                                    <div class="w-full px-4 py-2 border border-gray-300 rounded-md bg-gray-50">
+                                        <p class="text-gray-500">Loading subcategories...</p>
+                                    </div>
+                                @endif
                                 @error('subCategoryId')
                                     <span class="text-red-500 text-sm">{{ $message }}</span>
                                 @enderror
@@ -423,7 +429,6 @@
         </div>
     </div>
     {{-- Details Modal End --}}
-
     <!-- Pagination -->
     @if (!empty($pagination) && ($pagination['pages'] ?? 1) > 1)
         <div

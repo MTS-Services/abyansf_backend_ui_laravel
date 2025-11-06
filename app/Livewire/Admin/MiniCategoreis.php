@@ -187,8 +187,13 @@ class MiniCategoreis extends Component
         $this->resetForm();
         $id = Decrypt($id);
         $this->editMiniSubCategoryId = $id;
-        $this->fetchMiniSubCategoryById($this->editMiniSubCategoryId);
+        
+        // প্রথমে subcategories fetch করুন
         $this->fetchSubCategoreis();
+        
+        // তারপর mini subcategory details fetch করুন
+        $this->fetchMiniSubCategoryById($this->editMiniSubCategoryId);
+        
         $this->openEditModal();
     }
 
@@ -207,7 +212,8 @@ class MiniCategoreis extends Component
     {
         $this->editMiniSubCategoryModal = false;
         $this->resetForm();
-        $this->subCategories = [];
+        // subCategories reset করবেন না যাতে পরবর্তীতে আবার fetch করতে না হয়
+        // $this->subCategories = [];
     }
 
     public function updateMiniCategory()
@@ -319,7 +325,10 @@ class MiniCategoreis extends Component
             ($this->miniSubCategory['hasForm'] ?? '') === 'true';
 
         $this->fromName = $this->miniSubCategory['fromName'] ?? null;
-        $this->subCategoryId = $this->miniSubCategory['subCategory']['id'] ?? null;
+        
+        // Fix: Get subCategoryId from the nested structure
+        $this->subCategoryId = $this->miniSubCategory['subCategory']['id'] ?? 
+                               $this->miniSubCategory['subCategoryId'] ?? null;
         
         // Set existing image URL for display - check img field from API
         $this->existingImage = $this->miniSubCategory['img'] ?? null;
@@ -335,7 +344,7 @@ class MiniCategoreis extends Component
             'fromName' => $this->fromName,
             'subCategoryId' => $this->subCategoryId,
             'existingImage' => $this->existingImage,
-            'raw_img' => $this->miniSubCategory['img'] ?? 'not found',
+            'miniSubCategory_structure' => $this->miniSubCategory,
         ]);
     }
     
@@ -359,6 +368,11 @@ class MiniCategoreis extends Component
             if ($response->successful()) {
                 $data = $response->json();
                 $this->subCategories = $data['data']['subCategories'] ?? [];
+                
+                Log::info('Sub Categories Fetched:', [
+                    'count' => count($this->subCategories),
+                    'data' => $this->subCategories
+                ]);
             } else {
                 $this->dispatch('sweetalert2', type: 'error', message: 'Failed to load subcategories.');
                 Session::flash('error', 'Failed to load subcategories.');
