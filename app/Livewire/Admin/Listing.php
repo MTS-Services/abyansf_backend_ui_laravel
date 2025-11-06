@@ -266,7 +266,7 @@ class Listing extends Component
         $rules = [
             'specificCategoryId' => 'required|integer',
             'name' => 'required|string|max:255',
-            'location' => 'required|string|max:255',
+            'location' => 'nullable|string|max:255',
             'description' => 'nullable|string',
             'hours' => 'nullable|string',
             'contractWhatsapp' => 'required|in:true,false',
