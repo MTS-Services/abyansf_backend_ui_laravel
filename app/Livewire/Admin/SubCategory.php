@@ -105,12 +105,15 @@ class SubCategory extends Component
     public function saveSubCategory()
     {
 
-        $this->validate([
+         $this->validate([
             'name' => 'required',
             'description' => 'nullable',
             'main_category_id' => 'required',
             'heroImage' => 'nullable|image|mimes:jpeg,png,jpg',
             'image' => 'nullable|image|mimes:jpeg,png,jpg',
+            'hasSpecificCategory' => 'nullable',
+            'contactWhatsapp'=> 'nullable',
+            'hasMiniSubCategory'=> 'nullable',
         ]);
 
         try {
