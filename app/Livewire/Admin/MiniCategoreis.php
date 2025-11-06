@@ -33,28 +33,32 @@ class MiniCategoreis extends Component
 
 
     // Form Data
-
     public $name = null;
     public $subCategoryId = null;
-    public $hasForm = null;
+    public $contactWhatsapp = false;
+    public $hasForm = false;
     public $fromName = null;
-    public  $image = null;
+    public $image = null;
     public $existingImage = null;
     // End Form Data
 
     public function resetForm()
     {
-
-        $this->reset(
+        $this->reset([
             'name',
             'subCategoryId',
+            'contactWhatsapp',
             'hasForm',
             'fromName',
             'image',
-            'subCategories',
-            'existingImage'
-        );
+            'existingImage',
+            'editMiniSubCategoryId'
+        ]);
+        
+        // Reset validation errors
+        $this->resetValidation();
     }
+
     public function mount()
     {
         $this->fetchMiniSubCategories();
@@ -62,14 +66,12 @@ class MiniCategoreis extends Component
 
     public function fetchMiniSubCategories($page = 1)
     {
-
         $token = session()->get('api_token');
         if (!$token) {
             return $this->redirectRoute('login', navigate: true);
         }
 
         try {
-
             $response = Http::withToken($token)->get(api_base_url() . '/categories/mini-sub', [
                 'page' => $page,
             ]);
@@ -86,57 +88,72 @@ class MiniCategoreis extends Component
                 Session::flash('error', 'Failed to load mini subcategories.');
             }
         } catch (\Throwable $th) {
-
             Log::error('Mini Sub Categories Fetching Error: ' . $th->getMessage());
         }
     }
 
     public function switchDetailModal()
     {
-
         $this->MiniSubCategoryDetailsModal = !$this->MiniSubCategoryDetailsModal;
     }
 
     public function switchAddCategoryModal()
     {
+        if ($this->addMiniSubCategoryModal) {
+            // Modal is about to close, reset the form
+            $this->resetForm();
+            $this->subCategories = [];
+        }
 
         $this->addMiniSubCategoryModal = !$this->addMiniSubCategoryModal;
-        $this->fetchSubCategoreis();
-    }
 
+        if ($this->addMiniSubCategoryModal) {
+            // Modal is opening, fetch subcategories
+            $this->fetchSubCategoreis();
+        }
+    }
 
     public function closeAddModal()
     {
-
         $this->addMiniSubCategoryModal = false;
-
         $this->resetForm();
+        $this->subCategories = [];
     }
-
 
     public function SaveMiniCategory()
     {
-        $this->validate(
-            [
-                'name' => 'required',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg',
+        // Validate form data
+        try {
+            $this->validate([
+                'name' => 'required|string|max:255',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
                 'subCategoryId' => 'required',
-            ]
-        );
-
+                'contactWhatsapp' => 'nullable|boolean',
+                'hasForm' => 'nullable|boolean',
+                'fromName' => 'nullable|string|max:255',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Keep modal open on validation error
+            throw $e;
+        }
 
         try {
             $token = api_token();
             if (!$token) {
                 return $this->redirectRoute('login', navigate: true);
             }
+
             $payload = [
                 'name' => $this->name,
                 'subCategoryId' => $this->subCategoryId,
-                'hasForm' => $this->hasForm
+                'contractWhatsapp' => $this->contactWhatsapp ? 'true' : 'false',
+                'hasForm' => $this->hasForm ? 'true' : 'false',
             ];
 
-            if ($this->hasForm) $payload['fromName'] = $this->fromName;
+            // Only add fromName if hasForm is true
+            if ($this->hasForm && $this->fromName) {
+                $payload['fromName'] = $this->fromName;
+            }
 
             $request = Http::withToken($token);
 
@@ -151,77 +168,87 @@ class MiniCategoreis extends Component
             $response = $request->post(api_base_url() . '/categories/mini-sub/', $payload);
 
             if ($response->successful()) {
-
                 $this->closeAddModal();
                 $this->fetchMiniSubCategories();
                 $this->dispatch('sweetalert2', type: 'success', message: 'Mini Sub Category created successfully.');
             } else {
-                $this->dispatch('sweetalert2', type: 'error', message: 'Failed to create Mini Sub Category.');
-                // Log::error('Mini Sub Category Update Error: ' . $response->body());
+                $errorMessage = $response->json()['message'] ?? 'Failed to create Mini Sub Category.';
+                Log::error('Mini Sub Category Create Error:', $response->json());
+                $this->dispatch('sweetalert2', type: 'error', message: $errorMessage);
             }
         } catch (\Throwable $th) {
             Log::error('Mini Sub Category create Error: ' . $th->getMessage());
+            $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred while creating mini category.');
         }
     }
+
     public function switchEditMiniSubCategoryModal($id)
     {
-
-        $this->openEditModal();
-
+        $this->resetForm();
         $id = Decrypt($id);
-
         $this->editMiniSubCategoryId = $id;
-
         $this->fetchMiniSubCategoryById($this->editMiniSubCategoryId);
-
         $this->fetchSubCategoreis();
+        $this->openEditModal();
     }
+
     public function closeDetailModal()
     {
-        $this->switchDetailModal();
+        $this->MiniSubCategoryDetailsModal = false;
         $this->miniSubCategory = [];
     }
 
     public function openEditModal()
     {
-
-        $this->editMiniSubCategoryModal = !$this->editMiniSubCategoryModal;
+        $this->editMiniSubCategoryModal = true;
     }
+
     public function closeEditModal()
     {
-
+        $this->editMiniSubCategoryModal = false;
         $this->resetForm();
-        $this->openEditModal();
+        $this->subCategories = [];
     }
 
     public function updateMiniCategory()
     {
-
-        $this->validate(
-            [
-                'name' => 'required',
-                'image' => 'nullable|image|mimes:jpeg,png,jpg',
+        // Validate form data
+        try {
+            $this->validate([
+                'name' => 'required|string|max:255',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
                 'subCategoryId' => 'required',
-            ]
-        );
-
+                'contactWhatsapp' => 'nullable|boolean',
+                'hasForm' => 'nullable|boolean',
+                'fromName' => 'nullable|string|max:255',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Keep modal open on validation error
+            throw $e;
+        }
 
         try {
             $token = api_token();
             if (!$token) {
                 return $this->redirectRoute('login', navigate: true);
             }
+
             $payload = [
                 'name' => $this->name,
                 'subCategoryId' => $this->subCategoryId,
-                'hasForm' => $this->hasForm
+                'contractWhatsapp' => $this->contactWhatsapp ? 'true' : 'false',
+                'hasForm' => $this->hasForm ? 'true' : 'false',
             ];
 
-            if ($this->hasForm) $payload['fromName'] = $this->fromName;
+            // Only add fromName if hasForm is true
+            if ($this->hasForm && $this->fromName) {
+                $payload['fromName'] = $this->fromName;
+            }
 
             $request = Http::withToken($token);
 
-            if ($this->image && !filter_var($this->image, FILTER_VALIDATE_URL)) {
+            // Only attach new image if user uploaded one
+            if ($this->image && is_object($this->image)) {
                 $request->attach(
                     'image',
                     file_get_contents($this->image->getRealPath()),
@@ -232,39 +259,34 @@ class MiniCategoreis extends Component
             $response = $request->put(api_base_url() . '/categories/mini-sub/' . $this->editMiniSubCategoryId, $payload);
 
             if ($response->successful()) {
-
                 $this->closeEditModal();
                 $this->fetchMiniSubCategories();
                 $this->dispatch('sweetalert2', type: 'success', message: 'Mini Sub Category updated successfully.');
             } else {
-                $this->dispatch('sweetalert2', type: 'error', message: 'Failed to update Mini Sub Category.');
-                // Log::error('Mini Sub Category Update Error: ' . $response->body());
+                $errorMessage = $response->json()['message'] ?? 'Failed to update Mini Sub Category.';
+                Log::error('Mini Sub Category Update Error:', $response->json());
+                $this->dispatch('sweetalert2', type: 'error', message: $errorMessage);
             }
         } catch (\Throwable $th) {
             Log::error('Mini Sub Category Update Error: ' . $th->getMessage());
+            $this->dispatch('sweetalert2', type: 'error', message: 'An error occurred while updating mini category.');
         }
     }
 
     public function MiniCategoryDetail($id)
     {
-
         $this->switchDetailModal();
-
         $id = Decrypt($id);
-
         $this->fetchMiniSubCategoryById($id);
     }
 
-
     public function deleteMiniSubCategory($id)
     {
-
         $this->delete(decrypt($id));
     }
 
     public function delete($id)
     {
-
         try {
             $token = api_token();
 
@@ -284,75 +306,96 @@ class MiniCategoreis extends Component
             Log::error('Delete Mini Sub Category Error: ' . $th->getMessage());
         }
     }
+
     public function fillForm()
     {
-
         $this->name = $this->miniSubCategory['name'] ?? null;
-        $this->hasForm = $this->miniSubCategory['hasForm'] ?? null;
+
+        // Properly convert boolean values
+        $this->contactWhatsapp = ($this->miniSubCategory['contractWhatsapp'] ?? false) === true ||
+            ($this->miniSubCategory['contractWhatsapp'] ?? '') === 'true';
+
+        $this->hasForm = ($this->miniSubCategory['hasForm'] ?? false) === true ||
+            ($this->miniSubCategory['hasForm'] ?? '') === 'true';
+
         $this->fromName = $this->miniSubCategory['fromName'] ?? null;
         $this->subCategoryId = $this->miniSubCategory['subCategory']['id'] ?? null;
+        
+        // Set existing image URL for display - check img field from API
         $this->existingImage = $this->miniSubCategory['img'] ?? null;
+        
+        // Clear any new image upload
         $this->image = null;
+
+        // Debug log to check what we're getting
+        Log::info('Fill Form Values:', [
+            'name' => $this->name,
+            'contactWhatsapp' => $this->contactWhatsapp,
+            'hasForm' => $this->hasForm,
+            'fromName' => $this->fromName,
+            'subCategoryId' => $this->subCategoryId,
+            'existingImage' => $this->existingImage,
+            'raw_img' => $this->miniSubCategory['img'] ?? 'not found',
+        ]);
+    }
+    
+    public function removeExistingImage()
+    {
+        $this->existingImage = null;
     }
 
-    public function fetchSubCategoreis($limit =100)
+    public function fetchSubCategoreis($limit = 100)
     {
-
         $token = session()->get('api_token');
         if (!$token) {
             return $this->redirectRoute('login', navigate: true);
         }
 
         try {
-
-            $response  = Http::withToken($token)->get(api_base_url() . '/categories/sub', [
+            $response = Http::withToken($token)->get(api_base_url() . '/categories/sub', [
                 'limit' => $limit,
             ]);
 
             if ($response->successful()) {
-
                 $data = $response->json();
-
                 $this->subCategories = $data['data']['subCategories'] ?? [];
             } else {
-                $this->switchDetailModal();
-                $this->dispatch('sweetalert2', type: 'error', message: 'Failed to load mini subcategories.');
-                Session::flash('error', 'Failed to load mini subcategories.');
+                $this->dispatch('sweetalert2', type: 'error', message: 'Failed to load subcategories.');
+                Session::flash('error', 'Failed to load subcategories.');
             }
         } catch (\Throwable $th) {
-
-            Log::error('Fetching Mini Sub Categoriy by Id Error: ' . $th->getMessage());
+            Log::error('Fetching Sub Categories Error: ' . $th->getMessage());
         }
     }
+
     public function fetchMiniSubCategoryById($id)
     {
-
         $token = session()->get('api_token');
         if (!$token) {
             return $this->redirectRoute('login', navigate: true);
         }
 
         try {
-
-            $response  = Http::withToken($token)->get(api_base_url() . '/categories/mini-sub/' . $id);
+            $response = Http::withToken($token)->get(api_base_url() . '/categories/mini-sub/' . $id);
 
             if ($response->successful()) {
-
                 $data = $response->json();
-
                 $this->miniSubCategory = $data['data'] ?? [];
-
-                $this->fillForm($this->miniSubCategory);
+                $this->fillForm();
             } else {
-                $this->switchDetailModal();
-                $this->dispatch('sweetalert2', type: 'error', message: 'Failed to load mini subcategories.');
-                Session::flash('error', 'Failed to load mini subcategories.');
+                if ($this->editMiniSubCategoryModal) {
+                    $this->closeEditModal();
+                } else {
+                    $this->switchDetailModal();
+                }
+                $this->dispatch('sweetalert2', type: 'error', message: 'Failed to load mini subcategory details.');
+                Session::flash('error', 'Failed to load mini subcategory details.');
             }
         } catch (\Throwable $th) {
-
-            Log::error('Fetching Mini Sub Categoriy by Id Error: ' . $th->getMessage());
+            Log::error('Fetching Mini Sub Category by Id Error: ' . $th->getMessage());
         }
     }
+
     public function getPaginationPages()
     {
         $pages = [];
@@ -391,20 +434,23 @@ class MiniCategoreis extends Component
 
     public function nextPage()
     {
-        $this->currentPage = $this->currentPage + 1;
-        $this->fetchMiniSubCategories($this->currentPage);
+        if ($this->currentPage < ($this->pagination['pages'] ?? 1)) {
+            $this->fetchMiniSubCategories($this->currentPage + 1);
+        }
     }
+
     public function previousPage()
     {
-        $this->currentPage = $this->currentPage + 1;
-        $this->fetchMiniSubCategories($this->currentPage);
+        if ($this->currentPage > 1) {
+            $this->fetchMiniSubCategories($this->currentPage - 1);
+        }
     }
 
     public function gotoPage($page)
     {
-        $this->currentPage = $page;
-        $this->fetchMiniSubCategories($this->currentPage);
+        $this->fetchMiniSubCategories($page);
     }
+
     public function render()
     {
         // Data Table
@@ -446,20 +492,14 @@ class MiniCategoreis extends Component
             ],
         ];
 
-
         $pages = $this->getPaginationPages();
         $hasPrevious = $this->currentPage > 1;
         $hasNext = $this->currentPage < ($this->pagination['pages'] ?? 1);
-
-
 
         return view('livewire.admin.mini-categoreis', [
             'pages' => $pages,
             'hasPrevious' => $hasPrevious,
             'hasNext' => $hasNext,
-
-            // DataTable
-
             'items' => $this->miniSubCategoreis,
             'columns' => $columns,
             'actions' => $actions
