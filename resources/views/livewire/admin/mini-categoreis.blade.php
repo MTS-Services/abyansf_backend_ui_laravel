@@ -414,6 +414,30 @@
                             {{ $miniSubCategory['description']['section'] ?? 'No description available' }}</p>
                     </div> --}}
 
+                    
+                    <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                        <label class="text-xs text-gray-500 font-medium mb-1">Has Form</label>
+
+                        <p class="text-gray-800">
+                            @if (isset($miniSubCategory['hasForm']))
+                                {{ $miniSubCategory['hasForm'] ? 'Enabled' : 'Disabled' }}
+                            @else
+                                N/A
+                            @endif
+                        </p>
+                    </div>
+
+                    <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
+                        <label class="text-xs text-gray-500 font-medium mb-1">Form Name</label>
+                        <p class="text-gray-800">
+                            @if (isset($miniSubCategory['fromName']))
+                                {{ $miniSubCategory['fromName'] }}
+                            @else
+                                N/A
+                            @endif
+                        </p>
+                    </div>
+
                     <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
                         <label class="text-xs text-gray-500 font-medium mb-1">Has Specific Category</label>
                         <p class="text-gray-800">
