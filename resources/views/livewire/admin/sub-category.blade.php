@@ -588,6 +588,7 @@
                         </p>
                     </div>
 
+
                     <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
                         <label class="text-xs text-gray-500 font-medium mb-1">Created at</label>
                         <p class="text-gray-800">
