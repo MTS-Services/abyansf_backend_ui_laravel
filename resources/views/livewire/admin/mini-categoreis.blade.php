@@ -417,9 +417,10 @@
                     
                     <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
                         <label class="text-xs text-gray-500 font-medium mb-1">Has Form</label>
+
                         <p class="text-gray-800">
-                            @if (isset($subCategory['hasForm']))
-                                {{ $subCategory['hasForm'] ? 'Enabled' : 'Disabled' }}
+                            @if (isset($miniSubCategory['hasForm']))
+                                {{ $miniSubCategory['hasForm'] ? 'Enabled' : 'Disabled' }}
                             @else
                                 N/A
                             @endif
@@ -429,8 +430,8 @@
                     <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
                         <label class="text-xs text-gray-500 font-medium mb-1">Form Name</label>
                         <p class="text-gray-800">
-                            @if (isset($subCategory['fromName']))
-                                {{ $subCategory['fromName'] }}
+                            @if (isset($miniSubCategory['fromName']))
+                                {{ $miniSubCategory['fromName'] }}
                             @else
                                 N/A
                             @endif
