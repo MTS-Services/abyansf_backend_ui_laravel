@@ -40,6 +40,8 @@ class MiniCategoreis extends Component
     public $fromName = null;
     public $image = null;
     public $existingImage = null;
+    public $description = null;
+    public $hasSpecificCategory = false;
     // End Form Data
 
     public function resetForm()
@@ -52,7 +54,9 @@ class MiniCategoreis extends Component
             'fromName',
             'image',
             'existingImage',
-            'editMiniSubCategoryId'
+            'editMiniSubCategoryId',
+            'description',
+            'hasSpecificCategory',
         ]);
         
         // Reset validation errors
@@ -131,6 +135,8 @@ class MiniCategoreis extends Component
                 'contactWhatsapp' => 'nullable|boolean',
                 'hasForm' => 'nullable|boolean',
                 'fromName' => 'nullable|string|max:255',
+                'description' => 'nullable|string',
+                'hasSpecificCategory' => 'nullable|boolean',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Keep modal open on validation error
@@ -148,6 +154,8 @@ class MiniCategoreis extends Component
                 'subCategoryId' => $this->subCategoryId,
                 'contractWhatsapp' => $this->contactWhatsapp ? 'true' : 'false',
                 'hasForm' => $this->hasForm ? 'true' : 'false',
+                'description' => $this->description,
+                'hasSpecificCategory' => $this->hasSpecificCategory ? 'true' : 'false',
             ];
 
             // Only add fromName if hasForm is true
@@ -227,6 +235,8 @@ class MiniCategoreis extends Component
                 'contactWhatsapp' => 'nullable|boolean',
                 'hasForm' => 'nullable|boolean',
                 'fromName' => 'nullable|string|max:255',
+                'description' => 'nullable|string',
+                'hasSpecificCategory' => 'nullable|boolean',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
             // Keep modal open on validation error
@@ -244,6 +254,8 @@ class MiniCategoreis extends Component
                 'subCategoryId' => $this->subCategoryId,
                 'contractWhatsapp' => $this->contactWhatsapp ? 'true' : 'false',
                 'hasForm' => $this->hasForm ? 'true' : 'false',
+                 'description' => $this->description,
+                'hasSpecificCategory' => $this->hasSpecificCategory ? 'true' : 'false',
             ];
 
             // Only add fromName if hasForm is true
@@ -320,7 +332,13 @@ class MiniCategoreis extends Component
         // Properly convert boolean values
         $this->contactWhatsapp = ($this->miniSubCategory['contractWhatsapp'] ?? false) === true ||
             ($this->miniSubCategory['contractWhatsapp'] ?? '') === 'true';
+        // has Specific Category
 
+        $this->hasSpecificCategory = $this->miniSubCategory['hasSpecificCategory'] ?? false ;
+
+        
+        $this->description = $this->miniSubCategory['description']['content'] ?? null;
+        
         $this->hasForm = ($this->miniSubCategory['hasForm'] ?? false) === true ||
             ($this->miniSubCategory['hasForm'] ?? '') === 'true';
 
