@@ -61,6 +61,15 @@
                                 @enderror
                             </div>
 
+                        {{-- Description --}}
+                            <div class="mb-6">
+                                <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                                <textarea name="" id="description" wire:model="description" cols="30" rows="10" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] resize-none"></textarea>
+                                @error('description')
+                                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
+                            </div>
+
                             <div class="mb-6 space-y-4">
                                 <div x-data="{ dragOver: false }" class="space-y-4">
                                     <label for="category-title" class="block text-sm font-medium text-gray-700 mb-2">Image</label>
@@ -100,6 +109,17 @@
                                 </div>
                             </div>
 
+                                      <!-- hasSpecificCategory -->
+                            <div class="flex items-center justify-between mb-6">
+                                <span class="text-sm font-medium text-gray-700">hasSpecificCategory</span>
+                                <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200"
+                                    x-data="{ on: $wire.entangle('hasSpecificCategory') }" @click="on = !on"
+                                    :class="on ? 'bg-[#C7AE6A]' : 'bg-gray-200'">
+                                    <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
+                                        :class="on ? 'translate-x-6' : 'translate-x-0'"></div>
+                                </div>
+                            </div>
+                            
                             <!-- Toggle Switches -->
                             <div class="mb-6 space-y-4" x-data="{
                                 contactWhatsapp: $wire.entangle('contactWhatsapp'),
@@ -210,6 +230,15 @@
                                 @enderror
                             </div>
 
+                               {{-- Description --}}
+                            <div class="mb-6">
+                                <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                                <textarea name="" id="description" wire:model="description" cols="30" rows="10" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#C7AE6A] resize-none"></textarea>
+                                @error('description')
+                                    <span class="text-red-500 text-sm">{{ $message }}</span>
+                                @enderror
+                            </div>
+
                             <div class="mb-6 space-y-4">
                                 <div x-data="{ dragOver: false }" class="space-y-4">
                                     <label for="edit-image" class="block text-sm font-medium text-gray-700 mb-2">Image</label>
@@ -255,6 +284,17 @@
                                             </div>
                                         @endif
                                     </div>
+                                </div>
+                            </div>
+
+                            {{-- Has Specific Category --}}
+                              <div class="flex items-center justify-between mb-6">
+                                <span class="text-sm font-medium text-gray-700">hasSpecificCategory</span>
+                                <div class="relative inline-block w-12 h-6 rounded-full cursor-pointer transition-colors duration-200"
+                                    x-data="{ on: $wire.entangle('hasSpecificCategory') }" @click="on = !on"
+                                    :class="on ? 'bg-[#C7AE6A]' : 'bg-gray-200'">
+                                    <div class="absolute left-0 inline-block w-6 h-6 transform bg-white rounded-full shadow-lg transition-transform duration-200"
+                                        :class="on ? 'translate-x-6' : 'translate-x-0'"></div>
                                 </div>
                             </div>
 
@@ -368,11 +408,11 @@
                             {{ $miniSubCategory['description']['content'] ?? 'No description available' }}</p>
                     </div>
 
-                    <div class="flex flex-col bg-gray-100 p-4 rounded-lg md:col-span-2">
+                    {{-- <div class="flex flex-col bg-gray-100 p-4 rounded-lg md:col-span-2">
                         <label class="text-xs text-gray-500 font-medium mb-1">Section Description</label>
                         <p class="text-gray-800">
                             {{ $miniSubCategory['description']['section'] ?? 'No description available' }}</p>
-                    </div>
+                    </div> --}}
 
                     <div class="flex flex-col bg-gray-100 p-4 rounded-lg">
                         <label class="text-xs text-gray-500 font-medium mb-1">Has Specific Category</label>
